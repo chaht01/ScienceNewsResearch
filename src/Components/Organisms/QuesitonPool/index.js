@@ -12,7 +12,9 @@ import styled from "styled-components";
 import Pool from "./Pool";
 import Todos from "./Todos";
 import SuggestionPreview from "./SuggestionPreview";
-
+import { quesitonType, poolFoldingOpen } from "../../../Actions/question";
+import { connect } from "react-redux";
+import { colors } from "../../Configs/var";
 const StyledAside = styled.aside`
   width: 400px;
   padding-left: 20px;
@@ -40,152 +42,181 @@ StyledSticky.Footer = styled.div`
   height: 50px;
 `;
 
+StyledSticky.Action = styled(Button)`
+  justify-self: flex-end;
+`;
+StyledSticky.ActionDescription = styled.span`
+  justify-self: flex-start;
+  color: ${colors.blue};
+  flex: 1;
+  padding-left: 2em;
+`;
+
 const FormGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 100px;
   column-gap: 0.5em;
 `;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    typed: state.questionReducer.typed,
+    folding: state.questionReducer.folding,
+    takeInProgress: state.takeReducer.inProgress.data
+  };
+};
 
-class QuestionPool extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      typed: "",
-      folding: true
-    };
-    this.handleTyped = this.handleTyped.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.spreadPool = this.spreadPool.bind(this);
-  }
-  handleTyped(e) {
+const mapDispatchToProps = dispatch => {
+  return {
+    questionTyping: typed => dispatch(quesitonType(typed)),
+    spreadPool: () => dispatch(poolFoldingOpen())
+  };
+};
+
+const QuestionPoolView = ({
+  typed,
+  folding,
+  questionTyping,
+  spreadPool,
+  addQuestion,
+  page,
+  article: { title, sentences: content },
+  done,
+  highlightMode,
+  toggleHighlight,
+  highlightQuestionId,
+  highlightActive,
+  confirmTakes,
+  cancelHighlight,
+  confirmHighlight,
+  hoveredQuestionIds,
+  hoverEnter,
+  hoverLeave,
+  todos,
+  questions,
+  todoTakeMap,
+  takeInProgress
+}) => {
+  const handleTyped = e => {
     e.persist();
-    this.setState({
-      typed: e.target.value
-    });
-  }
-  handleSubmit(e) {
-    this.props.addQuestion(this.state.typed, this.props.page);
-    this.setState({
-      typed: ""
-    });
+    questionTyping(e.target.value);
+  };
+  const handleSubmit = e => {
+    addQuestion(typed, page);
+    questionTyping("");
     e.preventDefault();
-  }
-  spreadPool() {
-    this.setState({ folding: false });
-  }
-  render() {
-    const {
-      page,
-      article: { title, sentences: content },
-      done
-    } = this.props;
-    const {
-      highlightMode,
-      toggleHighlight,
-      highlightQuestionId,
-      highlightActive,
-      confirmTakes,
-      cancelHighlight,
-      confirmHighlight
-    } = this.props;
-    const { hoveredQuestionIds, hoverEnter, hoverLeave } = this.props;
-    const { todos, questions, todoTakeMap } = this.props;
+  };
 
-    const doneValidation =
-      Object.keys(todoTakeMap)
-        .map(todo_id => todoTakeMap[todo_id]._latest_milestone.found)
-        .indexOf(null) < 0;
+  const QidOfTakeInProgress = takeInProgress.map(t => t.question_id);
 
-    if (highlightMode) {
-      const targetQuestion = questions.filter(
-        q => q.id === highlightQuestionId
-      )[0];
-      const highlightedSentences = content
-        .filter(s => highlightActive.indexOf(s.id) >= 0)
-        .sort((a, b) => (a.order < b.order ? -1 : 1))
-        .map(s => s.text);
-      return (
-        <StyledAside>
-          <StyledSticky>
-            <StyledSticky.Content>
-              <SuggestionPreview
-                targetQuestion={targetQuestion}
-                highlightedSentences={highlightedSentences}
+  const doneValidation =
+    Object.keys(todoTakeMap)
+      .map(todo_id => todoTakeMap[todo_id]._latest_milestone.found)
+      .indexOf(null) < 0;
+
+  if (highlightMode) {
+    const targetQuestion = questions.filter(
+      q => q.id === highlightQuestionId
+    )[0];
+    const highlightedSentences = content
+      .filter(s => highlightActive.indexOf(s.id) >= 0)
+      .sort((a, b) => (a.order < b.order ? -1 : 1))
+      .map(s => s.text);
+    return (
+      <StyledAside>
+        <StyledSticky>
+          <StyledSticky.Content>
+            <SuggestionPreview
+              targetQuestion={targetQuestion}
+              highlightedSentences={highlightedSentences}
+            />
+          </StyledSticky.Content>
+          <StyledSticky.Footer>
+            <Button onClick={cancelHighlight}>Cancel</Button>
+            <Button
+              onClick={confirmHighlight}
+              disabled={highlightedSentences.length === 0}
+            >
+              Confirm
+            </Button>
+          </StyledSticky.Footer>
+        </StyledSticky>
+      </StyledAside>
+    );
+  } else {
+    return (
+      <StyledAside>
+        <StyledSticky>
+          <Form
+            onSubmit={handleSubmit}
+            onChange={handleTyped}
+            style={{ marginBottom: "2em" }}
+          >
+            <h3>What do you want to know?</h3>
+            <FormGrid>
+              <Input
+                type="text"
+                placeholder={"What do you want to know?"}
+                value={typed}
               />
-            </StyledSticky.Content>
-            <StyledSticky.Footer>
-              <Button onClick={cancelHighlight}>Cancel</Button>
-              <Button onClick={confirmHighlight}>Confirm</Button>
-            </StyledSticky.Footer>
-          </StyledSticky>
-        </StyledAside>
-      );
-    } else {
-      return (
-        <StyledAside>
-          <StyledSticky>
-            <StyledSticky.Content>
-              <Form
-                onSubmit={this.handleSubmit}
-                onChange={this.handleTyped}
-                style={{ marginBottom: "2em" }}
-              >
-                <h3>What do you want to know?</h3>
-                <FormGrid>
-                  <Input
-                    type="text"
-                    placeholder={"What do you want to know?"}
-                    value={this.state.typed}
-                  />
-                  <Button type="submit">add</Button>
-                </FormGrid>
-              </Form>
-
-              {page === 1 ? (
-                <Pool
-                  questions={questions}
-                  folding={this.state.folding}
-                  spreadPool={this.spreadPool}
-                />
-              ) : page === 2 ? (
-                <Todos
-                  content={content}
-                  todos={todos}
-                  todoTakeMap={todoTakeMap}
-                  highlightMode={highlightMode}
-                  toggleHighlight={toggleHighlight}
-                  hoverEnter={hoverEnter}
-                  hoverLeave={hoverLeave}
-                  highlightQuestionId={highlightQuestionId}
-                  highlightActive={highlightActive}
-                  hoveredQuestionIds={hoveredQuestionIds}
-                />
-              ) : null}
-            </StyledSticky.Content>
-            <StyledSticky.Footer>
-              {page === 1 ? (
-                <Button
+              <Button type="submit">add</Button>
+            </FormGrid>
+          </Form>
+          <StyledSticky.Content>
+            {page === 1 ? (
+              <Pool
+                questions={questions}
+                folding={folding}
+                spreadPool={spreadPool}
+              />
+            ) : page === 2 ? (
+              <Todos
+                content={content}
+                todos={todos}
+                todoTakeMap={todoTakeMap}
+                highlightMode={highlightMode}
+                toggleHighlight={toggleHighlight}
+                hoverEnter={hoverEnter}
+                hoverLeave={hoverLeave}
+                highlightQuestionId={highlightQuestionId}
+                highlightActive={highlightActive}
+                hoveredQuestionIds={hoveredQuestionIds}
+              />
+            ) : null}
+          </StyledSticky.Content>
+          <StyledSticky.Footer>
+            {page === 1 ? (
+              <React.Fragment>
+                <StyledSticky.ActionDescription>
+                  {QidOfTakeInProgress.length} Questions Selected.{" "}
+                </StyledSticky.ActionDescription>
+                <StyledSticky.Action
                   onClick={confirmTakes}
                   disabled={page.loading}
                   loading={page.loading}
                 >
                   Next
-                </Button>
-              ) : page === 2 ? (
-                <Button
+                </StyledSticky.Action>
+              </React.Fragment>
+            ) : page === 2 ? (
+              <React.Fragment>
+                <StyledSticky.Action
                   onClick={done}
                   disabled={page.loading || !doneValidation}
                   loading={page.loading}
                 >
                   Done
-                </Button>
-              ) : null}
-            </StyledSticky.Footer>
-          </StyledSticky>
-        </StyledAside>
-      );
-    }
+                </StyledSticky.Action>
+              </React.Fragment>
+            ) : null}
+          </StyledSticky.Footer>
+        </StyledSticky>
+      </StyledAside>
+    );
   }
-}
+};
 
+const QuestionPool = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(QuestionPoolView);
 export default QuestionPool;

@@ -23,7 +23,12 @@ export const types = {
   ),
   TAKE_RESPONSE_UPDATE_FAILURE: typeStringCreator(
     "TAKE_RESPONSE_UPDATE_FAILURE"
-  )
+  ),
+  TAKE_SUGGESTION_HOVER: typeStringCreator("TAKE_SUGGESTION_HOVER"), // ui state
+  TAKE_SUGGESTION_LEAVE: typeStringCreator("TAKE_SUGGESTION_LEAVE"), // ui state
+  TAKE_SUGGESTION_REQUEST: typeStringCreator("TAKE_SUGGESTION_REQUEST"),
+  TAKE_SUGGESTION_SUCCESS: typeStringCreator("TAKE_SUGGESTION_SUCCESS"),
+  TAKE_SUGGESTION_FAILURE: typeStringCreator("TAKE_SUGGESTION_FAILURE")
 };
 
 // TAKE LIST FETCHING
@@ -169,6 +174,44 @@ export const takeResponseUpdateSuccess = milestone => {
 export const takeResponseUpdateFailure = error => {
   return {
     type: types.TAKE_RESPONSE_UPDATE_FAILURE,
+    payload: error
+  };
+};
+
+export const takeSuggestionHover = id => {
+  return {
+    type: types.TAKE_SUGGESTION_HOVER,
+    payload: {
+      id
+    }
+  };
+};
+
+export const takeSuggestionLeave = () => {
+  return {
+    type: types.TAKE_SUGGESTION_LEAVE
+  };
+};
+
+export const takeSuggestionRequest = id => {
+  return {
+    type: types.TAKE_SUGGESTION_REQUEST,
+    payload: {
+      id
+    }
+  };
+};
+
+export const takeSuggestionSuccess = suggestion => {
+  return {
+    type: types.TAKE_SUGGESTION_SUCCESS,
+    payload: suggestion
+  };
+};
+
+export const takeSuggestionFailure = error => {
+  return {
+    type: types.TAKE_SUGGESTION_FAILURE,
     payload: error
   };
 };

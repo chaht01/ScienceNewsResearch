@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon, Form, Popup, Radio, Modal } from "semantic-ui-react";
+import { Icon, Form, Popup, Radio, Modal, Loader } from "semantic-ui-react";
 import { StyledSegment } from "../../../Atoms/StyledSegment";
 import highlightIcon from "../../../../static/highlight_wh.png";
 import styled, { css } from "styled-components";
@@ -8,7 +8,9 @@ import {
   takeMark,
   takeErase,
   takeDeleteRequest,
-  takeResponseUpdateRequest
+  takeResponseUpdateRequest,
+  takeSuggestionRequest,
+  takeSuggestionHover
 } from "../../../../Actions/take";
 import { connect } from "react-redux";
 
@@ -46,7 +48,8 @@ StyledTodo.RadioForm = styled(Form)`
 const mapStateToProps = (state, ownProps) => {
   return {
     user_detail: state.authReducer.signup.data,
-    takeRemote: state.takeReducer.data
+    takeRemote: state.takeReducer.data,
+    suggestion: state.takeReducer.suggestion
   };
 };
 
@@ -54,7 +57,10 @@ const mapDispatchToProps = dispatch => {
   return {
     deleteTake: take_id => dispatch(takeDeleteRequest(take_id, 2)),
     updateResponse: (take_id, found) =>
-      dispatch(takeResponseUpdateRequest(take_id, found))
+      dispatch(takeResponseUpdateRequest(take_id, found)),
+    fetchSuggestion: take_id => dispatch(takeSuggestionRequest(take_id)),
+    openSuggestion: take_id => dispatch(takeSuggestionHover(take_id)),
+    closeSuggestion: take_id => dispatch(takeSuggestionHover(take_id))
   };
 };
 
@@ -72,7 +78,11 @@ const TodosView = ({
   user_detail,
   takeRemote,
   deleteTake,
-  updateResponse
+  updateResponse,
+  suggestion,
+  fetchSuggestion,
+  openSuggestion,
+  closeSuggestion
 }) => {
   const toggle = question => {
     const take_id = takeRemote.filter(t => t.question === question.id)[0].id;
@@ -82,7 +92,7 @@ const TodosView = ({
   const updateFound = (take, found) => {
     updateResponse(take.id, found);
   };
-
+  console.log(suggestion.data);
   if (todos.length === 0) {
     return (
       <StyledSegment>
@@ -126,9 +136,10 @@ const TodosView = ({
                           todo_take_map[todo.id]._latest_milestone.found ===
                           true
                         }
-                        onChange={() =>
-                          updateFound(todo_take_map[todo.id], true)
-                        }
+                        onChange={() => {
+                          // updateFound(todo_take_map[todo.id], true);
+                          toggleHighlight(todo);
+                        }}
                       />
                     }
                     hoverable
@@ -145,14 +156,42 @@ const TodosView = ({
                   </Popup>
                 </Form.Field>
                 <Form.Field style={{ margin: 0 }}>
-                  <Radio
-                    name="radioGroup"
-                    value="notFound"
-                    checked={
+                  <Popup
+                    trigger={
+                      <Radio
+                        name="radioGroup"
+                        value="notFound"
+                        checked={
+                          todo_take_map[todo.id]._latest_milestone.found ===
+                          false
+                        }
+                        onChange={() =>
+                          updateFound(todo_take_map[todo.id], false)
+                        }
+                      />
+                    }
+                    open={
+                      suggestion.openId === todo_take_map[todo.id].id &&
                       todo_take_map[todo.id]._latest_milestone.found === false
                     }
-                    onChange={() => updateFound(todo_take_map[todo.id], false)}
-                  />
+                    onOpen={() => {
+                      fetchSuggestion(todo_take_map[todo.id].id);
+                      openSuggestion(todo_take_map[todo.id].id);
+                    }}
+                    hoverable
+                    onClose={closeSuggestion}
+                    position="bottom right"
+                    inverted
+                    wide
+                  >
+                    {suggestion.loading ? (
+                      <Loader active inline size="mini" inverted />
+                    ) : suggestion.data.length === 0 ? (
+                      "No suggestion..."
+                    ) : (
+                      suggestion.data.map(s => <li key={s.id}>{s.text}</li>)
+                    )}
+                  </Popup>
                 </Form.Field>
               </StyledTodo.RadioForm>
               <Modal
@@ -171,7 +210,6 @@ const TodosView = ({
                   {
                     key: "done",
                     content: "Remove",
-                    triggerClose: true,
                     color: "red",
                     onClick: () => toggle(todo)
                   }

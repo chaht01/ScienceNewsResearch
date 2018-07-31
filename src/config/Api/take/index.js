@@ -27,5 +27,8 @@ export const take = {
       { found, sentences },
       "patch"
     );
+  },
+  suggestion: take_id => {
+    return fetchApi(`/takes/${take_id}/suggestions/`, null, "get");
   }
 };

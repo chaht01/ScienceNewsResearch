@@ -20,7 +20,9 @@ import {
   takeTakeSaveSuccess,
   takeTakeSaveFailure,
   takeResponseUpdateSuccess,
-  takeResponseUpdateFailure
+  takeResponseUpdateFailure,
+  takeSuggestionSuccess,
+  takeSuggestionFailure
 } from "../Actions/take";
 import Api from "../config/Api";
 import { types } from "../Actions/take";
@@ -128,4 +130,17 @@ function* takeResponseUpdateAsync({ type, payload: { id: take_id, found } }) {
 
 export function* watchTakeResponseUpdateAsync() {
   yield takeLatest(types.TAKE_RESPONSE_UPDATE_REQUEST, takeResponseUpdateAsync);
+}
+
+function* fetchTakeSuggestionAsync({ type, payload: { id: take_id } }) {
+  try {
+    const suggestion = yield call(Api.take.suggestion, take_id);
+    yield put(takeSuggestionSuccess(suggestion));
+  } catch (error) {
+    yield put(takeSuggestionFailure(error));
+  }
+}
+
+export function* watchFetchTakeSuggestionAsync() {
+  yield takeLatest(types.TAKE_SUGGESTION_REQUEST, fetchTakeSuggestionAsync);
 }

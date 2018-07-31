@@ -1,6 +1,9 @@
 import { typeCreator, typeStringCreator } from "./creator";
 
 export const types = {
+  QUESTION_TYPE: typeStringCreator("QUESTION_TYPE"),
+  POOL_FOLDING_OPEN: typeStringCreator("POOL_FOLDING_OPEN"),
+
   POOL_FETCH_REQUEST: typeStringCreator("POOL_FETCH_REQUEST"),
   POOL_FETCH_SUCCESS: typeStringCreator("POOL_FETCH_SUCCESS"),
   POOL_FETCH_FAILURE: typeStringCreator("POOL_FETCH_FAILURE"),
@@ -16,6 +19,21 @@ export const types = {
   QUESTION_DELETE_REQUEST: typeStringCreator("QUESTION_DELETE_REQUEST"),
   QUESTION_DELETE_SUCCESS: typeStringCreator("QUESTION_DELETE_SUCCESS"),
   QUESTION_DELETE_FAILURE: typeStringCreator("QUESTION_DELETE_FAILURE")
+};
+
+export const quesitonType = typed => {
+  return {
+    type: types.QUESTION_TYPE,
+    payload: {
+      typed
+    }
+  };
+};
+
+export const poolFoldingOpen = () => {
+  return {
+    type: types.POOL_FOLDING_OPEN
+  };
 };
 
 // POOL FETCHING

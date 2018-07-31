@@ -102,7 +102,7 @@ const QuestionSharingView = ({
   const todos = pool.data.filter(
     question => QidOfTakeRemote.indexOf(question.id) >= 0
   );
-  const take_with_milestone = takeRemote.map(take => {
+  const takes_with_milestone = takeRemote.map(take => {
     const _latest_milestone = take.milestones.reduce(
       (acc, curr) => (acc.id < curr.id ? curr : acc),
       { id: -1 }
@@ -116,7 +116,7 @@ const QuestionSharingView = ({
   let todo_take_map = {};
   todos.forEach(
     todo =>
-      (todo_take_map[todo.id] = _find(take_with_milestone, {
+      (todo_take_map[todo.id] = _find(takes_with_milestone, {
         question: todo.id
       }))
   );
@@ -136,7 +136,29 @@ const QuestionSharingView = ({
   };
   const confirmHighlight = () => {
     const { take_id, data: sentences } = highlights.inProgress;
-    applyHighlight(take_id, true, sentences);
+    const { responses: remote_responses } = takes_with_milestone.filter(
+      take => take.id === take_id
+    )[0]._latest_milestone;
+
+    const remote_sentences = remote_responses.map(r => r.sentence);
+    let diff = false;
+
+    diff =
+      remote_sentences.reduce(
+        (acc, curr) => acc || sentences.indexOf(curr) < 0,
+        false
+      ) ||
+      sentences.reduce(
+        (acc, curr) => acc || remote_sentences.indexOf(curr) < 0,
+        false
+      );
+
+    if (sentences.length === 0 || !diff) {
+      cancelHighlight();
+    } else {
+      const found = true;
+      applyHighlight(take_id, found, sentences);
+    }
   };
 
   const confirmTakes = () => {

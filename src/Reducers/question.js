@@ -3,11 +3,24 @@ import { types as actionType } from "../Actions/question";
 const initialState = {
   loading: false,
   error: null,
-  data: []
+  data: [],
+  typed: "",
+  folding: true
 };
 
 const questionReducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionType.QUESTION_TYPE: {
+      return {
+        ...state,
+        typed: action.payload.typed
+      };
+    }
+    case actionType.POOL_FOLDING_OPEN:
+      return {
+        ...state,
+        folding: false
+      };
     case actionType.POOL_FETCH_REQUEST:
       return {
         ...state,

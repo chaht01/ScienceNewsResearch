@@ -18,7 +18,8 @@ import {
   watchHandleBundleTakeAsync,
   watchCreateTakeAsync,
   watchDeleteTakeAsync,
-  watchTakeResponseUpdateAsync
+  watchTakeResponseUpdateAsync,
+  watchFetchTakeSuggestionAsync
 } from "./take";
 
 export default function* rootSaga() {
@@ -38,6 +39,7 @@ export default function* rootSaga() {
     watchCreateTakeAsync(),
     watchDeleteTakeAsync(),
     watchHandleBundleTakeAsync(),
-    watchTakeResponseUpdateAsync()
+    watchTakeResponseUpdateAsync(),
+    watchFetchTakeSuggestionAsync()
   ]);
 }

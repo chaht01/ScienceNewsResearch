@@ -10,6 +10,12 @@ const initialState = {
     data: [],
     loading: false,
     error: null
+  },
+  suggestion: {
+    data: [],
+    loading: false,
+    error: null,
+    openId: -1
   }
 };
 
@@ -132,6 +138,52 @@ const takeReducer = (state = initialState, action) => {
           }
           return take;
         })
+      };
+    case actionType.TAKE_SUGGESTION_HOVER:
+      return {
+        ...state,
+        suggestion: {
+          ...state.suggestion,
+          data: [],
+          openId: action.payload.id
+        }
+      };
+    case actionType.TAKE_SUGGESTION_LEAVE:
+      return {
+        ...state,
+        suggestion: {
+          ...state.suggestion,
+          data: [],
+          openId: -1
+        }
+      };
+    case actionType.TAKE_SUGGESTION_REQUEST:
+      return {
+        ...state,
+        suggestion: {
+          ...state.suggestion,
+          loading: true,
+          error: null
+        }
+      };
+    case actionType.TAKE_SUGGESTION_SUCCESS:
+      return {
+        ...state,
+        suggestion: {
+          ...state.suggestion,
+          data: action.payload,
+          loading: false,
+          error: null
+        }
+      };
+    case actionType.TAKE_SUGGESTION_FAILURE:
+      return {
+        ...state,
+        suggestion: {
+          ...state.suggestion,
+          loading: false,
+          error: action.payload
+        }
       };
     default:
       return state;
