@@ -21,9 +21,14 @@ import {
 } from "../Actions/auth";
 import Api from "../config/Api";
 
-export function* signup(username, password) {
+export function* signup(username, password, research_id) {
   try {
-    const user_detail = yield call(Api.authorize.signup, username, password);
+    const user_detail = yield call(
+      Api.authorize.signup,
+      username,
+      password,
+      research_id
+    );
     yield call(Api.storeItem, user_detail);
     yield put(signupSuccess(user_detail));
   } catch (error) {
@@ -55,10 +60,10 @@ export function* signin(username, password) {
 export function* signupFlow() {
   while (true) {
     const {
-      payload: { username, password }
+      payload: { username, password, research_id }
     } = yield take(actionType.AUTH_SIGNUP_REQUEST);
 
-    const task = yield fork(signup, username, password);
+    const task = yield fork(signup, username, password, research_id);
     yield take([
       actionType.AUTH_SIGNUP_SUCCESS,
       actionType.AUTH_SIGNUP_FAILURE

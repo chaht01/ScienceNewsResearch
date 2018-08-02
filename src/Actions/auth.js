@@ -12,12 +12,13 @@ export const types = {
   AUTH_VERIFY: typeStringCreator("AUTH_VERIFY")
 };
 
-export const signupRequested = ({ username, password }) => {
+export const signupRequested = ({ username, password, research_id }) => {
   return {
     type: types.AUTH_SIGNUP_REQUEST,
     payload: {
       username,
-      password
+      password,
+      research_id
     }
   };
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { signupRequested, loginRequested } from "../../../Actions/auth";
 import { connect } from "react-redux";
-import { Form, Checkbox, Button } from "semantic-ui-react";
+import { Form, Radio, Button } from "semantic-ui-react";
 import StyledLink from "../../Atoms/StyledLink";
 import Msg from "../../Atoms/Msg";
 
@@ -12,8 +12,8 @@ const mapStateToProps = (state, ownProps) => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    handleSignup: ({ username, password }) =>
-      dispatch(signupRequested({ username, password })),
+    handleSignup: ({ username, password, research_id }) =>
+      dispatch(signupRequested({ username, password, research_id })),
     handleSignin: ({ username, password }) =>
       dispatch(loginRequested({ username, password }))
   };
@@ -25,12 +25,14 @@ export class SignFormView extends React.Component {
     this.state = {
       username: "",
       password: "",
+      research_type: -1,
       signup: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggleMode = this.toggleMode.bind(this);
     this.handleErrorMsg = this.handleErrorMsg.bind(this);
+    this.handleResearchType = this.handleResearchType.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,7 +54,7 @@ export class SignFormView extends React.Component {
   }
 
   handleSubmit() {
-    const { username, password } = this.state;
+    const { username, password, research_type: research_id } = this.state;
     let submitMethod;
     if (this.state.signup) {
       submitMethod = this.props.handleSignup;
@@ -61,12 +63,19 @@ export class SignFormView extends React.Component {
     }
     submitMethod({
       username,
-      password
+      password,
+      research_id
     });
     this.setState(prevState => ({
       ...prevState,
       password: ""
     }));
+  }
+
+  handleResearchType(e, { value }) {
+    this.setState({
+      research_type: value
+    });
   }
 
   handleErrorMsg() {
@@ -134,7 +143,22 @@ export class SignFormView extends React.Component {
           <Msg state={"error"}>{this.handleErrorMsg().password}</Msg>
         </Form.Field>
         <Form.Field>
-          <Checkbox label="I agree to the Terms and Conditions" />
+          <Radio
+            label="Research A"
+            name="radioGroup"
+            value="1"
+            checked={this.state.research_type == 1}
+            onChange={this.handleResearchType}
+          />
+        </Form.Field>
+        <Form.Field>
+          <Radio
+            label="Research B"
+            name="radioGroup"
+            value="2"
+            checked={this.state.research_type == 2}
+            onChange={this.handleResearchType}
+          />
         </Form.Field>
         <Button type="submit" fluid>
           {this.state.signup ? "Sign up" : "Log in"}

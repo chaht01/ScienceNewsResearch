@@ -1,8 +1,8 @@
 import fetchApi from "../fetchApi";
 
 export const authorize = {
-  signup: (username, password) => {
-    return fetchApi("/users/", { username, password }, "post");
+  signup: (username, password, research) => {
+    return fetchApi("/users/", { username, password, research }, "post");
   },
   user: username => {
     return fetchApi(`/users/${username}/`, "get");
