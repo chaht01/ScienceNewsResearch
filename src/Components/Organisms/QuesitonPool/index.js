@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Button,
-  Form,
-  Icon,
-  Input,
-  Popup,
-  Radio,
-  Sticky
-} from "semantic-ui-react";
+import { Button, Form, Input } from "semantic-ui-react";
 import styled from "styled-components";
 import Pool from "./Pool";
 import Todos from "./Todos";
@@ -15,6 +7,7 @@ import SuggestionPreview from "./SuggestionPreview";
 import { quesitonType, poolFoldingOpen } from "../../../Actions/question";
 import { connect } from "react-redux";
 import { colors } from "../../Configs/var";
+import QuestionForm from "./QuestionForm";
 const StyledAside = styled.aside`
   width: 400px;
   padding-left: 20px;
@@ -52,11 +45,6 @@ StyledSticky.ActionDescription = styled.span`
   padding-left: 2em;
 `;
 
-const FormGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 100px;
-  column-gap: 0.5em;
-`;
 const mapStateToProps = (state, ownProps) => {
   return {
     typed: state.questionReducer.typed,
@@ -96,13 +84,15 @@ const QuestionPoolView = ({
   todoTakeMap,
   takeInProgress
 }) => {
-  const handleTyped = e => {
-    e.persist();
-    questionTyping(e.target.value);
+  const handleTyped = value => {
+    questionTyping(value);
+  };
+  const clearType = () => {
+    questionTyping("");
   };
   const handleSubmit = e => {
     addQuestion(typed, page);
-    questionTyping("");
+    clearType();
     e.preventDefault();
   };
 
@@ -146,21 +136,13 @@ const QuestionPoolView = ({
     return (
       <StyledAside>
         <StyledSticky>
-          <Form
-            onSubmit={handleSubmit}
-            onChange={handleTyped}
-            style={{ marginBottom: "2em" }}
-          >
-            <h3>What do you want to know?</h3>
-            <FormGrid>
-              <Input
-                type="text"
-                placeholder={"What do you want to know?"}
-                value={typed}
-              />
-              <Button type="submit">add</Button>
-            </FormGrid>
-          </Form>
+          <QuestionForm
+            handleSubmit={handleSubmit}
+            handleTyped={handleTyped}
+            typed={typed}
+            questions={questions}
+            clearType={clearType}
+          />
           <StyledSticky.Content>
             {page === 1 ? (
               <Pool

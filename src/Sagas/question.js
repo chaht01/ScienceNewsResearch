@@ -19,9 +19,12 @@ import { QuestionMock } from "./mock";
 import tinycolor from "tinycolor2";
 import Api from "../config/Api";
 
-function* fetchQuestionsAsync({ type, payload }) {
+function* fetchQuestionsAsync({
+  type,
+  payload: { research_id, created_phase }
+}) {
   try {
-    let results = yield call(Api.question.pool, payload.id);
+    let results = yield call(Api.question.pool, research_id, created_phase);
     const questions = results.map(q => ({
       ...q,
       color: tinycolor.random().toHex()
@@ -47,6 +50,7 @@ function* createQuestionAsync({
       research
     });
     if (created_phase === 1)
+      // TODO: is this place proper to do casual things?
       yield put(takeMark(article_id, question.id, created_phase));
     // local update
     else yield put(takeCreateRequest(article_id, question.id, created_phase));

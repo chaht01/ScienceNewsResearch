@@ -35,9 +35,10 @@ const IntroView = ({ user_detail, nextPage, page }) => {
   } = user_detail;
   const { loading } = page;
 
+  const create_phase_request = 1;
   const nextPageAsync = nextPage.bind(null, 1, [
     articleArticleFetchRequest.bind(null, article_id),
-    questionPoolFetchRequest.bind(null, research_id),
+    questionPoolFetchRequest.bind(null, research_id, create_phase_request),
     takeListFetchRequest.bind(null, user_id)
   ]);
   return (

@@ -1,10 +1,24 @@
 import { types as actionType } from "../Actions/question";
+import Fuse from "fuse.js";
+const options = {
+  shouldSort: true,
+  includeScore: false,
+  threshold: 0.6,
+  location: 0,
+  distance: 100,
+  maxPatternLength: 32,
+  minMatchCharLength: 1,
+  keys: ["text"]
+};
+
+let fuse = new Fuse([], options); // "list" is the item array
 
 const initialState = {
   loading: false,
   error: null,
   data: [],
   typed: "",
+  suggestions: [],
   folding: true
 };
 
@@ -13,7 +27,11 @@ const questionReducer = (state = initialState, action) => {
     case actionType.QUESTION_TYPE: {
       return {
         ...state,
-        typed: action.payload.typed
+        typed: action.payload.typed,
+        suggestions:
+          action.payload.typed.length === 0
+            ? []
+            : fuse.search(action.payload.typed)
       };
     }
     case actionType.POOL_FOLDING_OPEN:
@@ -28,6 +46,7 @@ const questionReducer = (state = initialState, action) => {
         error: null
       };
     case actionType.POOL_FETCH_SUCCESS:
+      fuse = new Fuse(action.payload, options);
       return {
         ...state,
         loading: false,
