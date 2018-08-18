@@ -12,9 +12,9 @@ StyledSuggestion.Item = styled.li`
   margin-bottom: 0.5em;
 `;
 
-const Suggestion = ({ items, author }) => {
+const Suggestion = ({ items, author, ...rest }) => {
   return (
-    <StyledSuggestion>
+    <StyledSuggestion {...rest}>
       {items.map(str => <StyledSuggestion.Item>{str}</StyledSuggestion.Item>)}
     </StyledSuggestion>
   );

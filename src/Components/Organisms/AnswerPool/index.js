@@ -1,17 +1,49 @@
 import React from "react";
 import { Button, Form, Input } from "semantic-ui-react";
+import styled from "styled-components";
 import Pool from "./Pool";
+import Todos from "./Todos";
 import SuggestionPreview from "./SuggestionPreview";
 import { quesitonType, poolFoldingOpen } from "../../../Actions/question";
 import { connect } from "react-redux";
+import { colors } from "../../Configs/var";
 import QuestionForm from "./QuestionForm";
-import { StyledAside, StyledSticky } from "../../Atoms/StyledAside";
-import styled from "styled-components";
-import { StyledSegment } from "../../Atoms/StyledSegment";
+const StyledAside = styled.aside`
+  width: 400px;
+  padding-left: 20px;
+  align-self: center;
+  height: 100%;
+`;
+const StyledSticky = styled.div`
+  position: fixed;
+  display: flex;
+  padding-top: 2em;
+  flex-direction: column;
+  width: 400px;
+  height: 100%;
+`;
+StyledSticky.Content = styled.div`
+  flex: 1;
+  max-height: 40vh;
+  overflow-y: auto;
+`;
+StyledSticky.Footer = styled.div`
+  justify-self: flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 50px;
+`;
 
-const PoolSegment = styled(StyledSegment)`
-  margin-top: 1.5em;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+StyledSticky.Action = styled(Button)`
+  justify-self: flex-end;
+`;
+StyledSticky.ActionDescription = styled.span`
+  justify-self: flex-start;
+  color: ${colors.blue};
+  flex: 1;
+  padding-left: 2em;
 `;
 
 const mapStateToProps = (state, ownProps) => {
@@ -48,8 +80,10 @@ const QuestionPoolView = ({
   hoveredQuestionIds,
   hoverEnter,
   hoverLeave,
-
-  questions
+  todos,
+  questions,
+  todoTakeMap,
+  takeInProgress
 }) => {
   const handleTyped = value => {
     questionTyping(value);
@@ -62,6 +96,13 @@ const QuestionPoolView = ({
     clearType();
     e.preventDefault();
   };
+
+  const QidOfTakeInProgress = takeInProgress.map(t => t.question_id);
+
+  const doneValidation =
+    Object.keys(todoTakeMap)
+      .map(todo_id => todoTakeMap[todo_id]._latest_milestone.found)
+      .indexOf(null) < 0;
 
   if (highlightMode) {
     const targetQuestion = questions.filter(
@@ -96,61 +137,47 @@ const QuestionPoolView = ({
     return (
       <StyledAside>
         <StyledSticky>
-          <h3>Questions that you made.</h3>
-          <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
-            <Pool questions={questions} />
-          </StyledSticky.Scrollable>
-
-          {folding && (
-            <PoolSegment>
-              <PoolSegment.Header>
-                Based on the title of news article, what do you expect to read
-                from the content?
-              </PoolSegment.Header>
-              <span>
-                (Please write a wh-question, starting with who, where, when,
-                what, why, how or so.)
-              </span>
-              <QuestionForm
-                handleSubmit={handleSubmit}
-                handleTyped={handleTyped}
-                typed={typed}
+          <StyledSticky.Content>
+            {page === 1 ? (
+              <Pool
                 questions={questions}
-                clearType={clearType}
-                style={{ marginBottom: "1em" }}
+                folding={folding}
+                spreadPool={spreadPool}
               />
-            </PoolSegment>
-          )}
-
-          {!folding && (
-            <PoolSegment>
-              <PoolSegment.Header>
-                After seeing others’ questions, what do you expect to read from
-                the content?
-              </PoolSegment.Header>
-              <span>
-                (Please write a wh-question, starting with who, where, when,
-                what, why, how or so.)
-              </span>
-              <QuestionForm
-                handleSubmit={handleSubmit}
-                handleTyped={handleTyped}
-                typed={typed}
-                questions={questions}
-                clearType={clearType}
-                style={{ marginBottom: "1em" }}
+            ) : page === 2 ? (
+              <Todos
+                content={content}
+                todos={todos}
+                todoTakeMap={todoTakeMap}
+                highlightMode={highlightMode}
+                toggleHighlight={toggleHighlight}
+                hoverEnter={hoverEnter}
+                hoverLeave={hoverLeave}
+                highlightQuestionId={highlightQuestionId}
+                highlightActive={highlightActive}
+                hoveredQuestionIds={hoveredQuestionIds}
               />
-            </PoolSegment>
-          )}
+            ) : null}
+          </StyledSticky.Content>
+          <QuestionForm
+            handleSubmit={handleSubmit}
+            handleTyped={handleTyped}
+            typed={typed}
+            questions={questions}
+            clearType={clearType}
+          />
           <StyledSticky.Footer>
             {page === 1 ? (
               <React.Fragment>
+                <StyledSticky.ActionDescription>
+                  {QidOfTakeInProgress.length} Questions Selected.{" "}
+                </StyledSticky.ActionDescription>
                 {folding ? (
                   <StyledSticky.Action
                     onClick={spreadPool}
                     disabled={page.loading}
                     loading={page.loading}
-                    content="I Can't think of question anymore"
+                    content="Show others"
                   />
                 ) : (
                   <StyledSticky.Action
@@ -165,10 +192,11 @@ const QuestionPoolView = ({
               <React.Fragment>
                 <StyledSticky.Action
                   onClick={done}
-                  disabled={page.loading}
+                  disabled={page.loading || !doneValidation}
                   loading={page.loading}
-                  content="Done"
-                />
+                >
+                  Done
+                </StyledSticky.Action>
               </React.Fragment>
             ) : null}
           </StyledSticky.Footer>

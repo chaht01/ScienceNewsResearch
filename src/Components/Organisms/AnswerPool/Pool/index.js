@@ -1,15 +1,16 @@
 import React from "react";
 import StyledLink from "../../../Atoms/StyledLink";
-import { Button } from "semantic-ui-react";
 import { StyledQuestionText } from "../../../Atoms/StyledQuestion";
 import styled from "styled-components";
 import tinycolor from "tinycolor2";
 import { connect } from "react-redux";
 import { takeMark, takeErase } from "../../../../Actions/take";
-import QuestionCRUDModal from "../../QuestionCRUDModal";
-import { StyledSticky } from "../../../Atoms/StyledAside";
 
-export const StyledPool = StyledSticky.ScrollablePane;
+export const StyledPool = styled.div`
+  border-radius: 4px;
+  background: #eeeeee;
+  padding: 0.6em 0.6em;
+`;
 
 export const StyledPoolItem = StyledQuestionText.extend`
   display: flex;
@@ -17,6 +18,12 @@ export const StyledPoolItem = StyledQuestionText.extend`
   border-radius: 6px;
   margin-bottom: 0.5em;
   border: 1px solid #e1e1e7;
+  &:hover {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    border-color: #fff;
+  }
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
 `;
 StyledPoolItem.Text = styled.span`
   flex: 1;
@@ -26,7 +33,6 @@ StyledPoolItem.Text = styled.span`
     color: #222;
   }
 `;
-
 StyledPoolItem.Status = styled.span`
   display: block;
   width: 20px;
@@ -70,6 +76,8 @@ const PoolView = ({
   article,
   markTake
 }) => {
+  const QidOfTakeInProgress = takeInProgress.map(t => t.question_id);
+
   const toggle = question => {
     if (takeInProgress.filter(t => t.question_id === question.id).length > 0) {
       eraseTake(article.id, question.id);
@@ -78,26 +86,31 @@ const PoolView = ({
     }
   };
 
-  const edit = question => {};
-
   return (
     <StyledPool>
+      {folding && (
+        <StyledLink onClick={spreadPool}>
+          Choose from other users' questions
+        </StyledLink>
+      )}
       {questions
-        .filter(question => question.owner === username)
+        .filter(
+          question =>
+            folding
+              ? QidOfTakeInProgress.indexOf(question.id) >= 0 ||
+                question.owner === username
+              : true
+        )
         .map(question => (
-          <StyledPoolItem key={question.id}>
+          <StyledPoolItem
+            key={question.id}
+            onClick={() => toggle(question)}
+            checked={QidOfTakeInProgress.indexOf(question.id) >= 0}
+          >
             <StyledPoolItem.Text>{question.text}</StyledPoolItem.Text>
-            <QuestionCRUDModal
-              question={{
-                typed: question.text,
-                intention: "",
-                code: "",
-                id: question.id
-              }}
-              trigger={<Button compact icon="edit" />}
+            <StyledPoolItem.Status
+              checked={QidOfTakeInProgress.indexOf(question.id) >= 0}
             />
-
-            <Button compact icon="trash alternate" />
           </StyledPoolItem>
         ))}
     </StyledPool>

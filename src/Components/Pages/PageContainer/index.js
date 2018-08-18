@@ -1,7 +1,7 @@
 import React from "react";
 import Intro from "../Intro";
-import QuestionSharing from "../QuestionSharing";
-import { Button } from "semantic-ui-react";
+import Questioner from "../Questioner";
+import Answerer from "../Answerer";
 import { connect } from "react-redux";
 import { Redirect, withRouter } from "react-router";
 import { pageNextRequest } from "../../../Actions/page";
@@ -36,7 +36,7 @@ const PageContainerView = ({ auth, page, nextPage }) => {
       {page.data === 0 ? (
         <Intro {...pageStatus} />
       ) : (
-        <QuestionSharing {...pageStatus} />
+        <Questioner {...pageStatus} />
       )}
     </React.Fragment>
   );

@@ -16,7 +16,6 @@ import {
 import { takeMark, takeErase, takeCreateRequest } from "../Actions/take";
 import { types } from "../Actions/question";
 import { QuestionMock } from "./mock";
-import tinycolor from "tinycolor2";
 import Api from "../config/Api";
 
 function* fetchQuestionsAsync({
@@ -26,8 +25,7 @@ function* fetchQuestionsAsync({
   try {
     let results = yield call(Api.question.pool, research_id, created_phase);
     const questions = results.map(q => ({
-      ...q,
-      color: tinycolor.random().toHex()
+      ...q
     }));
     yield put(questionPoolFetchSuccess(questions));
   } catch (error) {
@@ -56,8 +54,7 @@ function* createQuestionAsync({
     else yield put(takeCreateRequest(article_id, question.id, created_phase));
     yield put(
       questionQuestionCreateSuccess({
-        ...question,
-        color: tinycolor.random().toHex()
+        ...question
       })
     );
   } catch (error) {

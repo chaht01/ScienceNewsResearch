@@ -5,14 +5,6 @@ export const types = {
   HIGHLIGHT_FETCH_SUCCESS: typeStringCreator("HIGHLIGHT_FETCH_SUCCESS"),
   HIGHLIGHT_FETCH_FAILURE: typeStringCreator("HIGHLIGHT_FETCH_FAILURE"),
 
-  HIGHLIGHT_CREATE_REQUEST: typeStringCreator("HIGHLIGHT_CREATE_REQUEST"),
-  HIGHLIGHT_CREATE_SUCCESS: typeStringCreator("HIGHLIGHT_CREATE_SUCCESS"),
-  HIGHLIGHT_CREATE_FAILURE: typeStringCreator("HIGHLIGHT_CREATE_FAILURE"),
-
-  HIGHLIGHT_DELETE_REQUEST: typeStringCreator("HIGHLIGHT_DELETE_REQUEST"),
-  HIGHLIGHT_DELETE_SUCCESS: typeStringCreator("HIGHLIGHT_DELETE_SUCCESS"),
-  HIGHLIGHT_DELETE_FAILURE: typeStringCreator("HIGHLIGHT_DELETE_FAILURE"),
-
   HIGHLIGHT_MODE_ACTIVATE: typeStringCreator("HIGHLIGHT_MODE_ACTIVATE"),
   HIGHLIGHT_MODE_UNDO: typeStringCreator("HIGHLIGHT_MODE_UNDO"),
   HIGHLIGHT_MARK: typeStringCreator("HIGHLIGHT_MARK"),
@@ -49,71 +41,21 @@ export const highlightHighlightFetchFailure = error => {
   };
 };
 
-// HIGHLIGHT ADD
-export const highlightHighlightCreateRequest = (
-  article_id,
-  question_id,
-  sentence_id
-) => {
-  return {
-    type: types.HIGHLIGHT_CREATE_REQUEST,
-    payload: {
-      article_id,
-      question_id,
-      sentence_id
-    }
-  };
-};
-
-export const highlightHighlightCreateSuccess = highlight => {
-  return {
-    type: types.HIGHLIGHT_CREATE_SUCCESS,
-    payload: highlight
-  };
-};
-
-export const highlightHighlightCreateFailure = error => {
-  return {
-    type: types.HIGHLIGHT_CREATE_FAILURE,
-    payload: error
-  };
-};
-
-// HIGHLIGHT DELETE
-export const highlightHighlightDeleteRequest = (
-  article_id,
-  question_id,
-  sentence_id
-) => {
-  return {
-    type: types.HIGHLIGHT_DELETE_REQUEST,
-    payload: {
-      article_id,
-      question_id,
-      sentence_id
-    }
-  };
-};
-
-export const highlightHighlightDeleteSuccess = highlight => {
-  return {
-    type: types.HIGHLIGHT_DELETE_SUCCESS,
-    payload: highlight
-  };
-};
-
-export const highlightHighlightDeleteFailure = error => {
-  return {
-    type: types.HIGHLIGHT_DELETE_FAILURE,
-    payload: error
-  };
-};
-
 // HIGHLIGHT MODE UI
-export const highlightHighlightModeActivate = targetTake => {
+export const highlightHighlightModeActivate = ({
+  article,
+  question,
+  id,
+  _latest_milestone
+}) => {
   return {
     type: types.HIGHLIGHT_MODE_ACTIVATE,
-    payload: targetTake
+    payload: {
+      article_id: article,
+      question_id: question,
+      take_id: id,
+      responses: _latest_milestone.responses
+    }
   };
 };
 

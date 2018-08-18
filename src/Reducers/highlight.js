@@ -108,12 +108,7 @@ const highlightReducer = (state = initialState, action) => {
         })
       };
     case actionType.HIGHLIGHT_MODE_ACTIVATE:
-      const {
-        article: article_id,
-        question: question_id,
-        id: take_id,
-        _latest_milestone: { responses }
-      } = action.payload;
+      const { article_id, question_id, take_id, responses } = action.payload;
       return {
         ...state,
         inProgress: {

@@ -1,12 +1,22 @@
 import React from "react";
 import styled from "styled-components";
 import tinycolor from "tinycolor2";
+import { findIndex as _findIndex, flatten as _flatten } from "lodash";
 import { connect } from "react-redux";
+import PoolExample from "../QuesitonPool/PoolExample";
+import { Button } from "semantic-ui-react";
 import {
-  highlightHighlightErase,
-  highlightHighlightMark
-} from "../../../Actions/highlight";
+  questionHighlightMark,
+  questionHighlightErase
+} from "../../../Actions/questionHighlight";
+import { colors } from "../../Configs/var";
 
+const FAB = styled(Button)`
+  position: sticky;
+  left: 100%;
+  bottom: 40px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22) !important;
+`;
 const StyledArticle = styled.div`
   padding: 1em;
   padding-bottom: 100px;
@@ -33,65 +43,30 @@ const StyledSentence = styled.span`
     props.hoverable &&
     `
         cursor: pointer;
+        border: 1px dashed #aaa;
         &:hover{
             background: ${
-              props.colors.length > 0
-                ? `${tinycolor(
-                    props.colors.reduce((acc, curr) =>
-                      tinycolor
-                        .mix(
-                          tinycolor(acc),
-                          tinycolor(curr),
-                          100 / props.colors.length
-                        )
-                        .toHex()
-                    )
-                  )
-                    .setAlpha(0.45)
-                    .toRgbString()}`
+              props.colors > 0
+                ? tinycolor(colors.green)
+                    .setAlpha(props.color * 1.1)
+                    .toRgbString()
                 : "#e1e1e7"
             };
         }
     `} ${props =>
-    props.colors.length > 0 &&
+    props.colors > 0 &&
     `
-        background: ${tinycolor(
-          props.colors.reduce((acc, curr) =>
-            tinycolor
-              .mix(tinycolor(acc), tinycolor(curr), 100 / props.colors.length)
-              .toHex()
-          )
-        )
-          .setAlpha(0.45)
+        background: ${tinycolor(colors.green)
+          .setAlpha(props.color)
           .toRgbString()};
         &:hover{
-          background: ${tinycolor(
-            props.colors.reduce((acc, curr) =>
-              tinycolor
-                .mix(tinycolor(acc), tinycolor(curr), 100 / props.colors.length)
-                .toHex()
-            )
-          )
-            .setAlpha(0.5)
+          background: ${tinycolor(colors.green)
+            .setAlpha(props.color * 1.1)
             .toRgbString()};
         }
     `}
     transition: all .2s;
 `;
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    highlights: state.highlightReducer
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    markHighlight: sentence_id => dispatch(highlightHighlightMark(sentence_id)),
-    eraseHighlight: sentence_id =>
-      dispatch(highlightHighlightErase(sentence_id))
-  };
-};
 
 const ArticleBody = ({
   content,
@@ -147,17 +122,34 @@ const ArticleBody = ({
   );
 };
 
+const mapStateToProps = (state, ownProps) => {
+  return {
+    highlights: state.questionHighlightReducer,
+    folding: state.questionReducer.folding,
+    article: state.articleReducer.data,
+    questions: state.questionReducer.data
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    markHighlight: sentence_id => dispatch(questionHighlightMark(sentence_id)),
+    eraseHighlight: sentence_id => dispatch(questionHighlightErase(sentence_id))
+  };
+};
+
 const ArticleView = ({
-  article: { title, sentences: content },
+  // ownProps
   page,
+  toggleHighlight,
+
+  // stateToProps
+  article: { title, sentences: content },
   questions,
-  hoverEnter,
-  hoverLeave,
   highlights,
-  todos,
-  todoTakeMap,
   eraseHighlight,
-  markHighlight
+  markHighlight,
+  folding
 }) => {
   const {
     inProgress: {
@@ -168,27 +160,36 @@ const ArticleView = ({
     hover: { question_ids: hoveredQuestionIds }
   } = highlights;
 
-  let todosMap = {};
-  todos.forEach(todo => (todosMap[todo.id] = todo));
-
-  let targetSentences = [];
-  let targetColors = [];
+  let targetSentences = {};
 
   if (highlightMode) {
-    targetSentences = highlightInProgress;
-    targetColors = [todosMap[question_id].color];
+    targetSentences = updateTargetSentence(highlightInProgress);
   } else {
-    hoveredQuestionIds.map(qid =>
-      todoTakeMap[qid]._latest_milestone.responses
-        .filter(r => r.sentence !== null)
-        .map(r => targetSentences.push(r.sentence))
+    targetSentences = updateTargetSentence(
+      _flatten(
+        hoveredQuestionIds.map(qid => {
+          const fIdx = _findIndex(highlights.data, { id: qid });
+          if (fIdx > -1) {
+            return highlights.data[fIdx].refText;
+          }
+        })
+      )
     );
-    targetColors = hoveredQuestionIds.map(qid => todosMap[qid].color);
+  }
+
+  function updateTargetSentence(sentenceDupIds) {
+    let targetSentences = {};
+    content.forEach(sentence => (targetSentences[sentence.id] = 0));
+
+    sentenceDupIds.forEach(id => targetSentences[id]++);
+    return targetSentences;
   }
 
   const highlightedContent = content.map(sentence => ({
     ...sentence,
-    colors: targetSentences.indexOf(sentence.id) >= 0 ? targetColors : []
+    colors:
+      targetSentences[sentence.id] /
+      Object.values(targetSentences).reduce((a, b) => a + b)
   }));
 
   const highlightSentence = sentence => {
@@ -204,13 +205,32 @@ const ArticleView = ({
     <StyledArticle>
       <h1>{title}</h1>
       {page === 2 && (
-        <ArticleBody
-          content={highlightedContent}
-          highlightMode={highlightMode}
-          highlightSentence={highlightSentence}
-          hoveredQuestionsIds={hoveredQuestionIds}
-        />
+        <React.Fragment>
+          <ArticleBody
+            content={highlightedContent}
+            highlightMode={highlightMode}
+            highlightSentence={highlightSentence}
+            hoveredQuestionsIds={hoveredQuestionIds}
+          />
+          {!highlightMode && (
+            <FAB
+              circular
+              positive
+              icon="plus"
+              size="huge"
+              onClick={toggleHighlight}
+            />
+          )}
+        </React.Fragment>
       )}
+
+      {!folding &&
+        page === 1 && (
+          <React.Fragment>
+            <h4>Below you can see what questions others raised.</h4>
+            <PoolExample questions={questions} />
+          </React.Fragment>
+        )}
     </StyledArticle>
   );
 };

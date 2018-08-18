@@ -3,7 +3,6 @@ import { Button, Form, Input } from "semantic-ui-react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import Autosuggest from "react-autosuggest";
-import QuestionCRUDModal from "../../QuestionCRUDModal";
 import { takeMark, takeCreateRequest } from "../../../../Actions/take";
 
 import "./style.css";
@@ -12,7 +11,6 @@ const FormGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 100px;
   column-gap: 0.5em;
-  margin-top: 0.5em;
 `;
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -54,26 +52,58 @@ const QuestionFormView = ({
   questions,
   suggestions,
   markTake,
-  reqeustTake,
-  ...rest
+  reqeustTake
 }) => {
-  const onChange = event => {
-    event.persist();
-    handleTyped(event.target.value);
+  const getSuggestionValue = suggestion => suggestion.text;
+  const renderSuggestion = (suggestion, { query, isHighlighted }) => (
+    <div>{suggestion.text}</div>
+  );
+  const onChange = (event, { newValue, method }) => {
+    if (["enter", "click"].indexOf(method) >= 0) {
+      handleTyped(newValue);
+    } else {
+      event.persist();
+      handleTyped(event.target.value);
+    }
   };
-
+  const inputProps = {
+    placeholder: "What do you want to know?",
+    value: typed,
+    onChange
+  };
+  const onSuggestionSelected = (
+    e,
+    {
+      suggestion: suggestedQuestion,
+      suggestionValue,
+      suggestionIndex,
+      sectionIndex,
+      method
+    }
+  ) => {
+    if (page === 1) {
+      markTake(suggestedQuestion.id);
+    } else if (page === 2) {
+      reqeustTake(suggestedQuestion.id);
+    }
+    clearType();
+    e.stopPropagation();
+    e.preventDefault();
+  };
   return (
-    <Form {...rest}>
+    <Form onSubmit={handleSubmit} style={{ marginBottom: "2em" }}>
+      <h3>What do you want to know?</h3>
       <FormGrid>
-        <Input value={typed} onChange={onChange} />
-        <QuestionCRUDModal
-          question={{ typed, intention: "", code: "", id: -1 }}
-          trigger={
-            <Button positive type="submit">
-              add
-            </Button>
-          }
+        <Autosuggest
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={() => {}}
+          onSuggestionsClearRequested={() => {}}
+          getSuggestionValue={getSuggestionValue}
+          renderSuggestion={renderSuggestion}
+          onSuggestionSelected={onSuggestionSelected}
+          inputProps={inputProps}
         />
+        <Button type="submit">add</Button>
       </FormGrid>
     </Form>
   );

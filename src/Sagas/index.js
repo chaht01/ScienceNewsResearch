@@ -8,8 +8,6 @@ import {
   watchHandleQuestionAsync
 } from "./question";
 import {
-  watchCreateHighlightAsync,
-  watchDeleteHighlightAsync,
   watchFetchHighlightsAsync,
   watchHandleBundleHighlightAsync
 } from "./highlight";
@@ -32,8 +30,6 @@ export default function* rootSaga() {
     watchFetchQuestionsAsync(),
     watchHandleQuestionAsync(),
     watchFetchHighlightsAsync(),
-    watchCreateHighlightAsync(),
-    watchDeleteHighlightAsync(),
     watchHandleBundleHighlightAsync(),
     watchFetchTakesAsync(),
     watchCreateTakeAsync(),
