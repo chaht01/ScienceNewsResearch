@@ -18,7 +18,9 @@ export const types = {
 
   QUESTION_DELETE_REQUEST: typeStringCreator("QUESTION_DELETE_REQUEST"),
   QUESTION_DELETE_SUCCESS: typeStringCreator("QUESTION_DELETE_SUCCESS"),
-  QUESTION_DELETE_FAILURE: typeStringCreator("QUESTION_DELETE_FAILURE")
+  QUESTION_DELETE_FAILURE: typeStringCreator("QUESTION_DELETE_FAILURE"),
+
+  QUESTION_EXPAND_TOGGLE: typeStringCreator("QUESTION_EXPAND_TOGGLE")
 };
 
 export const quesitonType = typed => {
@@ -134,5 +136,14 @@ export const questionQuestionDeleteFailure = error => {
   return {
     type: types.QUESTION_DELETE_FAILURE,
     payload: error
+  };
+};
+
+export const questionQuestionExpandToggle = question_id => {
+  return {
+    type: types.QUESTION_EXPAND_TOGGLE,
+    payload: {
+      question_id
+    }
   };
 };

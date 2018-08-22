@@ -1,6 +1,4 @@
-import { types as actionType } from "../Actions/questionHighlight";
-
-export const TabNames = ["You made", "Others'"];
+import { types as actionType } from "../Actions/answerHighlight";
 
 const initialState = {
   loading: false,
@@ -9,49 +7,51 @@ const initialState = {
   inProgress: {
     active: false,
     article_id: -1,
-    question: null,
+    shown: null,
     data: [],
     loading: false,
     error: null
   },
   hover: {
     sentence_id: null
-  },
-  activeTabIdx: 0,
-  _tabNames: TabNames //just use for reference
+  }
 };
 
-const questionHighlightReducer = (state = initialState, action) => {
+const answerHighlightReducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionType.QUESTION_HIGHLIGHT_FETCH_REQUEST:
+    case actionType.ANSWER_HIGHLIGHT_FETCH_REQUEST:
       return {
         ...state,
         loading: true,
         error: null
       };
-    case actionType.QUESTION_HIGHLIGHT_FETCH_SUCCESS:
+    case actionType.ANSWER_HIGHLIGHT_FETCH_SUCCESS:
       return {
         ...state,
         loading: false,
         data: action.payload,
         error: null
       };
-    case actionType.QUESTION_HIGHLIGHT_FETCH_FAILURE:
+    case actionType.ANSWER_HIGHLIGHT_FETCH_FAILURE:
       return {
         ...state,
         loading: false,
         error: action.payload
       };
 
-    case actionType.QUESTION_HIGHLIGHT_MODE_ACTIVATE:
-      const { article_id, question } = action.payload;
+    case actionType.ANSWER_HIGHLIGHT_MODE_ACTIVATE:
+      const { article_id, shown } = action.payload;
       return {
         ...state,
         inProgress: {
           ...state.inProgress,
           article_id,
-          question,
-          data: question === null ? [] : question.refText,
+          shown,
+          data: [
+            ...shown.takes
+              .reduce((a, b) => (a.id < b.id ? b : a))
+              .answerTexts.map(at => at.sentence)
+          ], // TODO: BIT DIFFERENT POINT TO QUESTIONHIGHLIHGT REDUCER
           active: true
         },
         hover: {
@@ -59,7 +59,7 @@ const questionHighlightReducer = (state = initialState, action) => {
           sentence_id: null
         }
       };
-    case actionType.QUESTION_HIGHLIGHT_MODE_UNDO:
+    case actionType.ANSWER_HIGHLIGHT_MODE_UNDO:
       return {
         ...state,
         inProgress: {
@@ -69,7 +69,7 @@ const questionHighlightReducer = (state = initialState, action) => {
           ...initialState.hover
         }
       };
-    case actionType.QUESTION_HIGHLIGHT_MARK:
+    case actionType.ANSWER_HIGHLIGHT_MARK:
       return {
         ...state,
         inProgress: {
@@ -77,7 +77,7 @@ const questionHighlightReducer = (state = initialState, action) => {
           data: [...state.inProgress.data, action.payload.sentence_id]
         }
       };
-    case actionType.QUESTION_HIGHLIGHT_ERASE:
+    case actionType.ANSWER_HIGHLIGHT_ERASE:
       return {
         ...state,
         inProgress: {
@@ -87,7 +87,7 @@ const questionHighlightReducer = (state = initialState, action) => {
           )
         }
       };
-    case actionType.QUESTION_HIGHLIGHT_SAVE_REQUEST:
+    case actionType.ANSWER_HIGHLIGHT_SAVE_REQUEST:
       return {
         ...state,
         inProgress: {
@@ -95,14 +95,14 @@ const questionHighlightReducer = (state = initialState, action) => {
           loading: true
         }
       };
-    case actionType.QUESTION_HIGHLIGHT_SAVE_SUCCESS:
+    case actionType.ANSWER_HIGHLIGHT_SAVE_SUCCESS:
       return {
         ...state,
         inProgress: {
           ...initialState.inProgress
         }
       };
-    case actionType.QUESTION_HIGHLIGHT_SAVE_FAILURE:
+    case actionType.ANSWER_HIGHLIGHT_SAVE_FAILURE:
       return {
         ...state,
         inProgress: {
@@ -111,7 +111,7 @@ const questionHighlightReducer = (state = initialState, action) => {
           error: action.payload
         }
       };
-    case actionType.QUESTION_HIGHLIGHT_HOVER_ENTER:
+    case actionType.ANSWER_HIGHLIGHT_HOVER_ENTER:
       return {
         ...state,
         hover: {
@@ -119,7 +119,7 @@ const questionHighlightReducer = (state = initialState, action) => {
           sentence_id: action.payload.sentence_id
         }
       };
-    case actionType.QUESTION_HIGHLIGHT_HOVER_LEAVE:
+    case actionType.ANSWER_HIGHLIGHT_HOVER_LEAVE:
       return {
         ...state,
         hover: {
@@ -127,18 +127,10 @@ const questionHighlightReducer = (state = initialState, action) => {
           sentence_id: null
         }
       };
-    case actionType.QUESTION_HIGHLIGHT_ACTIVE_TAB:
-      if (TabNames.length > action.payload.activeTabIdx) {
-        return {
-          ...state,
-          activeTabIdx: action.payload.activeTabIdx
-        };
-      } else {
-        return state;
-      }
+
     default:
       return state;
   }
 };
 
-export default questionHighlightReducer;
+export default answerHighlightReducer;

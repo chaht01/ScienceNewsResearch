@@ -34,6 +34,9 @@ export const types = {
   ),
   QUESTION_HIGHLIGHT_HOVER_LEAVE: typeStringCreator(
     "QUESTION_HIGHLIGHT_HOVER_LEAVE"
+  ),
+  QUESTION_HIGHLIGHT_ACTIVE_TAB: typeStringCreator(
+    "QUESTION_HIGHLIGHT_ACTIVE_TAB"
   )
 };
 
@@ -62,12 +65,15 @@ export const questionHighlightFetchFailure = error => {
 };
 
 // HIGHLIGHT MODE UI
-export const questionHighlightModeActivate = ({ article, question = -1 }) => {
+export const questionHighlightModeActivate = ({
+  article_id,
+  question = null
+}) => {
   return {
     type: types.QUESTION_HIGHLIGHT_MODE_ACTIVATE,
     payload: {
-      article_id: article,
-      question_id: question
+      article_id,
+      question
     }
   };
 };
@@ -120,20 +126,29 @@ export const questionHighlightSaveFailure = error => {
   };
 };
 
-export const questionHighlightHoverEnter = question_ids => {
+export const questionHighlightHoverEnter = sentence_id => {
   return {
     type: types.QUESTION_HIGHLIGHT_HOVER_ENTER,
     payload: {
-      question_ids
+      sentence_id
     }
   };
 };
 
-export const questionHighlightHoverLeave = question_ids => {
+export const questionHighlightHoverLeave = sentence_id => {
   return {
     type: types.QUESTION_HIGHLIGHT_HOVER_LEAVE,
     payload: {
-      question_ids
+      sentence_id
+    }
+  };
+};
+
+export const questionHighlightActiveTab = activeTabIdx => {
+  return {
+    type: types.QUESTION_HIGHLIGHT_ACTIVE_TAB,
+    payload: {
+      activeTabIdx
     }
   };
 };

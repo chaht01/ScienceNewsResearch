@@ -6,6 +6,7 @@ const StyledSuggestion = styled.ul`
   border-radius: 4px;
   padding: 0.8em 1em 0.8em 2em;
   color: #f1f1f5;
+  margin: 0;
 `;
 
 StyledSuggestion.Item = styled.li`

@@ -3,8 +3,7 @@ import { Button, Form, Input } from "semantic-ui-react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import Autosuggest from "react-autosuggest";
-import QuestionCRUDModal from "../../QuestionCRUDModal";
-import { takeMark, takeCreateRequest } from "../../../../Actions/take";
+import QuestionCRUDModal from "../../Organisms/QuestionCRUDModal";
 
 import "./style.css";
 
@@ -23,26 +22,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {
-    _markTake: (article_id, phase, question_id) =>
-      dispatch(takeMark(article_id, question_id, phase)),
-    _reqeustTake: (article_id, phase, question_id) =>
-      dispatch(takeCreateRequest(article_id, question_id, phase))
-  };
-};
-
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const {
-    article: { id: article_id },
-    page
-  } = stateProps;
-  const { _markTake, _reqeustTake } = dispatchProps;
-  return {
-    ...stateProps,
-    ...ownProps,
-    markTake: _markTake.bind(null, article_id, page),
-    reqeustTake: _reqeustTake.bind(null, article_id, page)
-  };
+  return {};
 };
 
 const QuestionFormView = ({
@@ -51,10 +31,7 @@ const QuestionFormView = ({
   typed,
   clearType,
   page,
-  questions,
   suggestions,
-  markTake,
-  reqeustTake,
   ...rest
 }) => {
   const onChange = event => {
@@ -81,8 +58,7 @@ const QuestionFormView = ({
 
 const QuestionForm = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(QuestionFormView);
 
 export default QuestionForm;

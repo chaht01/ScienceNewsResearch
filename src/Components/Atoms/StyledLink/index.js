@@ -3,12 +3,13 @@ import tinycolor from "tinycolor2";
 
 const theme_color = `#6b6ffb`;
 const StyledLink = styled.span`
-  color: #6b6ffb;
+  color: ${props => props.color || theme_color};
   cursor: pointer;
   &:hover {
-    color: ${tinycolor(theme_color)
-      .darken(10)
-      .toHexString()};
+    color: ${props =>
+      tinycolor(props.color || theme_color)
+        .darken(10)
+        .toHexString()};
     text-decoration: underline;
   }
 `;

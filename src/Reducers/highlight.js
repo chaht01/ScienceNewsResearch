@@ -15,7 +15,7 @@ const initialState = {
     error: null
   },
   hover: {
-    question_ids: []
+    sentence_id: null
   }
 };
 
@@ -121,7 +121,7 @@ const highlightReducer = (state = initialState, action) => {
         },
         hover: {
           ...state.hover,
-          question_ids: []
+          sentence_ids: []
         }
       };
     case actionType.HIGHLIGHT_MODE_UNDO:
@@ -181,11 +181,7 @@ const highlightReducer = (state = initialState, action) => {
         ...state,
         hover: {
           ...state.hover,
-          question_ids: state.hover.question_ids.concat(
-            action.payload.question_ids.filter(
-              q => state.hover.question_ids.indexOf(q) < 0
-            )
-          )
+          sentence_id: action.payload.sentence_id
         }
       };
     case actionType.HIGHLIGHT_HOVER_LEAVE:
@@ -193,9 +189,7 @@ const highlightReducer = (state = initialState, action) => {
         ...state,
         hover: {
           ...state.hover,
-          question_ids: state.hover.question_ids.filter(
-            q => action.payload.question_ids.indexOf(q) < 0
-          )
+          sentence_id: null
         }
       };
     case takeActionType.TAKE_DELETE_SUCCESS:
@@ -203,7 +197,7 @@ const highlightReducer = (state = initialState, action) => {
         ...state,
         hover: {
           ...state.hover,
-          question_ids: state.hover.question_ids.filter(
+          sentence_ids: state.hover.sentence_ids.filter(
             q => q !== action.payload.question
           )
         }

@@ -108,20 +108,20 @@ export const highlightHighlightSaveFailure = error => {
   };
 };
 
-export const highlightHighlightHoverEnter = question_ids => {
+export const highlightHighlightHoverEnter = sentence_id => {
   return {
     type: types.HIGHLIGHT_HOVER_ENTER,
     payload: {
-      question_ids
+      sentence_id
     }
   };
 };
 
-export const highlightHighlightHoverLeave = question_ids => {
+export const highlightHighlightHoverLeave = sentence_id => {
   return {
     type: types.HIGHLIGHT_HOVER_LEAVE,
     payload: {
-      question_ids
+      sentence_id
     }
   };
 };

@@ -3,13 +3,18 @@ import styled from "styled-components";
 import tinycolor from "tinycolor2";
 import { findIndex as _findIndex, flatten as _flatten } from "lodash";
 import { connect } from "react-redux";
-import PoolExample from "../QuesitonPool/PoolExample";
+import PoolExample from "../PoolExample";
 import { Button } from "semantic-ui-react";
 import {
   questionHighlightMark,
-  questionHighlightErase
+  questionHighlightErase,
+  questionHighlightHoverEnter,
+  questionHighlightHoverLeave
 } from "../../../Actions/questionHighlight";
 import { colors } from "../../Configs/var";
+import { CSSTransition } from "react-transition-group";
+import { PAGES } from "../../../Reducers/page";
+import "./style.css";
 
 const FAB = styled(Button)`
   position: sticky;
@@ -46,22 +51,22 @@ const StyledSentence = styled.span`
         border: 1px dashed #aaa;
         &:hover{
             background: ${
-              props.colors > 0
-                ? tinycolor(colors.green)
-                    .setAlpha(props.color * 1.1)
+              props.opacity > 0
+                ? tinycolor(props.highlightColor)
+                    .setAlpha(props.opacity * 2.0)
                     .toRgbString()
                 : "#e1e1e7"
             };
         }
     `} ${props =>
-    props.colors > 0 &&
+    props.opacity > 0 &&
     `
-        background: ${tinycolor(colors.green)
-          .setAlpha(props.color)
+        background: ${tinycolor(props.highlightColor)
+          .setAlpha(props.opacity)
           .toRgbString()};
         &:hover{
-          background: ${tinycolor(colors.green)
-            .setAlpha(props.color * 1.1)
+          background: ${tinycolor(props.highlightColor)
+            .setAlpha(1)
             .toRgbString()};
         }
     `}
@@ -72,7 +77,9 @@ const ArticleBody = ({
   content,
   highlightMode,
   highlightSentence,
-  hoverQuestionIds
+  onHoverEnter,
+  onHoverLeave,
+  highlightColor
 }) => {
   const conditionalHighlight = sentence => {
     if (highlightMode) {
@@ -111,7 +118,10 @@ const ArticleBody = ({
               key={sentence.id}
               hoverable={highlightMode}
               onClick={() => conditionalHighlight(sentence)}
-              colors={sentence.colors}
+              opacity={sentence.opacity}
+              onMouseEnter={() => onHoverEnter(sentence.id)}
+              onMouseLeave={() => onHoverLeave(sentence.id)}
+              highlightColor={highlightColor}
             >
               {sentence.text}
             </StyledSentence>
@@ -124,54 +134,64 @@ const ArticleBody = ({
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    highlights: state.questionHighlightReducer,
     folding: state.questionReducer.folding,
     article: state.articleReducer.data,
-    questions: state.questionReducer.data
+    user_detail: state.authReducer.signup.data,
+    page: state.pageReducer.data
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     markHighlight: sentence_id => dispatch(questionHighlightMark(sentence_id)),
-    eraseHighlight: sentence_id => dispatch(questionHighlightErase(sentence_id))
+    eraseHighlight: sentence_id =>
+      dispatch(questionHighlightErase(sentence_id)),
+    hoverEnter: sentence_id =>
+      dispatch(questionHighlightHoverEnter(sentence_id)),
+    hoverLeave: sentence_id =>
+      dispatch(questionHighlightHoverLeave(sentence_id))
   };
 };
 
 const ArticleView = ({
   // ownProps
-  page,
-  toggleHighlight,
-
-  // stateToProps
-  article: { title, sentences: content },
-  questions,
+  startHighlight,
+  highlightsAll, // [[]]
   highlights,
-  eraseHighlight,
-  markHighlight,
-  folding
+  highlightColor,
+  bodyVisible,
+  onEraseHighlight,
+  onMarkHighlight,
+  onHoverEnter,
+  onHoverLeave,
+  // stateToProps
+  page,
+  article: { title, sentences: content },
+  user_detail: { username },
+
+  fab
 }) => {
   const {
-    inProgress: {
-      data: highlightInProgress,
-      question_id,
-      active: highlightMode
-    },
-    hover: { question_ids: hoveredQuestionIds }
+    inProgress: { data: highlightInProgress, active: highlightMode }
   } = highlights;
 
   let targetSentences = {};
-
+  let totalDivider = 0;
   if (highlightMode) {
-    targetSentences = updateTargetSentence(highlightInProgress);
+    targetSentences = updateTargetSentence(
+      highlightInProgress.map(sentence_id => ({
+        [sentence_id]: highlightInProgress.length
+      }))
+    );
+    totalDivider = highlightInProgress.length;
   } else {
     targetSentences = updateTargetSentence(
       _flatten(
-        hoveredQuestionIds.map(qid => {
-          const fIdx = _findIndex(highlights.data, { id: qid });
-          if (fIdx > -1) {
-            return highlights.data[fIdx].refText;
-          }
+        highlightsAll.map(sentenceArr => {
+          totalDivider += sentenceArr.length;
+          return sentenceArr.map(sentence_id => ({
+            [sentence_id]: sentenceArr.length
+          }));
         })
       )
     );
@@ -181,56 +201,60 @@ const ArticleView = ({
     let targetSentences = {};
     content.forEach(sentence => (targetSentences[sentence.id] = 0));
 
-    sentenceDupIds.forEach(id => targetSentences[id]++);
+    sentenceDupIds.forEach(
+      id_cnt_pair =>
+        (targetSentences[Object.keys(id_cnt_pair)[0]] +=
+          id_cnt_pair[Object.keys(id_cnt_pair)[0]])
+    );
     return targetSentences;
   }
 
   const highlightedContent = content.map(sentence => ({
     ...sentence,
-    colors:
-      targetSentences[sentence.id] /
-      Object.values(targetSentences).reduce((a, b) => a + b)
+    opacity: targetSentences[sentence.id] / Math.max(1, totalDivider)
+    // Math.max(1, Object.values(targetSentences).reduce((a, b) => a + b))
   }));
 
   const highlightSentence = sentence => {
     // Only affect to local (cause it has `confirm` step)
     if (highlightInProgress.filter(s_id => s_id === sentence.id).length > 0) {
-      eraseHighlight(sentence.id);
+      onEraseHighlight(sentence.id);
     } else {
-      markHighlight(sentence.id);
+      onMarkHighlight(sentence.id);
     }
   };
 
   return (
     <StyledArticle>
       <h1>{title}</h1>
-      {page === 2 && (
+      {bodyVisible && (
         <React.Fragment>
           <ArticleBody
             content={highlightedContent}
             highlightMode={highlightMode}
             highlightSentence={highlightSentence}
-            hoveredQuestionsIds={hoveredQuestionIds}
+            onHoverEnter={onHoverEnter}
+            onHoverLeave={onHoverLeave}
+            highlightColor={highlightColor}
           />
-          {!highlightMode && (
-            <FAB
-              circular
-              positive
-              icon="plus"
-              size="huge"
-              onClick={toggleHighlight}
-            />
-          )}
+          {fab &&
+            !highlightMode && (
+              <FAB
+                circular
+                positive
+                icon="tasks"
+                size="huge"
+                onClick={startHighlight.bind(this, null)}
+              />
+            )}
         </React.Fragment>
       )}
-
-      {!folding &&
-        page === 1 && (
-          <React.Fragment>
-            <h4>Below you can see what questions others raised.</h4>
-            <PoolExample questions={questions} />
-          </React.Fragment>
-        )}
+      {page === PAGES.QUESTIONER_STEP2 && (
+        <React.Fragment>
+          <h4>Below you can see what questions others raised.</h4>
+          <PoolExample questions={[]} /> {/*TODO*/}
+        </React.Fragment>
+      )}
     </StyledArticle>
   );
 };

@@ -2,7 +2,9 @@ const types = {
   String: "string",
   Number: "number",
   Boolean: "boolean",
-  NullBoolean: "nullBoolean"
+  NullBoolean: "nullBoolean",
+  NullNumber: "nullNumber",
+  Array: "array"
 };
 
 class Mock {
@@ -40,6 +42,12 @@ class Mock {
           case types.NullBoolean:
             dummy[key] = null;
             break;
+          case types.NullNumber:
+            dummy[key] = null;
+            break;
+          case types.Array:
+            dummy[key] = [];
+            break;
           default:
             break;
         }
@@ -60,14 +68,17 @@ class Mock {
 }
 
 export const QuestionMock = new Mock({
+  article_id: types.Number,
   research_id: types.Number,
   text: types.String,
+  intention: types.String,
   owner: types.String,
-  created_phase: types.Number
-  // selectedBeforeReading: types.Boolean, // (Deprecated) ~> Take
-  // selectedAfterReading: types.Boolean, // (Deprecated) ~> Take
-  // foundBeforeReading: types.NullBoolean, // (Deprecated) ~> Response
-  // foundAfterReading: types.NullBoolean // (Deprecated) ~> Response
+  created_step: types.Number,
+  removed_step: types.Number,
+  refText: types.Array,
+  copied_from: types.NullNumber,
+  code1: types.String,
+  code2: types.String
 });
 
 export const SentenceMock = new Mock({
@@ -78,4 +89,21 @@ export const HighlightMock = new Mock({
   sentence_id: types.Number,
   question_id: types.Number,
   article_id: types.Number
+});
+
+export const ShownMock = new Mock({
+  question: types.Number,
+  user: types.String,
+  takes: types.Array
+});
+
+export const TakeMock = new Mock({
+  shown: types.Number,
+  taken: types.Boolean,
+  answerTexts: types.Array
+});
+
+export const AnswerTextMock = new Mock({
+  take: types.Number,
+  sentence: types.Number
 });

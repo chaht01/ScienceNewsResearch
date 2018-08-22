@@ -13,7 +13,7 @@ import { pick } from "lodash";
 function* nextPageAsync({ type, payload: { page, actionsBindParams } }) {
   try {
     yield all(actionsBindParams.map(fn => put(fn())));
-    yield put(pageNextSuccess());
+    yield put(pageNextSuccess(page));
   } catch (error) {
     yield put(pageNextFailure());
   }

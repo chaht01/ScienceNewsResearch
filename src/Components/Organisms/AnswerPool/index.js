@@ -1,131 +1,79 @@
 import React from "react";
 import { Button, Form, Input } from "semantic-ui-react";
 import styled from "styled-components";
-import Pool from "./Pool";
-import Todos from "./Todos";
-import SuggestionPreview from "./SuggestionPreview";
+import SuggestionPreview from "../SuggestionPreview";
 import { quesitonType, poolFoldingOpen } from "../../../Actions/question";
 import { connect } from "react-redux";
 import { colors } from "../../Configs/var";
-import QuestionForm from "./QuestionForm";
-const StyledAside = styled.aside`
-  width: 400px;
-  padding-left: 20px;
-  align-self: center;
-  height: 100%;
-`;
-const StyledSticky = styled.div`
-  position: fixed;
-  display: flex;
-  padding-top: 2em;
-  flex-direction: column;
-  width: 400px;
-  height: 100%;
-`;
-StyledSticky.Content = styled.div`
-  flex: 1;
-  max-height: 40vh;
-  overflow-y: auto;
-`;
-StyledSticky.Footer = styled.div`
-  justify-self: flex-end;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-  height: 50px;
-`;
-
-StyledSticky.Action = styled(Button)`
-  justify-self: flex-end;
-`;
-StyledSticky.ActionDescription = styled.span`
-  justify-self: flex-start;
-  color: ${colors.blue};
-  flex: 1;
-  padding-left: 2em;
-`;
+import { StyledAside, StyledSticky } from "../../Atoms/StyledAside";
+import AnswererQuestion from "../../Molecules/AnswererQuestion";
+import { shownFetchRequest, shownExpandToggle } from "../../../Actions/shown";
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    article: state.articleReducer.data,
     typed: state.questionReducer.typed,
-    folding: state.questionReducer.folding,
+    showns: state.shownReducer.data,
+    questions: state.questionReducer.data,
+    highlights: state.answerHighlightReducer,
     takeInProgress: state.takeReducer.inProgress.data
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    questionTyping: typed => dispatch(quesitonType(typed)),
-    spreadPool: () => dispatch(poolFoldingOpen())
+    fetchShowns: () => dispatch(shownFetchRequest()),
+    expandShown: shown_id => dispatch(shownExpandToggle(shown_id))
   };
 };
 
-const QuestionPoolView = ({
-  typed,
-  folding,
-  questionTyping,
-  spreadPool,
-  addQuestion,
-  page,
-  article: { title, sentences: content },
-  done,
-  highlightMode,
-  toggleHighlight,
-  highlightQuestionId,
-  highlightActive,
-  confirmTakes,
+class AnswerPoolCycle extends React.Component {
+  componentDidMount() {
+    const { fetchShowns } = this.props;
+    fetchShowns();
+  }
+  render() {
+    return <AnswerPoolView {...this.props} />;
+  }
+}
+
+const AnswerPoolView = ({
+  //ownProps
+  startHighlight,
   cancelHighlight,
-  confirmHighlight,
-  hoveredQuestionIds,
-  hoverEnter,
-  hoverLeave,
-  todos,
+  onConfirmHighlight,
+
+  //stateToProps
+  article: { title, sentences: content },
   questions,
-  todoTakeMap,
-  takeInProgress
+  highlights: {
+    inProgress: { active: highlightMode, shown: targetShown, data: sentenceIds }
+  },
+  showns,
+  fetchShowns,
+  expandShown
 }) => {
-  const handleTyped = value => {
-    questionTyping(value);
-  };
-  const clearType = () => {
-    questionTyping("");
-  };
-  const handleSubmit = e => {
-    addQuestion(typed, page);
-    clearType();
-    e.preventDefault();
-  };
-
-  const QidOfTakeInProgress = takeInProgress.map(t => t.question_id);
-
-  const doneValidation =
-    Object.keys(todoTakeMap)
-      .map(todo_id => todoTakeMap[todo_id]._latest_milestone.found)
-      .indexOf(null) < 0;
-
-  if (highlightMode) {
-    const targetQuestion = questions.filter(
-      q => q.id === highlightQuestionId
-    )[0];
-    const highlightedSentences = content
-      .filter(s => highlightActive.indexOf(s.id) >= 0)
-      .sort((a, b) => (a.order < b.order ? -1 : 1))
-      .map(s => s.text);
+  const highlightedSentences = content
+    .filter(sentence => sentenceIds.indexOf(sentence.id) > -1)
+    .map(sentence => sentence.text);
+  const latestShown = showns.map(shown => ({
+    ...shown,
+    _latest_take: shown.takes.reduce((a, b) => (b.id > a.id ? b : a))
+  }));
+  if (highlightMode && targetShown !== null) {
     return (
       <StyledAside>
         <StyledSticky>
-          <StyledSticky.Content>
-            <SuggestionPreview
-              targetQuestion={targetQuestion}
-              highlightedSentences={highlightedSentences}
-            />
-          </StyledSticky.Content>
+          <SuggestionPreview
+            targetQuestion={targetShown.question}
+            highlightedSentences={highlightedSentences}
+          />
+
           <StyledSticky.Footer>
             <Button onClick={cancelHighlight}>Cancel</Button>
             <Button
-              onClick={confirmHighlight}
               disabled={highlightedSentences.length === 0}
+              onClick={onConfirmHighlight}
             >
               Confirm
             </Button>
@@ -137,77 +85,31 @@ const QuestionPoolView = ({
     return (
       <StyledAside>
         <StyledSticky>
-          <StyledSticky.Content>
-            {page === 1 ? (
-              <Pool
-                questions={questions}
-                folding={folding}
-                spreadPool={spreadPool}
-              />
-            ) : page === 2 ? (
-              <Todos
-                content={content}
-                todos={todos}
-                todoTakeMap={todoTakeMap}
-                highlightMode={highlightMode}
-                toggleHighlight={toggleHighlight}
-                hoverEnter={hoverEnter}
-                hoverLeave={hoverLeave}
-                highlightQuestionId={highlightQuestionId}
-                highlightActive={highlightActive}
-                hoveredQuestionIds={hoveredQuestionIds}
-              />
-            ) : null}
-          </StyledSticky.Content>
-          <QuestionForm
-            handleSubmit={handleSubmit}
-            handleTyped={handleTyped}
-            typed={typed}
-            questions={questions}
-            clearType={clearType}
-          />
-          <StyledSticky.Footer>
-            {page === 1 ? (
-              <React.Fragment>
-                <StyledSticky.ActionDescription>
-                  {QidOfTakeInProgress.length} Questions Selected.{" "}
-                </StyledSticky.ActionDescription>
-                {folding ? (
-                  <StyledSticky.Action
-                    onClick={spreadPool}
-                    disabled={page.loading}
-                    loading={page.loading}
-                    content="Show others"
-                  />
-                ) : (
-                  <StyledSticky.Action
-                    onClick={confirmTakes}
-                    disabled={page.loading}
-                    loading={page.loading}
-                    content="Next"
-                  />
-                )}
-              </React.Fragment>
-            ) : page === 2 ? (
-              <React.Fragment>
-                <StyledSticky.Action
-                  onClick={done}
-                  disabled={page.loading || !doneValidation}
-                  loading={page.loading}
-                >
-                  Done
-                </StyledSticky.Action>
-              </React.Fragment>
-            ) : null}
-          </StyledSticky.Footer>
+          <h3>Choose questions you can answer</h3>
+          <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
+            <StyledSticky.ScrollablePane>
+              {latestShown.map(shown => (
+                <AnswererQuestion
+                  key={shown.question.id}
+                  question={shown.question}
+                  startHighlight={startHighlight.bind(this, shown)}
+                  answered={shown._latest_take.taken}
+                  expanded={shown._expanded}
+                  onExpandChange={() => expandShown(shown.id)}
+                />
+              ))}
+            </StyledSticky.ScrollablePane>
+          </StyledSticky.Scrollable>
+
+          <StyledSticky.Footer />
         </StyledSticky>
       </StyledAside>
     );
   }
 };
 
-const QuestionPool = connect(
+const AnswerPool = connect(
   mapStateToProps,
   mapDispatchToProps
-)(QuestionPoolView);
-export default QuestionPool;
+)(AnswerPoolCycle);
+export default AnswerPool;

@@ -8,7 +8,8 @@ import pageReducer from "./page";
 import poolExampleReducer from "./poolExample";
 import questionModalReducer from "./questionModal";
 import questionHighlightReducer from "./questionHighlight";
-
+import answerHighlightReducer from "./answerHighlight";
+import shownReducer from "./shown";
 const appReducer = combineReducers({
   articleReducer,
   questionReducer,
@@ -18,7 +19,9 @@ const appReducer = combineReducers({
   takeReducer,
   pageReducer,
   poolExampleReducer,
-  questionModalReducer
+  questionModalReducer,
+  answerHighlightReducer,
+  shownReducer
 });
 
 const rootReducer = (state, action) => {

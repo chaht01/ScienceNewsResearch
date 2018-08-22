@@ -23,10 +23,38 @@ function* fetchQuestionsAsync({
   payload: { research_id, created_phase }
 }) {
   try {
-    let results = yield call(Api.question.pool, research_id, created_phase);
-    const questions = results.map(q => ({
-      ...q
-    }));
+    const questions = [
+      QuestionMock.make({
+        owner: localStorage.getItem("username"),
+        created_step: 1,
+        refText: [1, 4, 7]
+      }),
+      QuestionMock.make({ created_step: 3, refText: [1, 4, 7] }),
+      QuestionMock.make({
+        owner: localStorage.getItem("username"),
+        created_step: 1
+      }),
+      QuestionMock.make({ created_step: 4, refText: [1, 12, 18] }),
+      QuestionMock.make({ created_step: 3, refText: [12, 18] }),
+      QuestionMock.make({
+        owner: localStorage.getItem("username"),
+        created_step: 1
+      }),
+      QuestionMock.make({
+        owner: localStorage.getItem("username"),
+        created_step: 1
+      }),
+      QuestionMock.make({ created_step: 4, refText: [1, 27] }),
+      QuestionMock.make({ created_step: 3, refText: [27, 28] }),
+      QuestionMock.make({
+        owner: localStorage.getItem("username"),
+        created_step: 1
+      })
+    ];
+    // let results = yield call(Api.question.pool, research_id, created_phase);
+    // const questions = results.map(q => ({
+    //   ...q
+    // }));
     yield put(questionPoolFetchSuccess(questions));
   } catch (error) {
     yield put(questionPoolFetchFailure(error));

@@ -1,8 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Menu, Segment } from "semantic-ui-react";
-import { StyledQuestionText } from "../../../Atoms/StyledQuestion";
-import { filterExampleQuestion } from "../../../../Actions/poolExample";
+import { filterExampleQuestion } from "../../../Actions/poolExample";
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -17,8 +16,6 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export const StyledPoolItem = StyledQuestionText.extend``;
-
 const PoolExampleView = ({
   filter_item,
   filteredBy,
@@ -26,7 +23,7 @@ const PoolExampleView = ({
   questions
 }) => {
   return (
-    <div>
+    <React.Fragment>
       <Menu attached="top" compact>
         {filter_item.map((name, idx) => (
           <Menu.Item
@@ -39,7 +36,7 @@ const PoolExampleView = ({
         ))}
       </Menu>
       <Segment attached="bottom">{filter_item[filteredBy]}</Segment>
-    </div>
+    </React.Fragment>
   );
 };
 

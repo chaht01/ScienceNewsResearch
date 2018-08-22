@@ -33,8 +33,9 @@ const questionReducer = (state = initialState, action) => {
         loading: false,
         data: action.payload.map(question => ({
           ...question,
-          loading: false, // For async purpose
-          error: false // For async purpose
+          _loading: false, // For async purpose
+          _error: false, // For async purpose
+          _expanded: false
           // Or other field you want
         })),
         error: null
@@ -66,7 +67,14 @@ const questionReducer = (state = initialState, action) => {
     case actionType.QUESTION_CREATE_SUCCESS:
       return {
         ...state,
-        data: state.data.slice().concat(action.payload),
+        data: state.data.slice().concat(
+          action.payload.map(q => ({
+            ...q,
+            _loading: false,
+            _error: null,
+            _expanded: false
+          }))
+        ),
         loading: false,
         error: null
       };
@@ -86,8 +94,8 @@ const questionReducer = (state = initialState, action) => {
           }
           return {
             ...question,
-            loading: true,
-            error: null
+            _loading: true,
+            _error: null
           };
         })
       };
@@ -101,8 +109,8 @@ const questionReducer = (state = initialState, action) => {
           return {
             ...question,
             ...action.payload,
-            loading: false,
-            error: null
+            _loading: false,
+            _error: null
           };
         })
       };
@@ -130,8 +138,8 @@ const questionReducer = (state = initialState, action) => {
           }
           return {
             ...question,
-            loading: true,
-            error: null
+            _loading: true,
+            _error: null
           };
         })
       };
@@ -149,9 +157,23 @@ const questionReducer = (state = initialState, action) => {
           }
           return {
             ...question,
-            loading: false,
-            error: action.payload
+            _loading: false,
+            _error: action.payload
           };
+        })
+      };
+    case actionType.QUESTION_EXPAND_TOGGLE:
+      return {
+        ...state,
+        data: state.data.map(q => {
+          if (q.id !== action.payload.question_id) {
+            return q;
+          } else {
+            return {
+              ...q,
+              _expanded: !q._expanded
+            };
+          }
         })
       };
 

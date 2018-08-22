@@ -19,7 +19,10 @@ import {
   watchTakeResponseUpdateAsync,
   watchFetchTakeSuggestionAsync
 } from "./take";
-
+import {
+  watchFetchShownsAsync,
+  watchAnswerHighlightOnShownAsync
+} from "./shown";
 export default function* rootSaga() {
   yield all([
     signinFlow(),
@@ -36,6 +39,8 @@ export default function* rootSaga() {
     watchDeleteTakeAsync(),
     watchHandleBundleTakeAsync(),
     watchTakeResponseUpdateAsync(),
-    watchFetchTakeSuggestionAsync()
+    watchFetchTakeSuggestionAsync(),
+    watchFetchShownsAsync(),
+    watchAnswerHighlightOnShownAsync()
   ]);
 }

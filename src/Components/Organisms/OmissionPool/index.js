@@ -1,26 +1,48 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { Button } from "../../../../node_modules/semantic-ui-react";
+import { Button, Tab } from "semantic-ui-react";
 import { StyledSegment } from "../../Atoms/StyledSegment";
 import { StyledAside, StyledSticky } from "../../Atoms/StyledAside";
 import Suggestion from "../../Molecules/Suggestion";
-import QuestionForm from "../../Organisms/QuesitonPool/QuestionForm";
-import { quesitonType } from "../../../Actions/question";
-import { questionHighlightModeUndo } from "../../../Actions/questionHighlight";
+import QuestionForm from "../../Molecules/QuestionForm";
+import {
+  quesitonType,
+  questionQuestionExpandToggle
+} from "../../../Actions/question";
+import {
+  questionHighlightModeUndo,
+  questionHighlightActiveTab
+} from "../../../Actions/questionHighlight";
+import QuestionerQuestion from "../../Molecules/QuestionerQuestion";
+import AnswererQuestion from "../../Molecules/AnswererQuestion";
+import { pageNextRequest } from "../../../Actions/page";
+import { PAGES } from "../../../Reducers/page";
+import QuestionCRUDModal from "../QuestionCRUDModal";
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    questions: state.questionReducer.data,
     highlights: state.questionHighlightReducer,
     article: state.articleReducer.data,
-    typed: state.questionReducer.typed
+    typed: state.questionReducer.typed,
+    user_detail: state.authReducer.signup.data,
+    page: state.pageReducer.data
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     questionTyping: typed => dispatch(quesitonType(typed)),
-    undoHighlightMode: () => dispatch(questionHighlightModeUndo())
+    undoHighlightMode: () => dispatch(questionHighlightModeUndo()),
+    activeTab: tabIdx => dispatch(questionHighlightActiveTab(tabIdx)),
+    toStep4: () => {
+      dispatch(questionHighlightActiveTab(1));
+      dispatch(pageNextRequest(PAGES.QUESTIONER_STEP4, []));
+    },
+    toAnswererIntro: () => dispatch(pageNextRequest(PAGES.ANSWERER_INTRO, [])),
+    expandQuestion: question_id =>
+      dispatch(questionQuestionExpandToggle(question_id))
   };
 };
 
@@ -28,21 +50,139 @@ const OmissionPoolSegment = StyledSegment.extend`
   margin-bottom: 1.5em;
   ${props => props.basis && `flex: ${props.basis};`};
 `;
-OmissionPoolSegment.Pane = StyledSegment.Pane.extend`
 
-`;
+const ConditionalQuestionTab = ({
+  page,
+  questions = [],
+  username,
+  highlights: {
+    inProgress: { active: highlightMode },
+    hover: { sentence_id: hoveredSentenceId },
+    activeTabIdx,
+    _tabNames
+  },
+  activeTab,
+  startHighlight,
+  expandQuestion
+}) => {
+  const conditionalPane = () => {
+    const questionMine = questions.filter(q => q.owner === username);
+    const questionOthers = questions.filter(q => q.owner !== username);
+    const defaultPanes = [
+      {
+        menuItem: _tabNames[0],
+        render: () => (
+          <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
+            <StyledSticky.ScrollablePane>
+              {questionMine.length === 0 && "You haven’t raised question yet."}
+              {hoveredSentenceId === null || highlightMode
+                ? questionMine.map(question => (
+                    <QuestionerQuestion
+                      key={question.id}
+                      question={question}
+                      expanded={question._expanded}
+                      onExpandChange={() => expandQuestion(question.id)}
+                      editable
+                      annotable
+                      reAnnotate={() => startHighlight(question)}
+                    />
+                  ))
+                : questionMine
+                    .filter(q => q.refText.indexOf(hoveredSentenceId) > -1)
+                    .map(question => (
+                      <QuestionerQuestion
+                        key={question.id}
+                        question={question}
+                        expanded={question._expanded}
+                        onExpandChange={() => expandQuestion(question.id)}
+                        editable
+                        annotable
+                        reAnnotate={() => startHighlight(question)}
+                      />
+                    ))}
+            </StyledSticky.ScrollablePane>
+          </StyledSticky.Scrollable>
+        )
+      }
+    ];
+    if (page === PAGES.QUESTIONER_STEP4) {
+      return defaultPanes.concat([
+        {
+          menuItem: _tabNames[1],
+          render: () => (
+            <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
+              <StyledSticky.ScrollablePane>
+                {questionOthers.length === 0 && "No raised question yet."}
+                {hoveredSentenceId === null || highlightMode
+                  ? questionOthers.map(question => (
+                      <QuestionerQuestion
+                        key={question.id}
+                        question={question}
+                        expanded={question._expanded}
+                        onExpandChange={() => expandQuestion(question.id)}
+                      />
+                    ))
+                  : questionOthers
+                      .filter(q => q.refText.indexOf(hoveredSentenceId) > -1)
+                      .map(question => (
+                        <QuestionerQuestion
+                          key={question.id}
+                          question={question}
+                          expanded={question._expanded}
+                          onExpandChange={() => expandQuestion(question.id)}
+                        />
+                      ))}
+              </StyledSticky.ScrollablePane>
+            </StyledSticky.Scrollable>
+          )
+        }
+      ]);
+    }
+    return defaultPanes;
+  };
+
+  const handleTabChange = (event, { activeIndex }) => {
+    activeTab(activeIndex);
+  };
+
+  return (
+    <Tab
+      menu={{ secondary: true, pointing: true }}
+      panes={conditionalPane()}
+      activeIndex={activeTabIdx}
+      onTabChange={handleTabChange}
+      style={{
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+        marginBottom: "2em"
+      }}
+    />
+  );
+};
 
 const OmissionPoolView = ({
   article: { title, sentences: content },
+  questions,
+  user_detail: { username },
   typed,
   questionTyping,
   addQuestion,
-  page = 2,
+  page,
   highlights,
-  undoHighlightMode
+  startHighlight,
+  undoHighlightMode,
+  activeTab,
+  toStep4,
+  toAnswererIntro,
+  expandQuestion
 }) => {
   const {
-    inProgress: { data: highlightInProgress, active: highlightMode }
+    inProgress: {
+      data: highlightInProgress,
+      active: highlightMode,
+      question: highlightTargetQuestion
+    }
   } = highlights;
   const highlightedSentences = highlightInProgress
     .map(sid => content.filter(s => s.id === sid)[0])
@@ -59,27 +199,59 @@ const OmissionPoolView = ({
     clearType();
     e.preventDefault();
   };
-  console.log(highlightedSentences);
+
+  const conditionalFooter = () => {
+    if (highlightMode) {
+      if (highlightTargetQuestion === null)
+        return (
+          <StyledSticky.Footer>
+            <StyledSticky.Action content="Prev" onClick={undoHighlightMode} />
+          </StyledSticky.Footer>
+        );
+      else return null;
+    } else {
+      if (page === PAGES.QUESTIONER_STEP3) {
+        return (
+          <StyledSticky.Footer>
+            <StyledSticky.Action
+              onClick={toStep4}
+              disabled={page.loading}
+              loading={page.loading}
+              content="Finish and see other's question"
+            />
+          </StyledSticky.Footer>
+        );
+      } else if (page === PAGES.QUESTIONER_STEP4) {
+        return (
+          <StyledSticky.Footer>
+            <StyledSticky.Action
+              onClick={toAnswererIntro}
+              disabled={page.loading}
+              loading={page.loading}
+              content="Done"
+            />
+          </StyledSticky.Footer>
+        );
+      }
+      return null;
+    }
+  };
   return (
     <StyledAside>
       <StyledSticky>
-        <OmissionPoolSegment basis={1}>
-          <StyledSegment.Header>Quesiton that you made.</StyledSegment.Header>
-          <StyledSegment.Pane>
-            You haven’t raised question yet.
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(k => <div>{k}</div>)}
-          </StyledSegment.Pane>
-        </OmissionPoolSegment>
-
         {highlightMode ? (
           <OmissionPoolSegment
-            basis={2}
+            basis={1.5}
             style={{
               display: "flex",
               flexDirection: "column"
             }}
           >
-            <StyledSegment.Header>Raise a question</StyledSegment.Header>
+            <StyledSegment.Header>
+              {highlightTargetQuestion === null
+                ? "Raise questions that this article DOES NOT ANSWER."
+                : "Reselect sentences or change question."}
+            </StyledSegment.Header>
             <StyledSegment.Pane
               style={{
                 display: "flex",
@@ -92,7 +264,7 @@ const OmissionPoolView = ({
               {highlightedSentences.length > 0 ? (
                 <Suggestion
                   items={highlightedSentences}
-                  style={{ flex: 1, overflow: "auto" }}
+                  style={{ flex: 1, overflow: "auto", marginBottom: 0 }}
                 />
               ) : (
                 <div
@@ -106,35 +278,48 @@ const OmissionPoolView = ({
                 </div>
               )}
             </StyledSegment.Pane>
-            <StyledSegment.Pane>
-              <div>2. Type in your question.</div>
-              <QuestionForm
-                handleSubmit={handleSubmit}
-                handleTyped={handleTyped}
-                typed={typed}
-                questions={[]}
-                clearType={clearType}
-                style={{ marginBottom: "1em" }}
-              />
-            </StyledSegment.Pane>
+            {highlightTargetQuestion === null ? (
+              <StyledSegment.Pane>
+                <div>2. Type in your question.</div>
+                <QuestionForm
+                  handleSubmit={handleSubmit}
+                  handleTyped={handleTyped}
+                  typed={typed}
+                  clearType={clearType}
+                />
+              </StyledSegment.Pane>
+            ) : (
+              <StyledSegment.Pane>
+                <Button.Group fluid basic>
+                  <Button
+                    compact
+                    content="Cancel"
+                    onClick={undoHighlightMode}
+                  />
+                  <Button compact positive content="Done" />
+                </Button.Group>
+              </StyledSegment.Pane>
+            )}
           </OmissionPoolSegment>
         ) : (
           <OmissionPoolSegment>
             <StyledSegment.Header>
-              Raise questions that this article does not answer. You can start
+              Raise questions that this article DOES NOT ANSWER. You can start
               by clicking{" "}
-              <Button circular positive icon="plus" size="mini" active />button.
+              <Button circular positive icon="tasks" size="mini" active />button.
             </StyledSegment.Header>
           </OmissionPoolSegment>
         )}
-
-        <StyledSticky.Footer>
-          {!highlightMode ? (
-            <StyledSticky.Action content="Finish and see other's question" />
-          ) : (
-            <StyledSticky.Action content="Prev" onClick={undoHighlightMode} />
-          )}
-        </StyledSticky.Footer>
+        <ConditionalQuestionTab
+          page={page}
+          username={username}
+          questions={questions}
+          highlights={highlights}
+          activeTab={activeTab}
+          startHighlight={startHighlight}
+          expandQuestion={expandQuestion}
+        />
+        {conditionalFooter()}
       </StyledSticky>
     </StyledAside>
   );

@@ -1,13 +1,19 @@
 import React from "react";
 import { Button, Form, Input } from "semantic-ui-react";
-import Pool from "./Pool";
-import SuggestionPreview from "./SuggestionPreview";
-import { quesitonType, poolFoldingOpen } from "../../../Actions/question";
+import SuggestionPreview from "../SuggestionPreview";
+import {
+  quesitonType,
+  poolFoldingOpen,
+  questionQuestionExpandToggle
+} from "../../../Actions/question";
 import { connect } from "react-redux";
-import QuestionForm from "./QuestionForm";
+import QuestionForm from "../../Molecules/QuestionForm";
 import { StyledAside, StyledSticky } from "../../Atoms/StyledAside";
 import styled from "styled-components";
 import { StyledSegment } from "../../Atoms/StyledSegment";
+import { pageNextRequest } from "../../../Actions/page";
+import { PAGES } from "../../../Reducers/page";
+import QuestionerQuestion from "../../Molecules/QuestionerQuestion";
 
 const PoolSegment = styled(StyledSegment)`
   margin-top: 1.5em;
@@ -16,40 +22,37 @@ const PoolSegment = styled(StyledSegment)`
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    questions: state.questionReducer.data,
     typed: state.questionReducer.typed,
-    folding: state.questionReducer.folding,
-    takeInProgress: state.takeReducer.inProgress.data
+    takeInProgress: state.takeReducer.inProgress.data,
+    user_detail: state.authReducer.signup.data,
+    page: state.pageReducer.data
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     questionTyping: typed => dispatch(quesitonType(typed)),
-    spreadPool: () => dispatch(poolFoldingOpen())
+    spreadPool: () => dispatch(poolFoldingOpen()),
+    toStep2: () => dispatch(pageNextRequest(PAGES.QUESTIONER_STEP2, [])),
+    toStep3: () => dispatch(pageNextRequest(PAGES.QUESTIONER_STEP3, [])),
+    expandQuestion: question_id =>
+      dispatch(questionQuestionExpandToggle(question_id))
   };
 };
 
 const QuestionPoolView = ({
-  typed,
-  folding,
-  questionTyping,
-  spreadPool,
+  //ownProps
   addQuestion,
+  //stateToProps
+  typed,
+  user_detail: { username },
+  questionTyping,
   page,
-  article: { title, sentences: content },
-  done,
-  highlightMode,
-  toggleHighlight,
-  highlightQuestionId,
-  highlightActive,
-  confirmTakes,
-  cancelHighlight,
-  confirmHighlight,
-  hoveredQuestionIds,
-  hoverEnter,
-  hoverLeave,
-
-  questions
+  questions,
+  toStep2,
+  toStep3,
+  expandQuestion
 }) => {
   const handleTyped = value => {
     questionTyping(value);
@@ -63,119 +66,88 @@ const QuestionPoolView = ({
     e.preventDefault();
   };
 
-  if (highlightMode) {
-    const targetQuestion = questions.filter(
-      q => q.id === highlightQuestionId
-    )[0];
-    const highlightedSentences = content
-      .filter(s => highlightActive.indexOf(s.id) >= 0)
-      .sort((a, b) => (a.order < b.order ? -1 : 1))
-      .map(s => s.text);
-    return (
-      <StyledAside>
-        <StyledSticky>
-          <StyledSticky.Content>
-            <SuggestionPreview
-              targetQuestion={targetQuestion}
-              highlightedSentences={highlightedSentences}
+  return (
+    <StyledAside>
+      <StyledSticky>
+        {page === PAGES.QUESTIONER_STEP1 && (
+          <PoolSegment>
+            <PoolSegment.Header>
+              Based on the title of news article, what do you expect to read
+              from the content?
+            </PoolSegment.Header>
+            <span>
+              (Please write a wh-question, starting with who, where, when, what,
+              why, how or so.)
+            </span>
+            <QuestionForm
+              handleSubmit={handleSubmit}
+              handleTyped={handleTyped}
+              typed={typed}
+              clearType={clearType}
+              style={{ marginBottom: "1em" }}
             />
-          </StyledSticky.Content>
-          <StyledSticky.Footer>
-            <Button onClick={cancelHighlight}>Cancel</Button>
-            <Button
-              onClick={confirmHighlight}
-              disabled={highlightedSentences.length === 0}
-            >
-              Confirm
-            </Button>
-          </StyledSticky.Footer>
-        </StyledSticky>
-      </StyledAside>
-    );
-  } else {
-    return (
-      <StyledAside>
-        <StyledSticky>
-          <h3>Questions that you made.</h3>
-          <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
-            <Pool questions={questions} />
-          </StyledSticky.Scrollable>
+          </PoolSegment>
+        )}
 
-          {folding && (
-            <PoolSegment>
-              <PoolSegment.Header>
-                Based on the title of news article, what do you expect to read
-                from the content?
-              </PoolSegment.Header>
-              <span>
-                (Please write a wh-question, starting with who, where, when,
-                what, why, how or so.)
-              </span>
-              <QuestionForm
-                handleSubmit={handleSubmit}
-                handleTyped={handleTyped}
-                typed={typed}
-                questions={questions}
-                clearType={clearType}
-                style={{ marginBottom: "1em" }}
-              />
-            </PoolSegment>
-          )}
-
-          {!folding && (
-            <PoolSegment>
-              <PoolSegment.Header>
-                After seeing others’ questions, what do you expect to read from
-                the content?
-              </PoolSegment.Header>
-              <span>
-                (Please write a wh-question, starting with who, where, when,
-                what, why, how or so.)
-              </span>
-              <QuestionForm
-                handleSubmit={handleSubmit}
-                handleTyped={handleTyped}
-                typed={typed}
-                questions={questions}
-                clearType={clearType}
-                style={{ marginBottom: "1em" }}
-              />
-            </PoolSegment>
-          )}
-          <StyledSticky.Footer>
-            {page === 1 ? (
-              <React.Fragment>
-                {folding ? (
-                  <StyledSticky.Action
-                    onClick={spreadPool}
-                    disabled={page.loading}
-                    loading={page.loading}
-                    content="I Can't think of question anymore"
-                  />
-                ) : (
-                  <StyledSticky.Action
-                    onClick={confirmTakes}
-                    disabled={page.loading}
-                    loading={page.loading}
-                    content="Next"
-                  />
-                )}
-              </React.Fragment>
-            ) : page === 2 ? (
-              <React.Fragment>
-                <StyledSticky.Action
-                  onClick={done}
-                  disabled={page.loading}
-                  loading={page.loading}
-                  content="Done"
+        {page === PAGES.QUESTIONER_STEP2 && (
+          <PoolSegment>
+            <PoolSegment.Header>
+              After seeing others’ questions, what do you expect to read from
+              the content?
+            </PoolSegment.Header>
+            <span>
+              (Please write a wh-question, starting with who, where, when, what,
+              why, how or so.)
+            </span>
+            <QuestionForm
+              handleSubmit={handleSubmit}
+              handleTyped={handleTyped}
+              typed={typed}
+              clearType={clearType}
+              style={{ marginBottom: "1em" }}
+            />
+          </PoolSegment>
+        )}
+        <h3>Questions that you made.</h3>
+        <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
+          <StyledSticky.ScrollablePane>
+            {questions
+              .filter(question => question.owner === username)
+              .map(question => (
+                <QuestionerQuestion
+                  key={question.id}
+                  question={question}
+                  editable
+                  expanded={question._expanded}
+                  onExpandChange={() => expandQuestion(question.id)}
                 />
-              </React.Fragment>
-            ) : null}
-          </StyledSticky.Footer>
-        </StyledSticky>
-      </StyledAside>
-    );
-  }
+              ))}
+          </StyledSticky.ScrollablePane>
+        </StyledSticky.Scrollable>
+
+        <StyledSticky.Footer>
+          <React.Fragment>
+            {page === PAGES.QUESTIONER_STEP1 && (
+              <StyledSticky.Action
+                onClick={toStep2}
+                disabled={page.loading}
+                loading={page.loading}
+                content="I Can't think of question anymore"
+              />
+            )}
+            {page === PAGES.QUESTIONER_STEP2 && (
+              <StyledSticky.Action
+                onClick={toStep3}
+                disabled={page.loading}
+                loading={page.loading}
+                content="Next"
+              />
+            )}
+          </React.Fragment>
+        </StyledSticky.Footer>
+      </StyledSticky>
+    </StyledAside>
+  );
 };
 
 const QuestionPool = connect(
