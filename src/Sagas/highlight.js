@@ -9,18 +9,10 @@ import {
   all
 } from "redux-saga/effects";
 import {
-  highlightHighlightDeleteFailure,
-  highlightHighlightDeleteSuccess,
   highlightHighlightFetchFailure,
   highlightHighlightFetchSuccess,
-  highlightHighlightCreateSuccess,
-  highlightHighlightCreateFailure,
-  highlightHighlightCreateRequest,
-  highlightHighlightDeleteRequest,
   highlightHighlightSaveFailure,
-  highlightHighlightSaveSuccess,
-  highlightHighlightUpdateFailure,
-  highlightHighlightUpdateSuccess
+  highlightHighlightSaveSuccess
 } from "../Actions/highlight";
 import { types } from "../Actions/highlight";
 import { HighlightMock } from "./mock";
@@ -52,41 +44,6 @@ function* fetchHighlightsAsync({ type, payload }) {
 
 export function* watchFetchHighlightsAsync() {
   yield takeLatest(types.HIGHLIGHT_FETCH_REQUEST, fetchHighlightsAsync);
-}
-
-function* createHighlightAsync({
-  type,
-  payload: { article_id, question_id, sentence_id }
-}) {
-  try {
-    yield call(delay, 100);
-    const highlight_created = yield HighlightMock.make({
-      article_id,
-      question_id,
-      sentence_id
-    });
-    yield put(highlightHighlightCreateSuccess(highlight_created));
-  } catch (error) {
-    yield put(highlightHighlightCreateFailure(error));
-  }
-}
-
-export function* watchCreateHighlightAsync() {
-  yield takeEvery(types.HIGHLIGHT_CREATE_REQUEST, createHighlightAsync);
-}
-
-function* deleteHighlightAsync({ type, payload }) {
-  try {
-    yield call(delay, 100); // Consume API
-    const highlight_deleted = yield payload;
-    yield put(highlightHighlightDeleteSuccess(highlight_deleted));
-  } catch (error) {
-    yield put(highlightHighlightDeleteFailure(error));
-  }
-}
-
-export function* watchDeleteHighlightAsync() {
-  yield takeEvery(types.HIGHLIGHT_DELETE_REQUEST, deleteHighlightAsync);
 }
 
 function* handleBundleHighlightAsync({

@@ -8,8 +8,6 @@ import {
   watchHandleQuestionAsync
 } from "./question";
 import {
-  watchCreateHighlightAsync,
-  watchDeleteHighlightAsync,
   watchFetchHighlightsAsync,
   watchHandleBundleHighlightAsync
 } from "./highlight";
@@ -21,7 +19,10 @@ import {
   watchTakeResponseUpdateAsync,
   watchFetchTakeSuggestionAsync
 } from "./take";
-
+import {
+  watchFetchShownsAsync,
+  watchAnswerHighlightOnShownAsync
+} from "./shown";
 export default function* rootSaga() {
   yield all([
     signinFlow(),
@@ -32,14 +33,14 @@ export default function* rootSaga() {
     watchFetchQuestionsAsync(),
     watchHandleQuestionAsync(),
     watchFetchHighlightsAsync(),
-    watchCreateHighlightAsync(),
-    watchDeleteHighlightAsync(),
     watchHandleBundleHighlightAsync(),
     watchFetchTakesAsync(),
     watchCreateTakeAsync(),
     watchDeleteTakeAsync(),
     watchHandleBundleTakeAsync(),
     watchTakeResponseUpdateAsync(),
-    watchFetchTakeSuggestionAsync()
+    watchFetchTakeSuggestionAsync(),
+    watchFetchShownsAsync(),
+    watchAnswerHighlightOnShownAsync()
   ]);
 }

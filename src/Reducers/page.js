@@ -1,10 +1,20 @@
 import { types as actionType } from "../Actions/page";
 
-const THRESHOLD = 2;
+export const PAGES = {
+  OVERALL: "OVERALL",
+  QUESTIONER_INTRO: "QUESTIONER_INTRO",
+  QUESTIONER_STEP1: "QUESTIONER_STEP1",
+  QUESTIONER_STEP2: "QUESTIONER_STEP2",
+  QUESTIONER_STEP3: "QUESTIONER_STEP3",
+  QUESTIONER_STEP4: "QUESTIONER_STEP4",
+  ANSWERER_INTRO: "ANSWERER_INTRO",
+  ANSWERER_STEP1: "ANSWERER_STEP1",
+  ANSWERER_STEP2: "ANSWERER_STEP2"
+};
 
 const initialState = {
   loading: false,
-  data: 0
+  data: PAGES.OVERALL
 };
 
 const pageReducer = (state = initialState, action) => {
@@ -18,7 +28,9 @@ const pageReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        data: Math.min(state.data + 1, THRESHOLD)
+        data: PAGES.hasOwnProperty(action.payload.page)
+          ? action.payload.page
+          : state.data
       };
     case actionType.PAGE_NEXT_FAILURE:
       return {

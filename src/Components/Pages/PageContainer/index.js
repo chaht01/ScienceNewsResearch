@@ -1,11 +1,12 @@
 import React from "react";
 import Intro from "../Intro";
-import QuestionSharing from "../QuestionSharing";
-import { Button } from "semantic-ui-react";
+import Questioner from "../Questioner";
+import Answerer from "../Answerer";
 import { connect } from "react-redux";
 import { Redirect, withRouter } from "react-router";
 import { pageNextRequest } from "../../../Actions/page";
-
+import { PAGES } from "../../../Reducers/page";
+import { Button } from "semantic-ui-react";
 const mapStateToProps = (state, ownProps) => {
   return {
     auth: state.authReducer,
@@ -15,16 +16,18 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    nextPage: (page, asyncParams) =>
-      dispatch(pageNextRequest(page, asyncParams))
+    startQuestionerStep: () =>
+      dispatch(pageNextRequest(PAGES.QUESTIONER_STEP1, [])),
+    startAnswererStep: () => dispatch(pageNextRequest(PAGES.ANSWERER_STEP1, []))
   };
 };
 
-const PageContainerView = ({ auth, page, nextPage }) => {
-  const pageStatus = {
-    nextPage,
-    page
-  };
+const PageContainerView = ({
+  auth,
+  page,
+  startQuestionerStep,
+  startAnswererStep
+}) => {
   if (
     auth.token.length === 0 ||
     window.localStorage.getItem("token") === null
@@ -33,10 +36,21 @@ const PageContainerView = ({ auth, page, nextPage }) => {
   }
   return (
     <React.Fragment>
-      {page.data === 0 ? (
-        <Intro {...pageStatus} />
-      ) : (
-        <QuestionSharing {...pageStatus} />
+      {page.data === PAGES.OVERALL && <Intro />}
+      {page.data === PAGES.QUESTIONER_INTRO && (
+        <Button onClick={startQuestionerStep} content="start" />
+      )}
+      {[
+        PAGES.QUESTIONER_STEP1,
+        PAGES.QUESTIONER_STEP2,
+        PAGES.QUESTIONER_STEP3,
+        PAGES.QUESTIONER_STEP4
+      ].indexOf(page.data) > -1 && <Questioner />}
+      {page.data === PAGES.ANSWERER_INTRO && (
+        <Button onClick={startAnswererStep} content="start" />
+      )}
+      {[PAGES.ANSWERER_STEP1, PAGES.ANSWERER_STEP2].indexOf(page.data) > -1 && (
+        <Answerer />
       )}
     </React.Fragment>
   );

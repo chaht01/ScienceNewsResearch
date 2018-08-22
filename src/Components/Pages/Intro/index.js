@@ -7,6 +7,8 @@ import { takeListFetchRequest } from "../../../Actions/take";
 import { highlightHighlightFetchRequest } from "../../../Actions/highlight";
 import { Button } from "semantic-ui-react";
 import styled from "styled-components";
+import { pageNextRequest } from "../../../Actions/page";
+import { PAGES } from "../../../Reducers/page";
 
 const StyledContainer = styled.div`
   padding-top: 3em;
@@ -20,15 +22,19 @@ const StyledIntro = styled.div`
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    user_detail: state.authReducer.signup.data
+    user_detail: state.authReducer.signup.data,
+    page: state.pageReducer.data
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    nextPage: asyncActions =>
+      dispatch(pageNextRequest(PAGES.QUESTIONER_INTRO, asyncActions))
+  };
 };
 
-const IntroView = ({ user_detail, nextPage, page }) => {
+const IntroView = ({ user_detail, page, nextPage }) => {
   const {
     id: user_id,
     profile: { article: article_id, research: research_id }
@@ -36,7 +42,7 @@ const IntroView = ({ user_detail, nextPage, page }) => {
   const { loading } = page;
 
   const create_phase_request = 1;
-  const nextPageAsync = nextPage.bind(null, 1, [
+  const toQuestionerIntro = nextPage.bind(this, [
     articleArticleFetchRequest.bind(null, article_id),
     questionPoolFetchRequest.bind(null, research_id, create_phase_request),
     takeListFetchRequest.bind(null, user_id)
@@ -45,7 +51,7 @@ const IntroView = ({ user_detail, nextPage, page }) => {
     <StyledIntro>
       <h1>Some Introduction</h1>
       <div>Hello article</div>
-      <Button onClick={nextPageAsync} loading={loading} disabled={loading}>
+      <Button onClick={toQuestionerIntro} loading={loading} disabled={loading}>
         Next
       </Button>
     </StyledIntro>

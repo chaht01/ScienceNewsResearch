@@ -5,14 +5,23 @@ import highlightReducer from "./highlight";
 import authReducer from "./auth";
 import takeReducer from "./take";
 import pageReducer from "./page";
-
+import poolExampleReducer from "./poolExample";
+import questionModalReducer from "./questionModal";
+import questionHighlightReducer from "./questionHighlight";
+import answerHighlightReducer from "./answerHighlight";
+import shownReducer from "./shown";
 const appReducer = combineReducers({
   articleReducer,
   questionReducer,
   highlightReducer,
+  questionHighlightReducer,
   authReducer,
   takeReducer,
-  pageReducer
+  pageReducer,
+  poolExampleReducer,
+  questionModalReducer,
+  answerHighlightReducer,
+  shownReducer
 });
 
 const rootReducer = (state, action) => {
