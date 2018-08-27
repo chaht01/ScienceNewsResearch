@@ -127,7 +127,6 @@ const questionModalReducer = (state = initialState, action) => {
         loading: true
       };
     case actionType.QUESTION_MODAL_CRUD_SUBMIT_SUCCESS:
-      state.openInstance.handleClose();
       return {
         ...state,
         loading: false

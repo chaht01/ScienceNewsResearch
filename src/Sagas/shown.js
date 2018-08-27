@@ -24,6 +24,7 @@ import { answerHighlightModeUndo } from "../Actions/answerHighlight";
 import { code1, codes_combined } from "../Sagas/code";
 
 function* fetchShownAsync({ type }) {
+  yield call(delay, 1000);
   try {
     const questions = [
       QuestionMock.make({
@@ -219,6 +220,7 @@ export function* watchFetchShownsAsync() {
 }
 
 function* createAnswerTextAsnyc({ type, payload: { take_id, sentencd_id } }) {
+  yield call(delay, 1000);
   const newAnswerText = yield AnswerTextMock.make({
     take: take_id,
     sentence: sentencd_id
@@ -231,6 +233,7 @@ function* answerHighlightOnShownAsync({
   payload: { shown_id, sentence_ids }
 }) {
   try {
+    yield call(delay, 1000);
     const newTake = yield TakeMock.make({ shown: shown_id, taken: true });
     const answerTexts = yield all(
       sentence_ids.map(sid =>

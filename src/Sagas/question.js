@@ -40,6 +40,7 @@ function* fetchQuestionsAsync({
   payload: { research_id, created_phase }
 }) {
   try {
+    yield call(delay, 1000);
     const questions = [
       QuestionMock.make({
         owner: localStorage.getItem("username"),
@@ -234,6 +235,7 @@ function* createQuestionAsync({
   payload: { text, phase: created_phase, research_id: research, article_id }
 }) {
   try {
+    yield call(delay, 1000);
     const question = yield call(Api.question.create, {
       text,
       created_phase,
@@ -260,7 +262,7 @@ export function* watchCreateQuestionsAsync() {
 
 function* updateQuestionAsync({ type, payload }) {
   try {
-    yield call(delay, 100); // Consume API
+    yield call(delay, 1000); // Consume API
     const question = yield payload;
     yield put(questionQuestionUpdateSuccess(question));
   } catch (error) {
@@ -270,7 +272,7 @@ function* updateQuestionAsync({ type, payload }) {
 
 function* deleteQuestionAsync({ type, payload }) {
   try {
-    yield call(delay, 100); // Consume API
+    yield call(delay, 1000); // Consume API
     const question = yield payload;
     yield put(questionQuestionDeleteSuccess(question));
   } catch (error) {
@@ -294,6 +296,7 @@ export function* watchHandleQuestionAsync() {
 
 function* questionModalInquiriesFetchAsync() {
   try {
+    yield call(delay, 1000);
     const inquires = yield [
       { id: 1, text: " hello world" },
       { id: 2, text: " hello world2" },
@@ -322,11 +325,13 @@ function* questionModalCRUDAsync({
     code_first_id,
     code_second_id,
     group_inquries,
+    openInstance,
     onSubmit
   }
 }) {
   try {
     let newQuestion;
+    yield call(delay, 1000);
     if (question_id !== -1) {
       newQuestion = yield QuestionMock.make({
         id: question_id,
@@ -359,6 +364,7 @@ function* questionModalCRUDAsync({
       yield put(quesitonType("")); //clear type
     }
     yield put(questionCRUDSubmitSuccess());
+    yield call(openInstance.handleClose);
     if (_isFunction(onSubmit)) {
       onSubmit(newQuestion);
     }
@@ -379,6 +385,7 @@ function* questionHighlightSaveAsync({
   payload: { question_id, sentence_ids }
 }) {
   try {
+    yield call(delay, 1000);
     yield put(questionHighlightSaveSuccess(question_id, sentence_ids));
   } catch (error) {
     yield put(questionHighlightSaveFailure(error));

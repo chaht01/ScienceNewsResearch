@@ -29,6 +29,7 @@ import { types } from "../Actions/take";
 
 function* fetchTakesAsync({ type, payload }) {
   try {
+    yield call(delay, 1000);
     let takes = yield call(Api.take.list, payload.user_id);
     let upToDateTakes = takes
       .reduce((acc, curr) => {
@@ -64,6 +65,7 @@ function* createTakeAsync({
   payload: { article_id, question_id, phase }
 }) {
   try {
+    yield call(delay, 1000);
     const take_created = yield call(
       Api.take.create,
       article_id,
@@ -82,6 +84,7 @@ export function* watchCreateTakeAsync() {
 
 function* deleteTakeAsync({ type, payload: { id, removed_phase } }) {
   try {
+    yield call(delay, 1000);
     const take_deleted = yield call(Api.take.release, id, removed_phase);
     yield put(takeDeleteSuccess(take_deleted));
   } catch (error) {
@@ -95,6 +98,7 @@ export function* watchDeleteTakeAsync() {
 
 function* handleBundleTakeAsync({ type, payload: { to_create, to_delete } }) {
   try {
+    yield call(delay, 1000);
     yield all(
       to_create.map(({ article_id, question_id, phase }) =>
         call(createTakeAsync, {
@@ -121,6 +125,7 @@ export function* watchHandleBundleTakeAsync() {
 
 function* takeResponseUpdateAsync({ type, payload: { id: take_id, found } }) {
   try {
+    yield call(delay, 1000);
     const renewed_milestone = yield call(Api.take.update, take_id, found);
     yield put(takeResponseUpdateSuccess(renewed_milestone));
   } catch (error) {
@@ -134,6 +139,7 @@ export function* watchTakeResponseUpdateAsync() {
 
 function* fetchTakeSuggestionAsync({ type, payload: { id: take_id } }) {
   try {
+    yield call(delay, 1000);
     const suggestion = yield call(Api.take.suggestion, take_id);
     yield put(takeSuggestionSuccess(suggestion));
   } catch (error) {

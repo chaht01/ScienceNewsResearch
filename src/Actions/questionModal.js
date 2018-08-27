@@ -141,6 +141,7 @@ export const questionCRUDSubmitRequest = (
   code_first_id,
   code_second_id,
   group_inquries,
+  openInstance,
   onSubmit
 ) => {
   return {
@@ -153,6 +154,7 @@ export const questionCRUDSubmitRequest = (
       code_first_id,
       code_second_id,
       group_inquries,
+      openInstance,
       onSubmit
     }
   };

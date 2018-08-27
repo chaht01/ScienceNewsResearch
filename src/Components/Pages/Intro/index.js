@@ -28,10 +28,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {
-    nextPage: asyncActions =>
-      dispatch(pageNextRequest(PAGES.QUESTIONER_INTRO, asyncActions))
-  };
+  return {};
 };
 
 const IntroView = ({ user_detail, page, nextPage }) => {
@@ -41,16 +38,10 @@ const IntroView = ({ user_detail, page, nextPage }) => {
   } = user_detail;
   const { loading } = page;
 
-  const create_phase_request = 1;
-  const toQuestionerIntro = nextPage.bind(this, [
-    articleArticleFetchRequest.bind(null, article_id),
-    questionPoolFetchRequest.bind(null, research_id, create_phase_request),
-    codeFetchRequest
-  ]);
   return (
     <StyledIntro>
       <h1>OVERALL INSTRUCTION</h1>
-      <Button onClick={toQuestionerIntro} loading={loading} disabled={loading}>
+      <Button onClick={nextPage} loading={loading} disabled={loading}>
         Next
       </Button>
     </StyledIntro>
