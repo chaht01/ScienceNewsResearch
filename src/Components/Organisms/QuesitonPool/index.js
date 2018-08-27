@@ -14,6 +14,10 @@ import { StyledSegment } from "../../Atoms/StyledSegment";
 import { pageNextRequest } from "../../../Actions/page";
 import { PAGES } from "../../../Reducers/page";
 import QuestionerQuestion from "../../Molecules/QuestionerQuestion";
+import {
+  questionModalOpen,
+  questionModalClose
+} from "../../../Actions/questionModal";
 
 const PoolSegment = styled(StyledSegment)`
   margin-top: 1.5em;
@@ -60,11 +64,6 @@ const QuestionPoolView = ({
   const clearType = () => {
     questionTyping("");
   };
-  const handleSubmit = e => {
-    addQuestion(typed, page);
-    clearType();
-    e.preventDefault();
-  };
 
   return (
     <StyledAside>
@@ -80,7 +79,6 @@ const QuestionPoolView = ({
               why, how or so.)
             </span>
             <QuestionForm
-              handleSubmit={handleSubmit}
               handleTyped={handleTyped}
               typed={typed}
               clearType={clearType}
@@ -100,7 +98,6 @@ const QuestionPoolView = ({
               why, how or so.)
             </span>
             <QuestionForm
-              handleSubmit={handleSubmit}
               handleTyped={handleTyped}
               typed={typed}
               clearType={clearType}

@@ -1,4 +1,5 @@
 import { types as actionType } from "../Actions/question";
+import { types as highlightType } from "../Actions/questionHighlight";
 
 const initialState = {
   loading: false,
@@ -67,14 +68,15 @@ const questionReducer = (state = initialState, action) => {
     case actionType.QUESTION_CREATE_SUCCESS:
       return {
         ...state,
-        data: state.data.slice().concat(
-          action.payload.map(q => ({
-            ...q,
+        data: [
+          ...state.data,
+          {
+            ...action.payload,
             _loading: false,
             _error: null,
             _expanded: false
-          }))
-        ),
+          }
+        ],
         loading: false,
         error: null
       };
@@ -172,6 +174,20 @@ const questionReducer = (state = initialState, action) => {
             return {
               ...q,
               _expanded: !q._expanded
+            };
+          }
+        })
+      };
+    case highlightType.QUESTION_HIGHLIGHT_SAVE_SUCCESS:
+      return {
+        ...state,
+        data: state.data.map(q => {
+          if (q.id !== action.payload.question_id) {
+            return q;
+          } else {
+            return {
+              ...q,
+              refText: action.payload.refText
             };
           }
         })

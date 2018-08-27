@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import { findIndex as _findIndex } from "lodash";
 import {
   Modal,
   Button,
@@ -14,11 +15,20 @@ import {
 import {
   questionModalTypeQuestion,
   questionModalTypeIntention,
-  questionModalChangeCode,
-  questionModalNext
+  questionModalNext,
+  questionModalChangeCodeFirst,
+  questionModalChangeCodeSecond,
+  questionModalFetchInquiriesRequest,
+  questionModalUpdateInquiry,
+  questionCRUDSubmit,
+  questionCRUDSubmitRequest,
+  questionModalClearInquries,
+  questionModalOpen,
+  questionModalClose
 } from "../../../Actions/questionModal";
 import { colors } from "../../Configs/var";
 import tinycolor from "tinycolor2";
+import { quesitonType } from "../../../Actions/question";
 
 const StyledStep3Header = styled.div`
   display: grid;
@@ -26,13 +36,13 @@ const StyledStep3Header = styled.div`
   align-items: stretch;
   margin-bottom: 1em;
 `;
-const StyledStep3List = styled.div`
+const StyledStep3List = styled(Form)`
   display: grid;
   grid-template-columns: 1fr repeat(4, 50px);
   align-items: stretch;
   margin-bottom: 1em;
 `;
-StyledStep3List.Question = styled.span`
+StyledStep3List.Question = styled(Form.Field)`
   align-self: center;
   padding: 0.4em 0.6em 0.4em 0.8em;
 `;
@@ -113,49 +123,97 @@ const StyledRadio = styled(Radio)`
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    phase: state.pageReducer.data,
     step: state.questionModalReducer.step,
     typed: state.questionModalReducer.typed,
     intention: state.questionModalReducer.intention,
     codes: state.questionModalReducer.codes,
-    codeIdx: state.questionModalReducer.codeIdx
+    code_first_id: state.questionModalReducer.code_first_id,
+    code_second_id: state.questionModalReducer.code_second_id,
+    group_inquries: state.questionModalReducer.group_inquries.data
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
+    saveModalInstance: modalInstance =>
+      dispatch(questionModalOpen(modalInstance)),
+    onCloseModal: () => dispatch(questionModalClose()),
     copyLegacy: legacy => {
-      const { typed, intention, code } = legacy;
+      const { typed, intention, code_first, code_second } = legacy;
       dispatch(questionModalTypeQuestion(typed));
       dispatch(questionModalTypeIntention(intention));
-      dispatch(questionModalChangeCode(code));
+      dispatch(questionModalChangeCodeFirst(code_first));
+      dispatch(questionModalChangeCodeSecond(code_second));
     },
     clearModal: () => {
       dispatch(questionModalTypeQuestion(""));
       dispatch(questionModalTypeIntention(""));
-      dispatch(questionModalChangeCode(null));
+      dispatch(questionModalChangeCodeFirst(-1));
+      dispatch(questionModalChangeCodeSecond(-1));
       dispatch(questionModalNext(0));
+      dispatch(questionModalClearInquries());
     },
     onTypeChange: typed => dispatch(questionModalTypeQuestion(typed)),
     onIntentionChange: typed => dispatch(questionModalTypeIntention(typed)),
-    onCodeChange: code => dispatch(questionModalChangeCode(code)),
-    nextStep: step => dispatch(questionModalNext(step))
+    onCodeFirstChange: code_id =>
+      dispatch(questionModalChangeCodeFirst(code_id)),
+    onCodeSecondChange: code_id =>
+      dispatch(questionModalChangeCodeSecond(code_id)),
+    nextStep: step => dispatch(questionModalNext(step)),
+    fetchInquiries: question_typed =>
+      dispatch(questionModalFetchInquiriesRequest(question_typed)),
+    updateInquiry: (inquiry_id, similarity) =>
+      dispatch(questionModalUpdateInquiry(inquiry_id, similarity)),
+    submitModal: (
+      phase,
+      question_id,
+      typed,
+      intention,
+      code_first_id,
+      code_second_id,
+      group_inquries,
+      onSubmit
+    ) =>
+      dispatch(
+        questionCRUDSubmitRequest(
+          phase,
+          question_id,
+          typed,
+          intention,
+          code_first_id,
+          code_second_id,
+          group_inquries,
+          onSubmit
+        )
+      )
   };
 };
 
 const QuestionCRUDModalView = ({
+  onSubmit,
+  onCloseModal,
+  saveModalInstance,
+  phase,
   question: legacy,
   trigger,
   step,
   typed,
   intention,
   codes,
-  codeIdx,
+  code_first_id,
+  code_second_id,
   copyLegacy,
   clearModal,
   onTypeChange,
   onIntentionChange,
-  onCodeChange,
-  nextStep: _nextStep
+  onCodeFirstChange,
+  onCodeSecondChange,
+  nextStep: _nextStep,
+  fetchInquiries: _fetchInquiries,
+  group_inquries,
+  updateInquiry,
+  submitModal
 }) => {
   const handleTypeChange = (e, { value }) => {
     if (e.target.name === "question") {
@@ -164,8 +222,15 @@ const QuestionCRUDModalView = ({
       onIntentionChange(value);
     }
   };
-  const handleCodeChange = (e, { value: code }) => {
-    onCodeChange({ code });
+  const handleCodeFirstChange = (e, { value: code_id }) => {
+    if (code_first_id !== code_id) {
+      onCodeFirstChange(code_id);
+      onCodeSecondChange(-1);
+    }
+  };
+
+  const handleCodeSecondChange = (e, { value: code_id }) => {
+    onCodeSecondChange(code_id);
   };
   let modalInstance = null;
 
@@ -175,15 +240,36 @@ const QuestionCRUDModalView = ({
     legacy.id === null ||
     legacy.id === undefined;
 
-  const nextStep = _nextStep.bind(this, step + 1);
+  const submitQuestionModal = () => {
+    submitModal(
+      phase,
+      legacy.id,
+      typed,
+      intention,
+      code_first_id,
+      code_second_id,
+      group_inquries,
+      onSubmit
+    );
+  };
+
+  const fetchInquiries = () => {
+    _fetchInquiries(typed);
+  };
+
+  const prevStep = _nextStep.bind(this, step - 1);
   return (
     <Modal
       trigger={trigger}
       ref={ref => (modalInstance = ref)}
       onMount={() => {
+        saveModalInstance(modalInstance);
         copyLegacy(legacy);
       }}
-      onUnmount={clearModal}
+      onUnmount={() => {
+        onCloseModal();
+        clearModal();
+      }}
       style={{ maxWidth: "500px" }}
     >
       {step === 0 ? (
@@ -195,6 +281,7 @@ const QuestionCRUDModalView = ({
               <Input
                 name="question"
                 value={typed}
+                placeholder="Type your question"
                 onChange={handleTypeChange}
               />
             </Form.Field>
@@ -203,6 +290,7 @@ const QuestionCRUDModalView = ({
               <Input
                 name="intention"
                 value={intention}
+                placeholder="intention of your question"
                 onChange={handleTypeChange}
               />
             </Form.Field>
@@ -213,47 +301,54 @@ const QuestionCRUDModalView = ({
           </h4>
           <StyledRadioForm>
             <StyledNameTag>Level 1</StyledNameTag>
-            {codes.map(({ label, code }, idx) => (
+            {codes.map(({ id: code_id, text: label }, idx) => (
               <Form.Field key={idx} style={{ marginBottom: 0 }}>
                 <StyledRadio
                   label={label}
                   name="question_code"
-                  value={code}
-                  checked={codes[codeIdx] && codes[codeIdx].code === code}
-                  onChange={handleCodeChange}
-                  warning={code === "warning"}
+                  value={code_id}
+                  checked={code_id === code_first_id}
+                  onChange={handleCodeFirstChange}
+                  warning={false} //todo
                 />
               </Form.Field>
             ))}
           </StyledRadioForm>
-          <StyledLevel2Form>
-            <StyledNameTag>Level 2</StyledNameTag>
-            <Dropdown
-              placeholder="Select Friend"
-              fluid
-              selection
-              options={[
-                { text: "1", value: 1 },
-                { text: "2", value: 2 },
-                { text: "3", value: 3 }
-              ]}
-            />
-            <Popup
-              key={"level2"}
-              trigger={
-                <Icon
-                  style={{
-                    alignSelf: "center",
-                    justifySelf: "center"
-                  }}
-                  name="question circle"
-                  color="grey"
+          {code_first_id !== -1 &&
+            codes.filter(code => code.id === code_first_id)[0].code_second
+              .length > 0 && (
+              <StyledLevel2Form>
+                <StyledNameTag>Level 2</StyledNameTag>
+                <Dropdown
+                  placeholder="Select Type"
+                  fluid
+                  selection
+                  onChange={handleCodeSecondChange}
+                  value={code_second_id}
+                  options={codes
+                    .filter(code => code.id === code_first_id)[0]
+                    .code_second.map(code => ({
+                      ...code,
+                      value: code.id
+                    }))}
                 />
-              }
-              header={"level2 header"}
-              content={`This is description about level2`}
-            />
-          </StyledLevel2Form>
+                <Popup
+                  key={"level2"}
+                  trigger={
+                    <Icon
+                      style={{
+                        alignSelf: "center",
+                        justifySelf: "center"
+                      }}
+                      name="question circle"
+                      color="grey"
+                    />
+                  }
+                  header={"level2 header"}
+                  content={`This is description about level2`}
+                />
+              </StyledLevel2Form>
+            )}
         </Modal.Content>
       ) : (
         <Modal.Content>
@@ -262,38 +357,46 @@ const QuestionCRUDModalView = ({
             <StyledNameTag>Your Question</StyledNameTag>
             <b style={{ textAlign: "center", alignSelf: "center" }}>{typed}</b>
           </StyledStep3Header>
-          {["hello world", "hell world", "new questions"].map(
-            (inquiry, idx) => (
-              <StyledStep3List>
-                <StyledStep3List.Question>{inquiry}</StyledStep3List.Question>
-                {[`same`, `similar`, `different`, `don't know`].map(
-                  (choice, idx) => (
-                    <Form.Field key={idx} style={{ marginBottom: 0 }}>
-                      <StyledRadio
-                        label={choice}
-                        name={`inquiry_${idx}`}
-                        value={choice}
-                      />
-                    </Form.Field>
-                  )
-                )}
-              </StyledStep3List>
-            )
-          )}
+          {group_inquries.map((inquiry, idx) => (
+            <StyledStep3List key={inquiry.id}>
+              <StyledStep3List.Question>
+                {inquiry.text}
+              </StyledStep3List.Question>
+
+              {[`same`, `similar`, `different`, `don't know`].map(
+                (choice, idx) => (
+                  <Form.Field style={{ marginBottom: 0 }}>
+                    <StyledRadio
+                      label={choice}
+                      name={`inquiry_${idx}`}
+                      value={idx}
+                      checked={inquiry.similarity === idx}
+                      onChange={(e, { value: similarity }) =>
+                        updateInquiry(inquiry.id, similarity)
+                      }
+                    />
+                  </Form.Field>
+                )
+              )}
+            </StyledStep3List>
+          ))}
         </Modal.Content>
       )}
 
       <Modal.Actions>
-        <Button
-          content="Cancel"
-          key="done"
-          onClick={() => modalInstance.handleClose()}
-        />
-        {step === 0 ? (
-          <Button content="Next" onClick={nextStep} />
-        ) : (
-          <Button positive content="Done" />
-        )}
+        <Button content="Cancel" onClick={() => modalInstance.handleClose()} />
+        {step === 0 &&
+          typed.length !== 0 &&
+          (is_create || typed !== legacy.typed) && (
+            <Button content="Next" onClick={fetchInquiries} />
+          )}
+        {step === 1 && <Button content="Prev" onClick={prevStep} />}
+        {(step === 1 || (!is_create && typed === legacy.typed)) &&
+          typed.length > 0 && (
+            <React.Fragment>
+              <Button positive content="Done" onClick={submitQuestionModal} />
+            </React.Fragment>
+          )}
       </Modal.Actions>
     </Modal>
   );

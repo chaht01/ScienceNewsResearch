@@ -15,7 +15,8 @@ const QuestionGrid = styled.div`
 
 const StyledQuestion = styled.div`
   background: #fff;
-  border: 1px solid #ddd;
+  border: ${props => (props.focused ? `2px` : `1px`)} solid
+    ${props => (props.focused ? colors.yellow : `#ddd`)};
   border-radius: 4px;
   padding: 0.6em 1em ${props => (props.expanded ? "0.6em" : "0.4em")};
   transition: all 0.2s;
@@ -98,22 +99,23 @@ const QuestionerQuestion = ({
   annotable,
   reAnnotate,
   expanded,
-  onExpandChange
+  onExpandChange,
+  focused
 }) => {
   if (question === undefined) {
     return <StyledQuestion>loading...</StyledQuestion>;
   }
-  const { id, text, intention, code1, code2 } = question;
+  const { id, text, intention, code_first, code_second } = question;
   return (
-    <StyledQuestion expanded={expanded}>
+    <StyledQuestion expanded={expanded} focused={focused}>
       <QuestionGrid>
         <StyledQuestion.Text>{text}</StyledQuestion.Text>
       </QuestionGrid>
 
       <QuestionGrid>
         <StyledLabelGroup>
-          <StyledLabel>{code1}</StyledLabel>
-          <StyledLabel>{code2}</StyledLabel>
+          <StyledLabel>{code_first.text}</StyledLabel>
+          {code_second && <StyledLabel>{code_second.text}</StyledLabel>}
         </StyledLabelGroup>
         <StyledLink
           color={colors.gray_font}
@@ -125,13 +127,7 @@ const QuestionerQuestion = ({
       </QuestionGrid>
       {expanded && (
         <React.Fragment>
-          <StyledQuestion.Intention>
-            {intention}
-            {intention}
-            {intention}
-            {intention}
-            {intention}
-          </StyledQuestion.Intention>
+          <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
           {(editable || annotable) && (
             <Button.Group fluid basic>
               {annotable && (
@@ -141,11 +137,10 @@ const QuestionerQuestion = ({
                 <React.Fragment>
                   <QuestionCRUDModal
                     question={{
+                      ...question,
                       typed: text,
-                      intention,
-                      code1,
-                      code2,
-                      id
+                      code_first: code_first.id,
+                      code_second: code_second === null ? -1 : code_second.id
                     }}
                     trigger={<Button compact icon="edit" />}
                   />

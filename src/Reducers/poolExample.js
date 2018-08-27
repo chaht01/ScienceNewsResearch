@@ -1,8 +1,8 @@
 import { types as actionType } from "../Actions/poolExample";
-import { question_code } from "../config/var/question";
+import { types as codeActionType } from "../Actions/code";
 
 const initialState = {
-  items: question_code,
+  items: [],
   data: {
     selected: 0
   }
@@ -17,6 +17,11 @@ const poolExampleReducer = (state = initialState, action) => {
           ...state,
           selected: action.payload.idx
         }
+      };
+    case codeActionType.CODE_FETCH_SUCCESS:
+      return {
+        ...state,
+        items: action.payload.map(code => code.text)
       };
     default:
       return state;

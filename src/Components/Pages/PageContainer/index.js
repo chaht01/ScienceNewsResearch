@@ -38,7 +38,10 @@ const PageContainerView = ({
     <React.Fragment>
       {page.data === PAGES.OVERALL && <Intro />}
       {page.data === PAGES.QUESTIONER_INTRO && (
-        <Button onClick={startQuestionerStep} content="start" />
+        <div>
+          <h1>QUESTION PART INSTURCTION</h1>
+          <Button onClick={startQuestionerStep} content="start" />
+        </div>
       )}
       {[
         PAGES.QUESTIONER_STEP1,
@@ -47,7 +50,10 @@ const PageContainerView = ({
         PAGES.QUESTIONER_STEP4
       ].indexOf(page.data) > -1 && <Questioner />}
       {page.data === PAGES.ANSWERER_INTRO && (
-        <Button onClick={startAnswererStep} content="start" />
+        <div>
+          <h1>ANSWER PART INSTURCTION</h1>
+          <Button onClick={startAnswererStep} content="start" />
+        </div>
       )}
       {[PAGES.ANSWERER_STEP1, PAGES.ANSWERER_STEP2].indexOf(page.data) > -1 && (
         <Answerer />
