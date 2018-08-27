@@ -130,7 +130,8 @@ const mapStateToProps = (state, ownProps) => {
     codes: state.questionModalReducer.codes,
     code_first_id: state.questionModalReducer.code_first_id,
     code_second_id: state.questionModalReducer.code_second_id,
-    group_inquries: state.questionModalReducer.group_inquries.data
+    group_inquries: state.questionModalReducer.group_inquries.data,
+    openInstance: state.questionModalReducer.openInstance
   };
 };
 
@@ -173,6 +174,7 @@ const mapDispatchToProps = dispatch => {
       code_first_id,
       code_second_id,
       group_inquries,
+      openInstance,
       onSubmit
     ) =>
       dispatch(
@@ -184,6 +186,7 @@ const mapDispatchToProps = dispatch => {
           code_first_id,
           code_second_id,
           group_inquries,
+          openInstance,
           onSubmit
         )
       )
@@ -193,6 +196,7 @@ const mapDispatchToProps = dispatch => {
 const QuestionCRUDModalView = ({
   onSubmit,
   onCloseModal,
+  openInstance,
   saveModalInstance,
   phase,
   question: legacy,
@@ -232,7 +236,6 @@ const QuestionCRUDModalView = ({
   const handleCodeSecondChange = (e, { value: code_id }) => {
     onCodeSecondChange(code_id);
   };
-  let modalInstance = null;
 
   const is_create =
     legacy === null ||
@@ -249,9 +252,11 @@ const QuestionCRUDModalView = ({
       code_first_id,
       code_second_id,
       group_inquries,
+      openInstance,
       onSubmit
     );
   };
+  let modalInstance = null;
 
   const fetchInquiries = () => {
     _fetchInquiries(typed);

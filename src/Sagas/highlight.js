@@ -32,7 +32,7 @@ const remote_highlights = [
 
 function* fetchHighlightsAsync({ type, payload }) {
   try {
-    yield call(delay, 100);
+    yield call(delay, 1000);
     const highlights = yield remote_highlights.filter(
       h => h.article_id === payload.article_id
     );
@@ -51,6 +51,7 @@ function* handleBundleHighlightAsync({
   payload: { id, found, sentences }
 }) {
   try {
+    yield call(delay, 1000);
     const milestone = yield call(Api.take.highlight, id, found, sentences);
     yield put(highlightHighlightSaveSuccess(milestone));
   } catch (error) {

@@ -77,6 +77,7 @@ const remote_articles = [
 
 function* fetchArticleAsync({ type, payload }) {
   try {
+    yield call(delay, 1000);
     const article_meta = yield call(Api.article.meta, payload.id);
     const sentences = yield all(
       article_meta.sentences.map(sentence_id =>

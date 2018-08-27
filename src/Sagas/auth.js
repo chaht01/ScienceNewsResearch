@@ -23,6 +23,7 @@ import Api from "../config/Api";
 
 export function* signup(username, password, research_id) {
   try {
+    yield call(delay, 1000);
     const user_detail = yield call(
       Api.authorize.signup,
       username,
@@ -38,6 +39,7 @@ export function* signup(username, password, research_id) {
 
 export function* signin(username, password) {
   try {
+    yield call(delay, 1000);
     const token = yield call(Api.authorize.auth, username, password);
     yield call(Api.storeItem, { token, username });
     const user_detail = yield call(Api.authorize.user, username);

@@ -7,8 +7,12 @@ import { Redirect, withRouter } from "react-router";
 import { pageNextRequest } from "../../../Actions/page";
 import { PAGES } from "../../../Reducers/page";
 import { Button } from "semantic-ui-react";
+import { articleArticleFetchRequest } from "../../../Actions/article";
+import { questionPoolFetchRequest } from "../../../Actions/question";
+import { codeFetchRequest } from "../../../Actions/code";
 const mapStateToProps = (state, ownProps) => {
   return {
+    user_detail: state.authReducer.signup.data,
     auth: state.authReducer,
     page: state.pageReducer
   };
@@ -16,15 +20,52 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    startQuestionerStep: () =>
-      dispatch(pageNextRequest(PAGES.QUESTIONER_STEP1, [])),
-    startAnswererStep: () => dispatch(pageNextRequest(PAGES.ANSWERER_STEP1, []))
+    nextPage: (page, asyncActions) =>
+      dispatch(pageNextRequest(page, asyncActions))
+  };
+};
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { nextPage } = dispatchProps;
+  const create_phase_request = 1;
+
+  let props = {
+    ...stateProps,
+    ...ownProps
+  };
+
+  if (stateProps.user_detail !== null) {
+    const {
+      id: user_id,
+      profile: { article: article_id, research: research_id }
+    } = stateProps.user_detail;
+    props = {
+      ...props,
+      startQuestionerStep: () =>
+        nextPage(PAGES.QUESTIONER_STEP1, [
+          articleArticleFetchRequest.bind(null, article_id),
+          questionPoolFetchRequest.bind(
+            null,
+            research_id,
+            create_phase_request
+          ),
+          codeFetchRequest
+        ])
+    };
+  }
+  return {
+    ...props,
+    ...{
+      startQuestionerIntro: () => nextPage(PAGES.QUESTIONER_INTRO, []),
+      startAnswererStep: () => nextPage(PAGES.ANSWERER_STEP1, [])
+    }
   };
 };
 
 const PageContainerView = ({
   auth,
   page,
+  startQuestionerIntro,
   startQuestionerStep,
   startAnswererStep
 }) => {
@@ -36,7 +77,7 @@ const PageContainerView = ({
   }
   return (
     <React.Fragment>
-      {page.data === PAGES.OVERALL && <Intro />}
+      {page.data === PAGES.OVERALL && <Intro nextPage={startQuestionerIntro} />}
       {page.data === PAGES.QUESTIONER_INTRO && (
         <div>
           <h1>QUESTION PART INSTURCTION</h1>
@@ -65,7 +106,8 @@ const PageContainerView = ({
 const PageContainer = withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    mergeProps
   )(PageContainerView)
 );
 export default PageContainer;
