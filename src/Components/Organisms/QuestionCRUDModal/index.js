@@ -124,13 +124,14 @@ const StyledRadio = styled(Radio)`
 const mapStateToProps = (state, ownProps) => {
   return {
     phase: state.pageReducer.data,
+    submitLoading: state.questionModalReducer.loading,
     step: state.questionModalReducer.step,
     typed: state.questionModalReducer.typed,
     intention: state.questionModalReducer.intention,
     codes: state.questionModalReducer.codes,
     code_first_id: state.questionModalReducer.code_first_id,
     code_second_id: state.questionModalReducer.code_second_id,
-    group_inquries: state.questionModalReducer.group_inquries.data,
+    _group_inquries: state.questionModalReducer.group_inquries,
     openInstance: state.questionModalReducer.openInstance
   };
 };
@@ -195,6 +196,7 @@ const mapDispatchToProps = dispatch => {
 
 const QuestionCRUDModalView = ({
   onSubmit,
+  submitLoading,
   onCloseModal,
   openInstance,
   saveModalInstance,
@@ -215,7 +217,7 @@ const QuestionCRUDModalView = ({
   onCodeSecondChange,
   nextStep: _nextStep,
   fetchInquiries: _fetchInquiries,
-  group_inquries,
+  _group_inquries: { data: group_inquries, loading: group_inquries_loading },
   updateInquiry,
   submitModal
 }) => {
@@ -261,6 +263,20 @@ const QuestionCRUDModalView = ({
   const fetchInquiries = () => {
     _fetchInquiries(typed);
   };
+
+  const step1Disabled =
+    group_inquries_loading ||
+    typed.trim().length === 0 ||
+    intention.trim().length === 0 ||
+    code_first_id === -1 ||
+    (codes.filter(code => code.id === code_first_id)[0].code_second.length !==
+      0 &&
+      code_second_id === -1);
+
+  const step2Disabled =
+    step1Disabled ||
+    submitLoading ||
+    group_inquries.filter(inquire => inquire.similarity === null).length > 0;
 
   const prevStep = _nextStep.bind(this, step - 1);
   return (
@@ -389,17 +405,34 @@ const QuestionCRUDModalView = ({
       )}
 
       <Modal.Actions>
-        <Button content="Cancel" onClick={() => modalInstance.handleClose()} />
+        <Button
+          content="Cancel"
+          onClick={() => modalInstance.handleClose()}
+          disabled={group_inquries_loading || submitLoading}
+        />
         {step === 0 &&
           typed.length !== 0 &&
           (is_create || typed !== legacy.typed) && (
-            <Button content="Next" onClick={fetchInquiries} />
+            <Button
+              content="Next"
+              onClick={fetchInquiries}
+              loading={group_inquries_loading}
+              disabled={step1Disabled}
+            />
           )}
-        {step === 1 && <Button content="Prev" onClick={prevStep} />}
+        {step === 1 && (
+          <Button content="Prev" onClick={prevStep} disabled={submitLoading} />
+        )}
         {(step === 1 || (!is_create && typed === legacy.typed)) &&
           typed.length > 0 && (
             <React.Fragment>
-              <Button positive content="Done" onClick={submitQuestionModal} />
+              <Button
+                positive
+                content="Done"
+                onClick={submitQuestionModal}
+                loading={submitLoading}
+                disabled={step2Disabled}
+              />
             </React.Fragment>
           )}
       </Modal.Actions>

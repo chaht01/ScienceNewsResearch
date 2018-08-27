@@ -41,7 +41,7 @@ const IntroView = ({ user_detail, page, nextPage }) => {
   return (
     <StyledIntro>
       <h1>OVERALL INSTRUCTION</h1>
-      <Button onClick={nextPage} loading={loading} disabled={loading}>
+      <Button onClick={nextPage} loading={loading} disabled={loading} positive>
         Next
       </Button>
     </StyledIntro>

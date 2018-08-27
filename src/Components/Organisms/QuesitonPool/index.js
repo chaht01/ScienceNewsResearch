@@ -129,6 +129,7 @@ const QuestionPoolView = ({
                 onClick={toStep2}
                 disabled={page.loading}
                 loading={page.loading}
+                positive
                 content="I Can't think of question anymore"
               />
             )}
@@ -137,6 +138,7 @@ const QuestionPoolView = ({
                 onClick={toStep3}
                 disabled={page.loading}
                 loading={page.loading}
+                positive
                 content="Next"
               />
             )}

@@ -3,7 +3,8 @@ import { types as actionType } from "../Actions/shown";
 const initialState = {
   loading: false,
   error: null,
-  data: []
+  data: [],
+  call_cnt: 0
 };
 
 const shownReducer = (state = initialState, action) => {
@@ -27,7 +28,8 @@ const shownReducer = (state = initialState, action) => {
             _error: null,
             _expanded: false
           }))
-        ]
+        ],
+        call_cnt: state.call_cnt + 1
       };
     case actionType.SHOWN_FETCH_FAILURE:
       return {
@@ -35,7 +37,7 @@ const shownReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload
       };
-    case actionType.SHOWN_ANSWER_HIGHLIGHTS_REQUEST:
+    case actionType.SHOWN_ANSWER_HIGHLIGHT_REQEUST:
     case actionType.SHOWN_ANSWER_DELETE_REQUEST:
       return {
         ...state,
@@ -43,6 +45,7 @@ const shownReducer = (state = initialState, action) => {
           if (shown.id !== action.payload.shown_id) {
             return shown;
           } else {
+            console.log(shown);
             return {
               ...shown,
               _loading: true
@@ -50,7 +53,7 @@ const shownReducer = (state = initialState, action) => {
           }
         })
       };
-    case actionType.SHOWN_ANSWER_HIGHLIGHTS_SUCCESS:
+    case actionType.SHOWN_ANSWER_HIGHLIGHT_SUCCESS:
     case actionType.SHOWN_ANSWER_DELETE_SUCCESS:
       return {
         ...state,
@@ -66,7 +69,7 @@ const shownReducer = (state = initialState, action) => {
           }
         })
       };
-    case actionType.SHOWN_ANSWER_HIGHLIGHTS_FAILURE:
+    case actionType.SHOWN_ANSWER_HIGHLIGHT_FAILURE:
     case actionType.SHOWN_ANSWER_DELETE_FAILURE:
       return {
         ...state,

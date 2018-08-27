@@ -253,7 +253,7 @@ function* answerHighlightOnShownAsync({
 
 export function* watchAnswerHighlightOnShownAsync() {
   yield takeLatest(
-    types.SHOWN_ANSWER_HIGHLIGHTS_REQEUST,
+    types.SHOWN_ANSWER_HIGHLIGHT_REQEUST,
     answerHighlightOnShownAsync
   );
 }

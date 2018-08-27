@@ -13,7 +13,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     article: state.articleReducer.data,
     typed: state.questionReducer.typed,
-    showns: state.shownReducer.data,
+    _showns: state.shownReducer,
     questions: state.questionReducer.data,
     highlights: state.answerHighlightReducer,
     takeInProgress: state.takeReducer.inProgress.data
@@ -27,16 +27,6 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-class AnswerPoolCycle extends React.Component {
-  componentDidMount() {
-    const { fetchShowns } = this.props;
-    fetchShowns();
-  }
-  render() {
-    return <AnswerPoolView {...this.props} />;
-  }
-}
-
 const AnswerPoolView = ({
   //ownProps
   startHighlight,
@@ -49,7 +39,7 @@ const AnswerPoolView = ({
   highlights: {
     inProgress: { active: highlightMode, shown: targetShown, data: sentenceIds }
   },
-  showns,
+  _showns: { data: showns, loading: shownsLoading },
   fetchShowns,
   expandShown
 }) => {
@@ -70,13 +60,26 @@ const AnswerPoolView = ({
           />
 
           <StyledSticky.Footer>
-            <Button onClick={cancelHighlight}>Cancel</Button>
             <Button
-              disabled={highlightedSentences.length === 0}
-              onClick={onConfirmHighlight}
+              onClick={cancelHighlight}
+              disabled={
+                showns.filter(shown => shown.id === targetShown.id)[0]._loading
+              }
             >
-              Confirm
+              Cancel
             </Button>
+            <Button
+              disabled={
+                highlightedSentences.length === 0 ||
+                showns.filter(shown => shown.id === targetShown.id)[0]._loading
+              }
+              loading={
+                showns.filter(shown => shown.id === targetShown.id)[0]._loading
+              }
+              onClick={onConfirmHighlight}
+              positive
+              content="Confrim"
+            />
           </StyledSticky.Footer>
         </StyledSticky>
       </StyledAside>
@@ -98,6 +101,13 @@ const AnswerPoolView = ({
                   onExpandChange={() => expandShown(shown.id)}
                 />
               ))}
+              <Button
+                content="Fetch more"
+                fluid
+                onClick={fetchShowns}
+                disabled={shownsLoading}
+                loading={shownsLoading}
+              />
             </StyledSticky.ScrollablePane>
           </StyledSticky.Scrollable>
 
@@ -111,5 +121,5 @@ const AnswerPoolView = ({
 const AnswerPool = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AnswerPoolCycle);
+)(AnswerPoolView);
 export default AnswerPool;

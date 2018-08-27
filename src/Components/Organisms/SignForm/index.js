@@ -160,7 +160,13 @@ export class SignFormView extends React.Component {
             onChange={this.handleResearchType}
           />
         </Form.Field>
-        <Button type="submit" fluid>
+        <Button
+          type="submit"
+          fluid
+          loading={loading}
+          disabled={loading}
+          positive
+        >
           {this.state.signup ? "Sign up" : "Log in"}
         </Button>
         <Msg state={"error"}>{this.handleErrorMsg().non_field_errors}</Msg>

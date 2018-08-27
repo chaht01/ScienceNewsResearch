@@ -17,6 +17,7 @@ import {
   shownFetchRequest,
   shownAnswerHighlightRequest
 } from "../../../Actions/shown";
+import { Loader } from "../../../../node_modules/semantic-ui-react";
 
 const StyledAnswerer = styled.div`
   display: flex;
@@ -67,7 +68,8 @@ const AnswererView = ({
   markHighlight,
   hoverEnter,
   hoverLeave,
-  updateShown
+  updateShown,
+  loading: pageLoading
 }) => {
   const startHighlight = shown => {
     if (shown) {
@@ -91,7 +93,9 @@ const AnswererView = ({
 
   return (
     <React.Fragment>
-      {article.data !== null && (
+      {pageLoading ? (
+        <Loader active />
+      ) : (
         <StyledAnswerer>
           <Article
             highlights={highlights}

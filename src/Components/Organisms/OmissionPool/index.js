@@ -223,6 +223,7 @@ const OmissionPoolView = ({
               onClick={toStep4}
               disabled={page.loading}
               loading={page.loading}
+              positive
               content="Finish and see other's question"
             />
           </StyledSticky.Footer>
@@ -234,6 +235,7 @@ const OmissionPoolView = ({
               onClick={toAnswererIntro}
               disabled={page.loading}
               loading={page.loading}
+              positive
               content="Done"
             />
           </StyledSticky.Footer>
