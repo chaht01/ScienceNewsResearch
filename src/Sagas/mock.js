@@ -23,7 +23,13 @@ class Mock {
     }
 
     const res = paramsArr.map(params => {
-      this.autoInc++;
+      let id;
+      if (!params.hasOwnProperty("id")) {
+        id = ++this.autoInc;
+      } else {
+        id = params.id;
+      }
+
       const { template } = this;
       let dummy = {};
       Object.keys(template).forEach(key => {
@@ -55,7 +61,7 @@ class Mock {
       return {
         ...dummy,
         ...params,
-        id: this.autoInc
+        id
       };
     });
 
@@ -77,8 +83,8 @@ export const QuestionMock = new Mock({
   removed_step: types.Number,
   refText: types.Array,
   copied_from: types.NullNumber,
-  code1: types.String,
-  code2: types.String
+  code_first: types.String,
+  code_second: types.String
 });
 
 export const SentenceMock = new Mock({

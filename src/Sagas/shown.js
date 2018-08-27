@@ -21,6 +21,7 @@ import {
 } from "./mock";
 import Api from "../config/Api";
 import { answerHighlightModeUndo } from "../Actions/answerHighlight";
+import { code1, codes_combined } from "../Sagas/code";
 
 function* fetchShownAsync({ type }) {
   try {
@@ -28,27 +29,174 @@ function* fetchShownAsync({ type }) {
       QuestionMock.make({
         owner: localStorage.getItem("username"),
         created_step: 1,
+        ...(() => {
+          const target_code1 =
+            codes_combined[Math.floor(Math.random() * codes_combined.length)];
+          return {
+            code_first: target_code1,
+            code_second:
+              !target_code1.code_second || target_code1.code_second.length === 0
+                ? null
+                : target_code1.code_second[
+                    Math.floor(Math.random() * target_code1.code_second.length)
+                  ]
+          };
+        })(),
         refText: [1, 4, 7]
       }),
-      QuestionMock.make({ created_step: 3, refText: [1, 4, 7] }),
+      QuestionMock.make({
+        created_step: 3,
+        refText: [1, 4, 7],
+        ...(() => {
+          const target_code1 =
+            codes_combined[Math.floor(Math.random() * codes_combined.length)];
+          return {
+            code_first: target_code1,
+            code_second:
+              !target_code1.code_second || target_code1.code_second.length === 0
+                ? null
+                : target_code1.code_second[
+                    Math.floor(Math.random() * target_code1.code_second.length)
+                  ]
+          };
+        })()
+      }),
       QuestionMock.make({
         owner: localStorage.getItem("username"),
+        ...(() => {
+          const target_code1 =
+            codes_combined[Math.floor(Math.random() * codes_combined.length)];
+          return {
+            code_first: target_code1,
+            code_second:
+              !target_code1.code_second || target_code1.code_second.length === 0
+                ? null
+                : target_code1.code_second[
+                    Math.floor(Math.random() * target_code1.code_second.length)
+                  ]
+          };
+        })(),
         created_step: 1
       }),
-      QuestionMock.make({ created_step: 4, refText: [1, 12, 18] }),
-      QuestionMock.make({ created_step: 3, refText: [12, 18] }),
+      QuestionMock.make({
+        created_step: 4,
+        ...(() => {
+          const target_code1 =
+            codes_combined[Math.floor(Math.random() * codes_combined.length)];
+          return {
+            code_first: target_code1,
+            code_second:
+              !target_code1.code_second || target_code1.code_second.length === 0
+                ? null
+                : target_code1.code_second[
+                    Math.floor(Math.random() * target_code1.code_second.length)
+                  ]
+          };
+        })(),
+        refText: [1, 12, 18]
+      }),
+      QuestionMock.make({
+        created_step: 3,
+        ...(() => {
+          const target_code1 =
+            codes_combined[Math.floor(Math.random() * codes_combined.length)];
+          return {
+            code_first: target_code1,
+            code_second:
+              !target_code1.code_second || target_code1.code_second.length === 0
+                ? null
+                : target_code1.code_second[
+                    Math.floor(Math.random() * target_code1.code_second.length)
+                  ]
+          };
+        })(),
+        refText: [12, 18]
+      }),
       QuestionMock.make({
         owner: localStorage.getItem("username"),
+        ...(() => {
+          const target_code1 =
+            codes_combined[Math.floor(Math.random() * codes_combined.length)];
+          return {
+            code_first: target_code1,
+            code_second:
+              !target_code1.code_second || target_code1.code_second.length === 0
+                ? null
+                : target_code1.code_second[
+                    Math.floor(Math.random() * target_code1.code_second.length)
+                  ]
+          };
+        })(),
         created_step: 1
       }),
       QuestionMock.make({
         owner: localStorage.getItem("username"),
+        ...(() => {
+          const target_code1 =
+            codes_combined[Math.floor(Math.random() * codes_combined.length)];
+          return {
+            code_first: target_code1,
+            code_second:
+              !target_code1.code_second || target_code1.code_second.length === 0
+                ? null
+                : target_code1.code_second[
+                    Math.floor(Math.random() * target_code1.code_second.length)
+                  ]
+          };
+        })(),
         created_step: 1
       }),
-      QuestionMock.make({ created_step: 4, refText: [1, 27] }),
-      QuestionMock.make({ created_step: 3, refText: [27, 28] }),
+      QuestionMock.make({
+        created_step: 4,
+        ...(() => {
+          const target_code1 =
+            codes_combined[Math.floor(Math.random() * codes_combined.length)];
+          return {
+            code_first: target_code1,
+            code_second:
+              !target_code1.code_second || target_code1.code_second.length === 0
+                ? null
+                : target_code1.code_second[
+                    Math.floor(Math.random() * target_code1.code_second.length)
+                  ]
+          };
+        })(),
+        refText: [1, 27]
+      }),
+      QuestionMock.make({
+        created_step: 3,
+        ...(() => {
+          const target_code1 =
+            codes_combined[Math.floor(Math.random() * codes_combined.length)];
+          return {
+            code_first: target_code1,
+            code_second:
+              !target_code1.code_second || target_code1.code_second.length === 0
+                ? null
+                : target_code1.code_second[
+                    Math.floor(Math.random() * target_code1.code_second.length)
+                  ]
+          };
+        })(),
+        refText: [27, 28]
+      }),
       QuestionMock.make({
         owner: localStorage.getItem("username"),
+        ...(() => {
+          const target_code1 =
+            codes_combined[Math.floor(Math.random() * codes_combined.length)];
+          return {
+            code_first: target_code1,
+            code_second:
+              !target_code1.code_second ||
+              target_code1.code_second.length === 0 ||
+              target_code1.code_second.length === 0
+                ? null
+                : target_code1.code_second[
+                    Math.floor(Math.random() * target_code1.code_second.length)
+                  ]
+          };
+        })(),
         created_step: 1
       })
     ];

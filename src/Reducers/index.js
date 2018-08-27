@@ -10,6 +10,7 @@ import questionModalReducer from "./questionModal";
 import questionHighlightReducer from "./questionHighlight";
 import answerHighlightReducer from "./answerHighlight";
 import shownReducer from "./shown";
+import codeReducer from "./code";
 const appReducer = combineReducers({
   articleReducer,
   questionReducer,
@@ -21,7 +22,8 @@ const appReducer = combineReducers({
   poolExampleReducer,
   questionModalReducer,
   answerHighlightReducer,
-  shownReducer
+  shownReducer,
+  codeReducer
 });
 
 const rootReducer = (state, action) => {

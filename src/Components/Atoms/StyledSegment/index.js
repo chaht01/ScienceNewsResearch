@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const StyledSegment = styled.div`
-  margin-bottom: 2.5em;
   padding: 1em 1.2em;
   border-radius: 4px;
   border: 1px solid #f1f1f5;

@@ -1,10 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+
 import { articleArticleFetchRequest } from "../../../Actions/article";
 import { questionPoolFetchRequest } from "../../../Actions/question";
-import { takeListFetchRequest } from "../../../Actions/take";
-import { highlightHighlightFetchRequest } from "../../../Actions/highlight";
+import { codeFetchRequest } from "../../../Actions/code";
 import { Button } from "semantic-ui-react";
 import styled from "styled-components";
 import { pageNextRequest } from "../../../Actions/page";
@@ -45,12 +45,11 @@ const IntroView = ({ user_detail, page, nextPage }) => {
   const toQuestionerIntro = nextPage.bind(this, [
     articleArticleFetchRequest.bind(null, article_id),
     questionPoolFetchRequest.bind(null, research_id, create_phase_request),
-    takeListFetchRequest.bind(null, user_id)
+    codeFetchRequest
   ]);
   return (
     <StyledIntro>
-      <h1>Some Introduction</h1>
-      <div>Hello article</div>
+      <h1>OVERALL INSTRUCTION</h1>
       <Button onClick={toQuestionerIntro} loading={loading} disabled={loading}>
         Next
       </Button>

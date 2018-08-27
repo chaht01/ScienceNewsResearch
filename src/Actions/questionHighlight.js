@@ -102,20 +102,23 @@ export const questionHighlightErase = sentence_id => {
   };
 };
 
-export const questionHighlightSaveRequest = (question_id, sentences) => {
+export const questionHighlightSaveRequest = (question_id, sentence_ids) => {
   return {
     type: types.QUESTION_HIGHLIGHT_SAVE_REQUEST,
     payload: {
-      id: question_id,
-      sentences
+      question_id,
+      sentence_ids
     }
   };
 };
 
-export const questionHighlightSaveSuccess = question_with_highlight => {
+export const questionHighlightSaveSuccess = (question_id, refText) => {
   return {
     type: types.QUESTION_HIGHLIGHT_SAVE_SUCCESS,
-    payload: question_with_highlight
+    payload: {
+      question_id,
+      refText
+    }
   };
 };
 

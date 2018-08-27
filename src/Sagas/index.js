@@ -5,7 +5,10 @@ import { watchFetchArticleAsync } from "./article";
 import {
   watchCreateQuestionsAsync,
   watchFetchQuestionsAsync,
-  watchHandleQuestionAsync
+  watchHandleQuestionAsync,
+  watchQuestionModalInquiriesFetchAsync,
+  watchQuestionModalCRUDAsync,
+  watchQuestionHighlightSaveAsync
 } from "./question";
 import {
   watchFetchHighlightsAsync,
@@ -23,6 +26,7 @@ import {
   watchFetchShownsAsync,
   watchAnswerHighlightOnShownAsync
 } from "./shown";
+import { watchCodeFetchAsync } from "./code";
 export default function* rootSaga() {
   yield all([
     signinFlow(),
@@ -32,6 +36,7 @@ export default function* rootSaga() {
     watchCreateQuestionsAsync(),
     watchFetchQuestionsAsync(),
     watchHandleQuestionAsync(),
+    watchQuestionModalInquiriesFetchAsync(),
     watchFetchHighlightsAsync(),
     watchHandleBundleHighlightAsync(),
     watchFetchTakesAsync(),
@@ -41,6 +46,9 @@ export default function* rootSaga() {
     watchTakeResponseUpdateAsync(),
     watchFetchTakeSuggestionAsync(),
     watchFetchShownsAsync(),
-    watchAnswerHighlightOnShownAsync()
+    watchAnswerHighlightOnShownAsync(),
+    watchCodeFetchAsync(),
+    watchQuestionModalCRUDAsync(),
+    watchQuestionHighlightSaveAsync()
   ]);
 }

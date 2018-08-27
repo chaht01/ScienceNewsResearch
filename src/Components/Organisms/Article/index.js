@@ -11,8 +11,6 @@ import {
   questionHighlightHoverEnter,
   questionHighlightHoverLeave
 } from "../../../Actions/questionHighlight";
-import { colors } from "../../Configs/var";
-import { CSSTransition } from "react-transition-group";
 import { PAGES } from "../../../Reducers/page";
 import "./style.css";
 
@@ -31,7 +29,11 @@ const StyledArticle = styled.div`
   margin-top: auto; // overflow hack
 `;
 
-const StyledArticleBody = styled.article`
+StyledArticle.Title = styled.h1`
+  font-family: "Abril Fatface", cursive;
+`;
+
+StyledArticle.Body = styled.article`
   font-size: 16px;
   line-height: 1.4;
   text-align: justify;
@@ -110,7 +112,7 @@ const ArticleBody = ({
     }, [])
   );
   return (
-    <StyledArticleBody>
+    <StyledArticle.Body>
       {paragrpahed_sentences.map((paragraph, p_idx) => (
         <StyledParagraph key={p_idx}>
           {paragraph.map(sentence => (
@@ -128,7 +130,7 @@ const ArticleBody = ({
           ))}
         </StyledParagraph>
       ))}
-    </StyledArticleBody>
+    </StyledArticle.Body>
   );
 };
 
@@ -226,7 +228,7 @@ const ArticleView = ({
 
   return (
     <StyledArticle>
-      <h1>{title}</h1>
+      <StyledArticle.Title>{title}</StyledArticle.Title>
       {bodyVisible && (
         <React.Fragment>
           <ArticleBody

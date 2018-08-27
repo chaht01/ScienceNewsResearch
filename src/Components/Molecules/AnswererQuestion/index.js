@@ -104,7 +104,7 @@ const AnswererQuestion = ({
   if (question === undefined) {
     return <StyledQuestion>loading...</StyledQuestion>;
   }
-  const { id, text, intention, code1, code2 } = question;
+  const { id, text, intention, code_first, code_second } = question;
 
   return (
     <StyledQuestion expanded={expanded}>
@@ -115,8 +115,8 @@ const AnswererQuestion = ({
 
         <QuestionGrid>
           <StyledLabelGroup>
-            <StyledLabel>{code1}</StyledLabel>
-            <StyledLabel>{code2}</StyledLabel>
+            <StyledLabel>{code_first.text}</StyledLabel>
+            {code_second && <StyledLabel>{code_second.text}</StyledLabel>}
           </StyledLabelGroup>
           <StyledLink
             color={colors.gray_font}

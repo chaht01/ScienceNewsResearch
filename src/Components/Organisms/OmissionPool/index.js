@@ -12,7 +12,8 @@ import {
 } from "../../../Actions/question";
 import {
   questionHighlightModeUndo,
-  questionHighlightActiveTab
+  questionHighlightActiveTab,
+  questionHighlightSaveRequest
 } from "../../../Actions/questionHighlight";
 import QuestionerQuestion from "../../Molecules/QuestionerQuestion";
 import AnswererQuestion from "../../Molecules/AnswererQuestion";
@@ -35,6 +36,8 @@ const mapDispatchToProps = dispatch => {
   return {
     questionTyping: typed => dispatch(quesitonType(typed)),
     undoHighlightMode: () => dispatch(questionHighlightModeUndo()),
+    saveHighlights: (question_id, sentence_ids) =>
+      dispatch(questionHighlightSaveRequest(question_id, sentence_ids)),
     activeTab: tabIdx => dispatch(questionHighlightActiveTab(tabIdx)),
     toStep4: () => {
       dispatch(questionHighlightActiveTab(1));
@@ -56,7 +59,7 @@ const ConditionalQuestionTab = ({
   questions = [],
   username,
   highlights: {
-    inProgress: { active: highlightMode },
+    inProgress: { active: highlightMode, question: highlightTargetQuestion },
     hover: { sentence_id: hoveredSentenceId },
     activeTabIdx,
     _tabNames
@@ -84,6 +87,10 @@ const ConditionalQuestionTab = ({
                       onExpandChange={() => expandQuestion(question.id)}
                       editable
                       annotable
+                      focused={
+                        highlightTargetQuestion !== null &&
+                        highlightTargetQuestion.id === question.id
+                      }
                       reAnnotate={() => startHighlight(question)}
                     />
                   ))
@@ -175,7 +182,8 @@ const OmissionPoolView = ({
   activeTab,
   toStep4,
   toAnswererIntro,
-  expandQuestion
+  expandQuestion,
+  saveHighlights: _saveHighlights
 }) => {
   const {
     inProgress: {
@@ -194,20 +202,18 @@ const OmissionPoolView = ({
   const clearType = () => {
     questionTyping("");
   };
-  const handleSubmit = e => {
-    addQuestion(typed, page);
-    clearType();
-    e.preventDefault();
+
+  const handleSubmit = promsingQuestion => {
+    _saveHighlights(promsingQuestion.id, highlightInProgress);
+  };
+
+  const saveHighlights = () => {
+    _saveHighlights(highlightTargetQuestion.id, highlightInProgress);
   };
 
   const conditionalFooter = () => {
     if (highlightMode) {
-      if (highlightTargetQuestion === null)
-        return (
-          <StyledSticky.Footer>
-            <StyledSticky.Action content="Prev" onClick={undoHighlightMode} />
-          </StyledSticky.Footer>
-        );
+      if (highlightTargetQuestion === null) return null;
       else return null;
     } else {
       if (page === PAGES.QUESTIONER_STEP3) {
@@ -278,11 +284,12 @@ const OmissionPoolView = ({
                 </div>
               )}
             </StyledSegment.Pane>
-            {highlightTargetQuestion === null ? (
+            {highlightTargetQuestion === null &&
+            highlightInProgress.length > 0 ? (
               <StyledSegment.Pane>
                 <div>2. Type in your question.</div>
                 <QuestionForm
-                  handleSubmit={handleSubmit}
+                  onSubmit={handleSubmit}
                   handleTyped={handleTyped}
                   typed={typed}
                   clearType={clearType}
@@ -296,7 +303,13 @@ const OmissionPoolView = ({
                     content="Cancel"
                     onClick={undoHighlightMode}
                   />
-                  <Button compact positive content="Done" />
+                  <Button
+                    compact
+                    positive
+                    disabled={highlightInProgress.length === 0}
+                    onClick={saveHighlights}
+                    content="Done"
+                  />
                 </Button.Group>
               </StyledSegment.Pane>
             )}
