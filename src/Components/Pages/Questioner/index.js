@@ -20,6 +20,7 @@ import {
 } from "../../../Actions/questionHighlight";
 import { PAGES } from "../../../Reducers/page";
 import { colors } from "../../Configs/var";
+import { Loader } from "../../../../node_modules/semantic-ui-react";
 
 const StyledQuestioner = styled.div`
   display: flex;
@@ -80,7 +81,8 @@ const QuestionerView = ({
   markHighlight,
   hoverEnter,
   hoverLeave,
-  page
+  page,
+  loading: pageLoading
 }) => {
   const {
     data,
@@ -135,7 +137,9 @@ const QuestionerView = ({
     .map(q => q.refText);
   return (
     <React.Fragment>
-      {article.data !== null && (
+      {pageLoading ? (
+        <Loader active />
+      ) : (
         <React.Fragment>
           <StyledQuestioner>
             {[

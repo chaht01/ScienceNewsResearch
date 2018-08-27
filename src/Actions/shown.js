@@ -5,13 +5,13 @@ export const types = {
   SHOWN_FETCH_SUCCESS: typeStringCreator("SHOWN_FETCH_SUCCESS"),
   SHOWN_FETCH_FAILURE: typeStringCreator("SHOWN_FETCH_FAILURE"),
 
-  SHOWN_ANSWER_HIGHLIGHTS_REQEUST: typeStringCreator(
+  SHOWN_ANSWER_HIGHLIGHT_REQEUST: typeStringCreator(
     "SHOWN_ANSWER_HIGHLIGHT_REQUEST"
   ),
-  SHOWN_ANSWER_HIGHLIGHTS_SUCCESS: typeStringCreator(
+  SHOWN_ANSWER_HIGHLIGHT_SUCCESS: typeStringCreator(
     "SHOWN_ANSWER_HIGHLIGHT_SUCCESS"
   ),
-  SHOWN_ANSWER_HIGHLIGHTS_FAILURE: typeStringCreator(
+  SHOWN_ANSWER_HIGHLIGHT_FAILURE: typeStringCreator(
     "SHOWN_ANSWER_HIGHLIGHT_FAILURE"
   ),
 
@@ -44,7 +44,7 @@ export const shownFetchFailure = error => {
 
 export const shownAnswerHighlightRequest = (shown_id, sentence_ids) => {
   return {
-    type: types.SHOWN_ANSWER_HIGHLIGHTS_REQEUST,
+    type: types.SHOWN_ANSWER_HIGHLIGHT_REQEUST,
     payload: {
       shown_id,
       sentence_ids
@@ -54,14 +54,14 @@ export const shownAnswerHighlightRequest = (shown_id, sentence_ids) => {
 
 export const shownAnswerHighlightSuccess = shownTake => {
   return {
-    type: types.SHOWN_ANSWER_HIGHLIGHTS_SUCCESS,
+    type: types.SHOWN_ANSWER_HIGHLIGHT_SUCCESS,
     payload: shownTake
   };
 };
 
 export const shownAnswerHighlightFailure = error => {
   return {
-    type: types.SHOWN_ANSWER_HIGHLIGHTS_FAILURE,
+    type: types.SHOWN_ANSWER_HIGHLIGHT_FAILURE,
     payload: error
   };
 };
