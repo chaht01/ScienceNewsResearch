@@ -112,12 +112,12 @@ export const questionHighlightSaveRequest = (question_id, sentence_ids) => {
   };
 };
 
-export const questionHighlightSaveSuccess = (question_id, refText) => {
+export const questionHighlightSaveSuccess = (question_id, reftexts) => {
   return {
     type: types.QUESTION_HIGHLIGHT_SAVE_SUCCESS,
     payload: {
       question_id,
-      refText
+      reftexts
     }
   };
 };

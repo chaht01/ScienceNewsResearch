@@ -1,34 +1,11 @@
 import fetchApi from "../fetchApi";
 
 export const take = {
-  list: user_id => {
-    return fetchApi(`/users/${user_id}/takes/`, null, "get");
+  list: call_cnt => {
+    if (call_cnt === 0) return fetchApi(`/showns/`, null, "get");
+    else return fetchApi(`/showns/`, null, "post");
   },
-  create: (article_id, question_id, phase) => {
-    return fetchApi(
-      `/takes/`,
-      { article: article_id, question: question_id, phase },
-      "post"
-    );
-  },
-  release: (take_id, removed_phase) => {
-    return fetchApi(
-      `/takes/${take_id}/`,
-      { remove: true, removed_phase },
-      "patch"
-    );
-  },
-  update: (take_id, found) => {
-    return fetchApi(`/takes/${take_id}/renew_milestone/`, { found }, "patch");
-  },
-  highlight: (take_id, found, sentences) => {
-    return fetchApi(
-      `/takes/${take_id}/renew_milestone/`,
-      { found, sentences },
-      "patch"
-    );
-  },
-  suggestion: take_id => {
-    return fetchApi(`/takes/${take_id}/suggestions/`, null, "get");
+  highlight: ({ shown_id, payload }) => {
+    return fetchApi(`/showns/${shown_id}/update_answertext/`, payload, "patch");
   }
 };

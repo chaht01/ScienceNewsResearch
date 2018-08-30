@@ -51,7 +51,10 @@ const questionHighlightReducer = (state = initialState, action) => {
           ...state.inProgress,
           article_id,
           question,
-          data: question === null ? [] : question.refText,
+          data:
+            question === null
+              ? []
+              : question.reftexts.map(reftext => reftext.sentence),
           active: true
         },
         hover: {

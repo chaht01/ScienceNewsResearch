@@ -105,12 +105,12 @@ const questionReducer = (state = initialState, action) => {
       return {
         ...state,
         data: state.data.map(question => {
-          if (question.id !== action.payload.id) {
+          if (question.id !== action.payload.legacy_question_id) {
             return question;
           }
           return {
             ...question,
-            ...action.payload,
+            copied_to: action.payload.question.id,
             _loading: false,
             _error: null
           };
@@ -187,7 +187,7 @@ const questionReducer = (state = initialState, action) => {
           } else {
             return {
               ...q,
-              refText: action.payload.refText
+              reftexts: action.payload.reftexts
             };
           }
         })

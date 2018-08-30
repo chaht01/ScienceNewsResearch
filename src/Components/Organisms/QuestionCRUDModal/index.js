@@ -29,6 +29,7 @@ import {
 import { colors } from "../../Configs/var";
 import tinycolor from "tinycolor2";
 import { quesitonType } from "../../../Actions/question";
+import { PAGES_serializer } from "../../../Reducers/page";
 
 const StyledStep3Header = styled.div`
   display: grid;
@@ -247,7 +248,7 @@ const QuestionCRUDModalView = ({
 
   const submitQuestionModal = () => {
     submitModal(
-      phase,
+      PAGES_serializer(phase),
       legacy.id,
       typed,
       intention,

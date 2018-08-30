@@ -36,7 +36,8 @@ export const codes_combined = code1.map(code => ({
 function* codeFetchAsync() {
   try {
     yield call(delay, 1000);
-    const codes = yield codes_combined;
+    // const codes = yield codes_combined;
+    const { results: codes } = yield call(Api.code.codefirst);
     yield put(codeFetchSuccess(codes));
   } catch (error) {
     yield put(codeFetchFailure(error));

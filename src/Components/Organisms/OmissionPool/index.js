@@ -18,7 +18,7 @@ import {
 import QuestionerQuestion from "../../Molecules/QuestionerQuestion";
 import AnswererQuestion from "../../Molecules/AnswererQuestion";
 import { pageNextRequest } from "../../../Actions/page";
-import { PAGES } from "../../../Reducers/page";
+import { PAGES, PAGES_serializer } from "../../../Reducers/page";
 import QuestionCRUDModal from "../QuestionCRUDModal";
 
 const mapStateToProps = (state, ownProps) => {
@@ -59,18 +59,29 @@ const ConditionalQuestionTab = ({
   questions = [],
   username,
   highlights: {
-    inProgress: { active: highlightMode, question: highlightTargetQuestion },
+    inProgress: {
+      active: highlightMode,
+      data: highlightInProgress,
+      question: highlightTargetQuestion
+    },
     hover: { sentence_id: hoveredSentenceId },
     activeTabIdx,
     _tabNames
   },
   activeTab,
   startHighlight,
-  expandQuestion
+  expandQuestion,
+  saveHighlights: _saveHighlights
 }) => {
   const conditionalPane = () => {
-    const questionMine = questions.filter(q => q.owner === username);
-    const questionOthers = questions.filter(q => q.owner !== username);
+    const questionMine = questions.filter(
+      q =>
+        q.questioner === username && 3 <= q.created_step && q.copied_to === null
+    );
+    const questionOthers = questions.filter(
+      q =>
+        q.questioner !== username && 3 <= q.created_step && q.copied_to === null
+    );
     const defaultPanes = [
       {
         menuItem: _tabNames[0],
@@ -86,6 +97,12 @@ const ConditionalQuestionTab = ({
                       expanded={question._expanded}
                       onExpandChange={() => expandQuestion(question.id)}
                       editable
+                      onEdit={promsingQuestion => {
+                        _saveHighlights(
+                          promsingQuestion.id,
+                          highlightInProgress
+                        );
+                      }}
                       annotable
                       focused={
                         highlightTargetQuestion !== null &&
@@ -95,7 +112,12 @@ const ConditionalQuestionTab = ({
                     />
                   ))
                 : questionMine
-                    .filter(q => q.refText.indexOf(hoveredSentenceId) > -1)
+                    .filter(
+                      q =>
+                        q.reftexts
+                          .map(reftext => reftext.sentence)
+                          .indexOf(hoveredSentenceId) > -1
+                    )
                     .map(question => (
                       <QuestionerQuestion
                         key={question.id}
@@ -103,6 +125,12 @@ const ConditionalQuestionTab = ({
                         expanded={question._expanded}
                         onExpandChange={() => expandQuestion(question.id)}
                         editable
+                        onEdit={promsingQuestion => {
+                          _saveHighlights(
+                            promsingQuestion.id,
+                            question.reftexts.map(reftext => reftext.sentence)
+                          );
+                        }}
                         annotable
                         reAnnotate={() => startHighlight(question)}
                       />
@@ -130,7 +158,12 @@ const ConditionalQuestionTab = ({
                       />
                     ))
                   : questionOthers
-                      .filter(q => q.refText.indexOf(hoveredSentenceId) > -1)
+                      .filter(
+                        q =>
+                          q.reftexts
+                            .map(reftext => reftext.sentence)
+                            .indexOf(hoveredSentenceId) > -1
+                      )
                       .map(question => (
                         <QuestionerQuestion
                           key={question.id}
@@ -333,6 +366,7 @@ const OmissionPoolView = ({
           activeTab={activeTab}
           startHighlight={startHighlight}
           expandQuestion={expandQuestion}
+          saveHighlights={_saveHighlights}
         />
         {conditionalFooter()}
       </StyledSticky>

@@ -1,5 +1,5 @@
 import { delay } from "redux-saga";
-import { call, put, race, takeLatest, take } from "redux-saga/effects";
+import { call, put, race, takeLatest, take, all } from "redux-saga/effects";
 import {
   types,
   questionPoolFetchRequest,
@@ -40,7 +40,7 @@ function* fetchQuestionsAsync({
   payload: { research_id, created_phase }
 }) {
   try {
-    yield call(delay, 1000);
+    /*
     const questions = [
       QuestionMock.make({
         owner: localStorage.getItem("username"),
@@ -58,11 +58,11 @@ function* fetchQuestionsAsync({
                   ]
           };
         })(),
-        refText: [1, 4, 7]
+        reftexts: [1, 4, 7]
       }),
       QuestionMock.make({
         created_step: 3,
-        refText: [1, 4, 7],
+        reftexts: [1, 4, 7],
         ...(() => {
           const target_code1 =
             codes_combined[Math.floor(Math.random() * codes_combined.length)];
@@ -109,7 +109,7 @@ function* fetchQuestionsAsync({
                   ]
           };
         })(),
-        refText: [1, 12, 18]
+        reftexts: [1, 12, 18]
       }),
       QuestionMock.make({
         created_step: 3,
@@ -126,7 +126,7 @@ function* fetchQuestionsAsync({
                   ]
           };
         })(),
-        refText: [12, 18]
+        reftexts: [12, 18]
       }),
       QuestionMock.make({
         owner: localStorage.getItem("username"),
@@ -177,7 +177,7 @@ function* fetchQuestionsAsync({
                   ]
           };
         })(),
-        refText: [1, 27]
+        reftexts: [1, 27]
       }),
       QuestionMock.make({
         created_step: 3,
@@ -194,7 +194,7 @@ function* fetchQuestionsAsync({
                   ]
           };
         })(),
-        refText: [27, 28]
+        reftexts: [27, 28]
       }),
       QuestionMock.make({
         owner: localStorage.getItem("username"),
@@ -216,10 +216,11 @@ function* fetchQuestionsAsync({
         created_step: 1
       })
     ];
-    // let results = yield call(Api.question.pool, research_id, created_phase);
-    // const questions = results.map(q => ({
-    //   ...q
-    // }));
+    */
+    let results = yield call(Api.question.pool, research_id);
+    const questions = results.map(q => ({
+      ...q
+    }));
     yield put(questionPoolFetchSuccess(questions));
   } catch (error) {
     yield put(questionPoolFetchFailure(error));
@@ -330,36 +331,24 @@ function* questionModalCRUDAsync({
   }
 }) {
   try {
-    let newQuestion;
-    yield call(delay, 1000);
+    const newQuestion = yield call(Api.question.create, {
+      text: typed,
+      intention,
+      created_step,
+      code_first: code_first_id,
+      code_second: code_second_id
+    });
+
     if (question_id !== -1) {
-      newQuestion = yield QuestionMock.make({
-        id: question_id,
-        owner: localStorage.getItem("username"),
-        text: typed,
-        intention,
-        created_step,
-        code_first: code1.filter(code => code.id === code_first_id)[0],
-        code_second:
-          code_second_id === -1
-            ? null
-            : code2.filter(code => code.id === code_second_id)[0],
-        refText: []
+      yield call(Api.question.update, {
+        question_id,
+        payload: {
+          copied_to: newQuestion.id
+        }
       });
-      yield put(questionQuestionUpdateSuccess(newQuestion));
+      yield put(questionQuestionUpdateSuccess(question_id, newQuestion));
+      yield put(questionQuestionCreateSuccess(newQuestion));
     } else {
-      newQuestion = yield QuestionMock.make({
-        owner: localStorage.getItem("username"),
-        created_step,
-        text: typed,
-        intention,
-        code_first: code1.filter(code => code.id === code_first_id)[0],
-        code_second:
-          code_second_id === -1
-            ? null
-            : code2.filter(code => code.id === code_second_id)[0],
-        refText: []
-      });
       yield put(questionQuestionCreateSuccess(newQuestion));
       yield put(quesitonType("")); //clear type
     }
@@ -385,8 +374,12 @@ function* questionHighlightSaveAsync({
   payload: { question_id, sentence_ids }
 }) {
   try {
-    yield call(delay, 1000);
-    yield put(questionHighlightSaveSuccess(question_id, sentence_ids));
+    const reftexts = yield call(Api.question.update_reftexts, {
+      question_id,
+      payload: { sentence_ids }
+    });
+
+    yield put(questionHighlightSaveSuccess(question_id, reftexts));
   } catch (error) {
     yield put(questionHighlightSaveFailure(error));
   }

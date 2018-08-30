@@ -22,9 +22,12 @@ export const types = {
   SHOWN_EXPAND_TOGGLE: typeStringCreator("SHOWN_EXPAND_TOGGLE")
 };
 
-export const shownFetchRequest = () => {
+export const shownFetchRequest = call_cnt => {
   return {
-    type: types.SHOWN_FETCH_REQUEST
+    type: types.SHOWN_FETCH_REQUEST,
+    payload: {
+      call_cnt
+    }
   };
 };
 

@@ -103,10 +103,13 @@ export const questionQuestionUpdateRequest = question => {
   };
 };
 
-export const questionQuestionUpdateSuccess = question => {
+export const questionQuestionUpdateSuccess = (legacy_question_id, question) => {
   return {
     type: types.QUESTION_UPDATE_SUCCESS,
-    payload: question
+    payload: {
+      legacy_question_id,
+      question
+    }
   };
 };
 

@@ -78,10 +78,10 @@ export const QuestionMock = new Mock({
   research_id: types.Number,
   text: types.String,
   intention: types.String,
-  owner: types.String,
+  questioner: types.String,
   created_step: types.Number,
   removed_step: types.Number,
-  refText: types.Array,
+  reftexts: types.Array,
   copied_from: types.NullNumber,
   code_first: types.String,
   code_second: types.String
@@ -106,7 +106,7 @@ export const ShownMock = new Mock({
 export const TakeMock = new Mock({
   shown: types.Number,
   taken: types.Boolean,
-  answerTexts: types.Array
+  answertexts: types.Array
 });
 
 export const AnswerTextMock = new Mock({

@@ -65,7 +65,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...{
       startQuestionerIntro: () => nextPage(PAGES.QUESTIONER_INTRO, []),
       startAnswererStep: () =>
-        nextPage(PAGES.ANSWERER_STEP1, [shownFetchRequest]),
+        nextPage(PAGES.ANSWERER_STEP1, [
+          shownFetchRequest.bind(null, shown.call_cnt)
+        ]),
       answerStepLoading: shown.loading && shown.call_cnt === 0
     }
   };

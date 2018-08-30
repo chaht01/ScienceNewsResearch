@@ -12,6 +12,16 @@ export const PAGES = {
   ANSWERER_STEP2: "ANSWERER_STEP2"
 };
 
+export const PAGES_serializer = page => {
+  const maps = {
+    QUESTIONER_STEP1: "1",
+    QUESTIONER_STEP2: "2",
+    QUESTIONER_STEP3: "3",
+    QUESTIONER_STEP4: "4"
+  };
+  return maps[page];
+};
+
 const initialState = {
   loading: false,
   data: PAGES.OVERALL

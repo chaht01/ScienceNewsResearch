@@ -96,6 +96,7 @@ const StyledLabel = styled.span`
 const QuestionerQuestion = ({
   question,
   editable,
+  onEdit,
   annotable,
   reAnnotate,
   expanded,
@@ -142,6 +143,7 @@ const QuestionerQuestion = ({
                       code_first: code_first.id,
                       code_second: code_second === null ? -1 : code_second.id
                     }}
+                    onSubmit={onEdit}
                     trigger={<Button compact icon="edit" />}
                   />
                   <Button compact icon="trash alternate" />

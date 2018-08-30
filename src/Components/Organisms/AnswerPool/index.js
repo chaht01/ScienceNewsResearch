@@ -22,7 +22,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchShowns: () => dispatch(shownFetchRequest()),
+    fetchShowns: call_cnt => dispatch(shownFetchRequest(call_cnt)),
     expandShown: shown_id => dispatch(shownExpandToggle(shown_id))
   };
 };
@@ -37,10 +37,15 @@ const AnswerPoolView = ({
   article: { title, sentences: content },
   questions,
   highlights: {
-    inProgress: { active: highlightMode, shown: targetShown, data: sentenceIds }
+    inProgress: {
+      active: highlightMode,
+      shown: targetShown,
+      data: sentenceIds
+    },
+    hover: { sentence_id: hoveredSentenceId }
   },
-  _showns: { data: showns, loading: shownsLoading },
-  fetchShowns,
+  _showns: { data: showns, loading: shownsLoading, call_cnt },
+  fetchShowns: _fetchShowns,
   expandShown
 }) => {
   const highlightedSentences = content
@@ -50,6 +55,7 @@ const AnswerPoolView = ({
     ...shown,
     _latest_take: shown.takes.reduce((a, b) => (b.id > a.id ? b : a))
   }));
+  const fetchShowns = _fetchShowns.bind(null, call_cnt);
   if (highlightMode && targetShown !== null) {
     return (
       <StyledAside>
@@ -91,23 +97,37 @@ const AnswerPoolView = ({
           <h3>Choose questions you can answer</h3>
           <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
             <StyledSticky.ScrollablePane>
-              {latestShown.map(shown => (
-                <AnswererQuestion
-                  key={shown.question.id}
-                  question={shown.question}
-                  startHighlight={startHighlight.bind(this, shown)}
-                  answered={shown._latest_take.taken}
-                  expanded={shown._expanded}
-                  onExpandChange={() => expandShown(shown.id)}
+              {latestShown
+                .filter(shown => {
+                  if (hoveredSentenceId === null || highlightMode) {
+                    return true;
+                  } else {
+                    return (
+                      shown._latest_take.answertexts
+                        .map(answertext => answertext.sentence)
+                        .indexOf(hoveredSentenceId) > -1
+                    );
+                  }
+                })
+                .map(shown => (
+                  <AnswererQuestion
+                    key={shown.question.id}
+                    question={shown.question}
+                    startHighlight={startHighlight.bind(this, shown)}
+                    answered={shown._latest_take.taken}
+                    expanded={shown._expanded}
+                    onExpandChange={() => expandShown(shown.id)}
+                  />
+                ))}
+              {hoveredSentenceId === null && (
+                <Button
+                  content="Fetch more"
+                  fluid
+                  onClick={fetchShowns}
+                  disabled={shownsLoading}
+                  loading={shownsLoading}
                 />
-              ))}
-              <Button
-                content="Fetch more"
-                fluid
-                onClick={fetchShowns}
-                disabled={shownsLoading}
-                loading={shownsLoading}
-              />
+              )}
             </StyledSticky.ScrollablePane>
           </StyledSticky.Scrollable>
 

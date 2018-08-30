@@ -50,7 +50,7 @@ const answerHighlightReducer = (state = initialState, action) => {
           data: [
             ...shown.takes
               .reduce((a, b) => (a.id < b.id ? b : a))
-              .answerTexts.map(at => at.sentence)
+              .answertexts.map(at => at.sentence)
           ], // TODO: BIT DIFFERENT POINT TO QUESTIONHIGHLIHGT REDUCER
           active: true
         },

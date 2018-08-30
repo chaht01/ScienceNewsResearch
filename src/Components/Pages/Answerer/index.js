@@ -88,7 +88,7 @@ const AnswererView = ({
     _latest_take: shown.takes.reduce((a, b) => (b.id > a.id ? b : a))
   }));
   const sentences_on_highlights = latestShown.map(shown =>
-    shown._latest_take.answerTexts.map(at => at.sentence)
+    shown._latest_take.answertexts.map(at => at.sentence)
   );
 
   return (

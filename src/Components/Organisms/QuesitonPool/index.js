@@ -12,7 +12,7 @@ import { StyledAside, StyledSticky } from "../../Atoms/StyledAside";
 import styled from "styled-components";
 import { StyledSegment } from "../../Atoms/StyledSegment";
 import { pageNextRequest } from "../../../Actions/page";
-import { PAGES } from "../../../Reducers/page";
+import { PAGES, PAGES_serializer } from "../../../Reducers/page";
 import QuestionerQuestion from "../../Molecules/QuestionerQuestion";
 import {
   questionModalOpen,
@@ -108,8 +108,16 @@ const QuestionPoolView = ({
         <h3>Questions that you made.</h3>
         <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
           <StyledSticky.ScrollablePane>
+            {questions.filter(question => question.questioner === username)
+              .length === 0 && `You didn't make any question yet!`}
             {questions
-              .filter(question => question.owner === username)
+              .filter(
+                question =>
+                  question.questioner === username &&
+                  1 <= question.created_step &&
+                  question.created_step <= PAGES_serializer(page) &&
+                  question.copied_to === null
+              )
               .map(question => (
                 <QuestionerQuestion
                   key={question.id}

@@ -6,5 +6,8 @@ export const sentence = {
   },
   detail: id => {
     return fetchApi(`/sentence/${id}/`, null, "get");
+  },
+  refText: payload => {
+    return fetchApi(`/reftexts/`, payload, "post");
   }
 };

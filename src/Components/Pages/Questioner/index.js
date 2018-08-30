@@ -18,7 +18,7 @@ import {
   questionHighlightMark,
   questionHighlightErase
 } from "../../../Actions/questionHighlight";
-import { PAGES } from "../../../Reducers/page";
+import { PAGES, PAGES_serializer } from "../../../Reducers/page";
 import { colors } from "../../Configs/var";
 import { Loader } from "../../../../node_modules/semantic-ui-react";
 
@@ -110,7 +110,7 @@ const QuestionerView = ({
   const confirmHighlight = () => {
     // todo
     const targetQuestion = data.filter(s => s.id === question.id)[0];
-    const remote_sentences = targetQuestion.refText;
+    const remote_sentences = targetQuestion.reftexts;
     let diff = false;
 
     diff =
@@ -126,15 +126,23 @@ const QuestionerView = ({
     if (sentences.length === 0 || !diff) {
       cancelHighlight();
     } else {
-      applyHighlight({ ...targetQuestion, refText: sentences });
+      applyHighlight({ ...targetQuestion, reftexts: sentences });
     }
   };
 
   const isQuestioners = activeTabIdx === 0;
 
   const sentences_on_highlights = questions
-    .filter(q => (isQuestioners ? q.owner === username : q.owner !== username))
-    .map(q => q.refText);
+    .filter(
+      q =>
+        (isQuestioners
+          ? q.questioner === username
+          : q.questioner !== username) &&
+        3 <= q.created_step &&
+        q.copied_to === null
+    )
+    .map(q => q.reftexts)
+    .map(reftexts => reftexts.map(reftext => reftext.sentence));
   return (
     <React.Fragment>
       {pageLoading ? (

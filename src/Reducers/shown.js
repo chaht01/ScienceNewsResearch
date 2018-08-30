@@ -45,7 +45,6 @@ const shownReducer = (state = initialState, action) => {
           if (shown.id !== action.payload.shown_id) {
             return shown;
           } else {
-            console.log(shown);
             return {
               ...shown,
               _loading: true
