@@ -1,8 +1,8 @@
 import fetchApi from "../fetchApi";
 
 export const question = {
-  pool: (research_id, created_phase) => {
-    return fetchApi(`/researches/${research_id}/questions/`, null, "get", {
+  pool: (article_id, created_phase) => {
+    return fetchApi(`/articles/${article_id}/questions/`, null, "get", {
       params: {
         created_phase
       }

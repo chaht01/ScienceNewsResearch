@@ -39,11 +39,11 @@ export const poolFoldingOpen = () => {
 };
 
 // POOL FETCHING
-export const questionPoolFetchRequest = (research_id, created_phase) => {
+export const questionPoolFetchRequest = (article_id, created_phase) => {
   return {
     type: types.POOL_FETCH_REQUEST,
     payload: {
-      research_id,
+      article_id,
       created_phase
     }
   };

@@ -19,6 +19,7 @@ const FAB = styled(Button)`
   left: 100%;
   bottom: 40px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22) !important;
+  ${props => !props.visible && `visibility:hidden;`};
 `;
 const StyledArticle = styled.div`
   padding: 1em;
@@ -46,6 +47,7 @@ const StyledParagraph = styled.p`
 const StyledSentence = styled.span`
   padding: 0 2px;
   margin: 0 1px;
+  border: 2px dashed transparent;
   ${props =>
     props.hoverable &&
     `
@@ -239,16 +241,17 @@ const ArticleView = ({
             onHoverLeave={onHoverLeave}
             highlightColor={highlightColor}
           />
-          {fab &&
-            !highlightMode && (
-              <FAB
-                circular
-                positive
-                icon="tasks"
-                size="huge"
-                onClick={startHighlight.bind(this, null)}
-              />
-            )}
+          {fab && (
+            <FAB
+              circular
+              positive
+              icon="tasks"
+              size="huge"
+              visible={!highlightMode}
+              disabled={highlightMode}
+              onClick={startHighlight.bind(this, null)}
+            />
+          )}
         </React.Fragment>
       )}
       {page === PAGES.QUESTIONER_STEP2 && (

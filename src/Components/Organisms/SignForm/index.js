@@ -25,7 +25,7 @@ export class SignFormView extends React.Component {
     this.state = {
       username: "",
       password: "",
-      research_type: -1,
+      research_type: 1,
       signup: false
     };
     this.handleChange = this.handleChange.bind(this);
@@ -142,7 +142,7 @@ export class SignFormView extends React.Component {
           />
           <Msg state={"error"}>{this.handleErrorMsg().password}</Msg>
         </Form.Field>
-        <Form.Field>
+        {/* <Form.Field>
           <Radio
             label="Research A"
             name="radioGroup"
@@ -159,7 +159,7 @@ export class SignFormView extends React.Component {
             checked={this.state.research_type == 2}
             onChange={this.handleResearchType}
           />
-        </Form.Field>
+        </Form.Field> */}
         <Button
           type="submit"
           fluid
