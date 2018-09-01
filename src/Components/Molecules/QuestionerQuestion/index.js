@@ -4,10 +4,11 @@ import { colors } from "../../Configs/var";
 import { Button } from "semantic-ui-react";
 import StyledLink from "../../Atoms/StyledLink";
 import QuestionCRUDModal from "../../Organisms/QuestionCRUDModal";
+import FontAwesomeButton from "../../Atoms/FontAwesomeButton";
 
 const QuestionGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 70px;
+  grid-template-columns: 1fr 140px;
   grid-row-gap: 0.4em;
   margin-bottom: 0.4em;
   align-items: center;
@@ -16,7 +17,7 @@ const QuestionGrid = styled.div`
 const StyledQuestion = styled.div`
   background: #fff;
   border: ${props => (props.focused ? `2px` : `1px`)} solid
-    ${props => (props.focused ? colors.yellow : `#ddd`)};
+    ${props => (props.focused ? colors.green : `#ddd`)};
   border-radius: 4px;
   padding: 0.6em 1em ${props => (props.expanded ? "0.6em" : "0.4em")};
   transition: all 0.2s;
@@ -123,7 +124,7 @@ const QuestionerQuestion = ({
           style={{ textAlign: "center" }}
           onClick={onExpandChange}
         >
-          {expanded ? "fold" : "see more"}
+          {expanded ? "fold" : "see askers’ intention"}
         </StyledLink>
       </QuestionGrid>
       {expanded && (
@@ -132,7 +133,11 @@ const QuestionerQuestion = ({
           {(editable || annotable) && (
             <Button.Group fluid basic>
               {annotable && (
-                <Button compact icon="tasks" onClick={reAnnotate} />
+                <FontAwesomeButton
+                  compact
+                  icon="fas fa-highlighter"
+                  onClick={reAnnotate}
+                />
               )}
               {editable && (
                 <React.Fragment>

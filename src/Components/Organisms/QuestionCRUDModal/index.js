@@ -296,10 +296,10 @@ const QuestionCRUDModalView = ({
     >
       {step === 0 ? (
         <Modal.Content>
-          <h4>1.Complete the following sentence.</h4>
+          <h4>1. Complete the following sentence.</h4>
           <Form>
             <Form.Field>
-              <label>"Answer for my question </label>
+              <label>Answer for my question </label>
               <Input
                 name="question"
                 value={typed}
@@ -374,7 +374,7 @@ const QuestionCRUDModalView = ({
         </Modal.Content>
       ) : (
         <Modal.Content>
-          <h4>3.How these questions are similar to your question?</h4>
+          <h4>3. How these questions are similar to your question?</h4>
           <StyledStep3Header>
             <StyledNameTag>Your Question</StyledNameTag>
             <b style={{ textAlign: "center", alignSelf: "center" }}>{typed}</b>

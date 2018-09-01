@@ -65,6 +65,14 @@ const QuestionPoolView = ({
     questionTyping("");
   };
 
+  const questionList = questions.filter(
+    question =>
+      question.questioner === username &&
+      1 <= question.created_step &&
+      question.created_step <= PAGES_serializer(page) &&
+      question.copied_to === null
+  );
+
   return (
     <StyledAside>
       <StyledSticky>
@@ -105,28 +113,19 @@ const QuestionPoolView = ({
             />
           </PoolSegment>
         )}
-        <h3>Questions that you made.</h3>
+        <h3>Your quesitons</h3>
         <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
           <StyledSticky.ScrollablePane>
-            {questions.filter(question => question.questioner === username)
-              .length === 0 && `You didn't make any question yet!`}
-            {questions
-              .filter(
-                question =>
-                  question.questioner === username &&
-                  1 <= question.created_step &&
-                  question.created_step <= PAGES_serializer(page) &&
-                  question.copied_to === null
-              )
-              .map(question => (
-                <QuestionerQuestion
-                  key={question.id}
-                  question={question}
-                  editable
-                  expanded={question._expanded}
-                  onExpandChange={() => expandQuestion(question.id)}
-                />
-              ))}
+            {questionList.length === 0 && `You didn't make any question yet!`}
+            {questionList.map(question => (
+              <QuestionerQuestion
+                key={question.id}
+                question={question}
+                editable
+                expanded={question._expanded}
+                onExpandChange={() => expandQuestion(question.id)}
+              />
+            ))}
           </StyledSticky.ScrollablePane>
         </StyledSticky.Scrollable>
 
@@ -138,16 +137,18 @@ const QuestionPoolView = ({
                 disabled={page.loading}
                 loading={page.loading}
                 positive
-                content="I Can't think of question anymore"
+                content="I can not think of new question"
               />
             )}
             {page === PAGES.QUESTIONER_STEP2 && (
               <StyledSticky.Action
                 onClick={toStep3}
-                disabled={page.loading}
                 loading={page.loading}
                 positive
-                content="Next"
+                disabled={questionList.length < 3 || page.loading}
+                content={
+                  questionList.length < 3 ? "Make at least 3 quesitons" : "Next"
+                }
               />
             )}
           </React.Fragment>

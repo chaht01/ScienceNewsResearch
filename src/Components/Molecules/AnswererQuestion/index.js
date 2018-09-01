@@ -4,10 +4,26 @@ import { colors } from "../../Configs/var";
 import { Button } from "semantic-ui-react";
 import { isFunction as _isFunction } from "lodash";
 import StyledLink from "../../Atoms/StyledLink";
+import tinycolor from "tinycolor2";
+
+const QuestionAnsweredButton = styled(Button)`
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  ${props =>
+    props.answered &&
+    `
+    background: ${colors.pink} !important;
+    color: #fff !important;
+    &:hover{
+      background: ${tinycolor(colors.pink).darken()} !important;
+      color: #fff !important;
+    }
+  `};
+`;
 
 const QuestionGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 70px;
+  grid-template-columns: 1fr 140px;
   grid-row-gap: 0.4em;
   margin-bottom: 0.4em;
   align-items: center;
@@ -42,6 +58,25 @@ StyledQuestion.Text = styled.div`
     content: "Q.";
     font-size: 14px;
     margin-left: -1.4em;
+  }
+`;
+
+StyledQuestion.ArticleInfo = styled.div`
+  position: relative;
+  padding: 1em 0.4em;
+  margin-top: 1em;
+  margin-bottom: -1em;
+  font-family: "Abril Fatface", cursive;
+  &:before {
+    display: block;
+    position: absolute;
+    top: 1em;
+    transform: translateY(-80%);
+    content: "This article was made from";
+    font-family: initial;
+    font-size: 0.8em;
+    left: 0;
+    text-decoration: underline;
   }
 `;
 
@@ -104,7 +139,14 @@ const AnswererQuestion = ({
   if (question === undefined) {
     return <StyledQuestion>loading...</StyledQuestion>;
   }
-  const { id, text, intention, code_first, code_second } = question;
+  const {
+    id,
+    text,
+    intention,
+    code_first,
+    code_second,
+    article_title
+  } = question;
 
   return (
     <StyledQuestion expanded={expanded}>
@@ -123,27 +165,23 @@ const AnswererQuestion = ({
             style={{ textAlign: "center" }}
             onClick={onExpandChange}
           >
-            {expanded ? "fold" : "see more"}
+            {expanded ? "fold" : "see askers’ intention"}
           </StyledLink>
         </QuestionGrid>
+        <StyledQuestion.ArticleInfo>{article_title}</StyledQuestion.ArticleInfo>
         {expanded && (
-          <StyledQuestion.Intention>
-            {intention}
-            {intention}
-            {intention}
-            {intention}
-            {intention}
-          </StyledQuestion.Intention>
+          <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
         )}
       </StyledQuestion.Inner>
 
       {startHighlight &&
         _isFunction(startHighlight) && (
-          <Button
+          <QuestionAnsweredButton
             fluid
             compact
-            content={answered ? `answered` : `not answered`}
+            content={answered ? `See my answer` : `Answer`}
             basic={!answered}
+            answered={answered}
             onClick={() => startHighlight()}
           />
         )}

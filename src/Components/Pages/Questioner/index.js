@@ -27,6 +27,7 @@ const StyledQuestioner = styled.div`
   width: 80%;
   height: 100%;
   margin: 0 auto;
+  justify-content: center;
 `;
 
 const mapStateToProps = (state, ownProps) => {
@@ -163,10 +164,10 @@ const QuestionerView = ({
                 highlightsAll={sentences_on_highlights}
                 highlightColor={
                   highlightMode
-                    ? colors.yellow
+                    ? colors.green
                     : isQuestioners
-                      ? colors.yellow
-                      : colors.green
+                      ? colors.green
+                      : colors.yellow
                 }
                 bodyVisible={
                   [PAGES.QUESTIONER_STEP3, PAGES.QUESTIONER_STEP4].indexOf(

@@ -3,8 +3,11 @@ import styled from "styled-components";
 import tinycolor from "tinycolor2";
 import { findIndex as _findIndex, flatten as _flatten } from "lodash";
 import { connect } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PoolExample from "../PoolExample";
 import { Button } from "semantic-ui-react";
+import FontAwesomeButton from "../../Atoms/FontAwesomeButton";
+import { StyledSegment } from "../../Atoms/StyledSegment";
 import {
   questionHighlightMark,
   questionHighlightErase,
@@ -14,7 +17,7 @@ import {
 import { PAGES } from "../../../Reducers/page";
 import "./style.css";
 
-const FAB = styled(Button)`
+const FAB = styled(FontAwesomeButton)`
   position: sticky;
   left: 100%;
   bottom: 40px;
@@ -245,7 +248,7 @@ const ArticleView = ({
             <FAB
               circular
               positive
-              icon="tasks"
+              icon="fas fa-highlighter"
               size="huge"
               visible={!highlightMode}
               disabled={highlightMode}
@@ -256,7 +259,10 @@ const ArticleView = ({
       )}
       {page === PAGES.QUESTIONER_STEP2 && (
         <React.Fragment>
-          <h4>Below you can see what questions others raised.</h4>
+          <h4>
+            Below are questions raised by other readers. Check to see if those
+            questions can inspire you to ask more questions.
+          </h4>
           <PoolExample questions={[]} /> {/*TODO*/}
         </React.Fragment>
       )}

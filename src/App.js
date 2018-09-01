@@ -1,9 +1,12 @@
 import React from "react";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faHighlighter } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
 import { Route, withRouter } from "react-router";
 import "./App.css";
 import Sign from "./Components/Pages/Sign";
 import PageContainer from "./Components/Pages/PageContainer";
+library.add(faHighlighter);
 
 const mapStateToProps = (state, ownProps) => {
   return {

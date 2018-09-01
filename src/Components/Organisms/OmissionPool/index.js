@@ -20,6 +20,7 @@ import AnswererQuestion from "../../Molecules/AnswererQuestion";
 import { pageNextRequest } from "../../../Actions/page";
 import { PAGES, PAGES_serializer } from "../../../Reducers/page";
 import QuestionCRUDModal from "../QuestionCRUDModal";
+import FontAwesomeButton from "../../Atoms/FontAwesomeButton";
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -74,14 +75,64 @@ const ConditionalQuestionTab = ({
   saveHighlights: _saveHighlights
 }) => {
   const conditionalPane = () => {
-    const questionMine = questions.filter(
-      q =>
-        q.questioner === username && 3 <= q.created_step && q.copied_to === null
-    );
-    const questionOthers = questions.filter(
-      q =>
-        q.questioner !== username && 3 <= q.created_step && q.copied_to === null
-    );
+    let questionMine = questions
+      .filter(
+        q =>
+          q.questioner === username &&
+          3 <= q.created_step &&
+          q.copied_to === null
+      )
+      .filter(q => {
+        if (hoveredSentenceId === null || highlightMode) {
+          return true;
+        } else {
+          return (
+            q.reftexts
+              .map(reftext => reftext.sentence)
+              .indexOf(hoveredSentenceId) > -1
+          );
+        }
+      });
+
+    questionMine =
+      questionMine.length > 0
+        ? questionMine
+        : questions.filter(
+            q =>
+              q.questioner === username &&
+              3 <= q.created_step &&
+              q.copied_to === null
+          );
+
+    let questionOthers = questions
+      .filter(
+        q =>
+          q.questioner !== username &&
+          3 <= q.created_step &&
+          q.copied_to === null
+      )
+      .filter(q => {
+        if (hoveredSentenceId === null || highlightMode) {
+          return true;
+        } else {
+          return (
+            q.reftexts
+              .map(reftext => reftext.sentence)
+              .indexOf(hoveredSentenceId) > -1
+          );
+        }
+      });
+
+    questionOthers =
+      questionOthers.length > 0
+        ? questionOthers
+        : questions.filter(
+            q =>
+              q.questioner !== username &&
+              3 <= q.created_step &&
+              q.copied_to === null
+          );
+
     const defaultPanes = [
       {
         menuItem: _tabNames[0],
@@ -89,52 +140,29 @@ const ConditionalQuestionTab = ({
           <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
             <StyledSticky.ScrollablePane>
               {questionMine.length === 0 && "You haven’t raised question yet."}
-              {hoveredSentenceId === null || highlightMode
-                ? questionMine.map(question => (
-                    <QuestionerQuestion
-                      key={question.id}
-                      question={question}
-                      expanded={question._expanded}
-                      onExpandChange={() => expandQuestion(question.id)}
-                      editable
-                      onEdit={promsingQuestion => {
-                        _saveHighlights(
-                          promsingQuestion.id,
-                          highlightInProgress
-                        );
-                      }}
-                      annotable
-                      focused={
-                        highlightTargetQuestion !== null &&
-                        highlightTargetQuestion.id === question.id
-                      }
-                      reAnnotate={() => startHighlight(question)}
-                    />
-                  ))
-                : questionMine
-                    .filter(
-                      q =>
-                        q.reftexts
-                          .map(reftext => reftext.sentence)
-                          .indexOf(hoveredSentenceId) > -1
-                    )
-                    .map(question => (
-                      <QuestionerQuestion
-                        key={question.id}
-                        question={question}
-                        expanded={question._expanded}
-                        onExpandChange={() => expandQuestion(question.id)}
-                        editable
-                        onEdit={promsingQuestion => {
-                          _saveHighlights(
-                            promsingQuestion.id,
-                            question.reftexts.map(reftext => reftext.sentence)
-                          );
-                        }}
-                        annotable
-                        reAnnotate={() => startHighlight(question)}
-                      />
-                    ))}
+              {questionMine.map(question => (
+                <QuestionerQuestion
+                  key={question.id}
+                  question={question}
+                  expanded={question._expanded}
+                  onExpandChange={() => expandQuestion(question.id)}
+                  editable
+                  onEdit={promsingQuestion => {
+                    _saveHighlights(
+                      promsingQuestion.id,
+                      hoveredSentenceId === null || highlightMode
+                        ? highlightInProgress
+                        : question.reftexts.map(reftext => reftext.sentence)
+                    );
+                  }}
+                  annotable
+                  focused={
+                    highlightTargetQuestion !== null &&
+                    highlightTargetQuestion.id === question.id
+                  }
+                  reAnnotate={() => startHighlight(question)}
+                />
+              ))}
             </StyledSticky.ScrollablePane>
           </StyledSticky.Scrollable>
         )
@@ -148,30 +176,14 @@ const ConditionalQuestionTab = ({
             <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
               <StyledSticky.ScrollablePane>
                 {questionOthers.length === 0 && "No raised question yet."}
-                {hoveredSentenceId === null || highlightMode
-                  ? questionOthers.map(question => (
-                      <QuestionerQuestion
-                        key={question.id}
-                        question={question}
-                        expanded={question._expanded}
-                        onExpandChange={() => expandQuestion(question.id)}
-                      />
-                    ))
-                  : questionOthers
-                      .filter(
-                        q =>
-                          q.reftexts
-                            .map(reftext => reftext.sentence)
-                            .indexOf(hoveredSentenceId) > -1
-                      )
-                      .map(question => (
-                        <QuestionerQuestion
-                          key={question.id}
-                          question={question}
-                          expanded={question._expanded}
-                          onExpandChange={() => expandQuestion(question.id)}
-                        />
-                      ))}
+                {questionOthers.map(question => (
+                  <QuestionerQuestion
+                    key={question.id}
+                    question={question}
+                    expanded={question._expanded}
+                    onExpandChange={() => expandQuestion(question.id)}
+                  />
+                ))}
               </StyledSticky.ScrollablePane>
             </StyledSticky.Scrollable>
           )
@@ -244,6 +256,11 @@ const OmissionPoolView = ({
     _saveHighlights(highlightTargetQuestion.id, highlightInProgress);
   };
 
+  const questionList = questions.filter(
+    q =>
+      q.questioner === username && 3 <= q.created_step && q.copied_to === null
+  );
+
   const conditionalFooter = () => {
     if (highlightMode) {
       if (highlightTargetQuestion === null) return null;
@@ -266,10 +283,12 @@ const OmissionPoolView = ({
           <StyledSticky.Footer>
             <StyledSticky.Action
               onClick={toAnswererIntro}
-              disabled={page.loading}
               loading={page.loading}
               positive
-              content="Done"
+              disabled={questionList.length < 3 || page.loading}
+              content={
+                questionList.length < 3 ? "Make at least 3 quesitons" : "Next"
+              }
             />
           </StyledSticky.Footer>
         );
@@ -301,7 +320,7 @@ const OmissionPoolView = ({
                 overflow: "hidden"
               }}
             >
-              <div>1. Select sentence(s) that your question is based on.</div>
+              <div>1. Select sentence(s) which your question stems from.</div>
               {highlightedSentences.length > 0 ? (
                 <Suggestion
                   items={highlightedSentences}
@@ -315,7 +334,7 @@ const OmissionPoolView = ({
                     alignSelf: "center"
                   }}
                 >
-                  any sentence not selected yet
+                  no selected sentence yet
                 </div>
               )}
             </StyledSegment.Pane>
@@ -354,7 +373,13 @@ const OmissionPoolView = ({
             <StyledSegment.Header>
               Raise questions that this article DOES NOT ANSWER. You can start
               by clicking{" "}
-              <Button circular positive icon="tasks" size="mini" active />button.
+              <FontAwesomeButton
+                circular
+                positive
+                icon="fas fa-highlighter"
+                size="mini"
+                active
+              />button.
             </StyledSegment.Header>
           </OmissionPoolSegment>
         )}

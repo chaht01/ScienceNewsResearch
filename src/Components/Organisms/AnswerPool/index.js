@@ -91,37 +91,40 @@ const AnswerPoolView = ({
       </StyledAside>
     );
   } else {
+    let questionList = latestShown.filter(shown => {
+      if (hoveredSentenceId === null || highlightMode) {
+        return true;
+      } else {
+        return (
+          shown._latest_take.answertexts
+            .map(answertext => answertext.sentence)
+            .indexOf(hoveredSentenceId) > -1
+        );
+      }
+    });
+    questionList = questionList.length > 0 ? questionList : latestShown;
     return (
       <StyledAside>
         <StyledSticky>
-          <h3>Choose questions you can answer</h3>
+          <h3>
+            Can the article that you read can answer their question? Please
+            answer the questions that this article can answer.
+          </h3>
           <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
             <StyledSticky.ScrollablePane>
-              {latestShown
-                .filter(shown => {
-                  if (hoveredSentenceId === null || highlightMode) {
-                    return true;
-                  } else {
-                    return (
-                      shown._latest_take.answertexts
-                        .map(answertext => answertext.sentence)
-                        .indexOf(hoveredSentenceId) > -1
-                    );
-                  }
-                })
-                .map(shown => (
-                  <AnswererQuestion
-                    key={shown.question.id}
-                    question={shown.question}
-                    startHighlight={startHighlight.bind(this, shown)}
-                    answered={shown._latest_take.taken}
-                    expanded={shown._expanded}
-                    onExpandChange={() => expandShown(shown.id)}
-                  />
-                ))}
+              {questionList.map(shown => (
+                <AnswererQuestion
+                  key={shown.question.id}
+                  question={shown.question}
+                  startHighlight={startHighlight.bind(this, shown)}
+                  answered={shown._latest_take.taken}
+                  expanded={shown._expanded}
+                  onExpandChange={() => expandShown(shown.id)}
+                />
+              ))}
               {hoveredSentenceId === null && (
                 <Button
-                  content="Fetch more"
+                  content="See more questions"
                   fluid
                   onClick={fetchShowns}
                   disabled={shownsLoading}
