@@ -140,7 +140,8 @@ const QuestionerView = ({
           ? q.questioner === username
           : q.questioner !== username) &&
         3 <= q.created_step &&
-        q.copied_to === null
+        q.copied_to === null &&
+        q.removed_step === null
     )
     .map(q => q.reftexts)
     .map(reftexts => reftexts.map(reftext => reftext.sentence));

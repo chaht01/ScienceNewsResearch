@@ -1,6 +1,6 @@
 import { types as actionType } from "../Actions/questionHighlight";
 
-export const TabNames = ["You made", "Others'"];
+export const TabNames = ["Your questions", "Others' questions"];
 
 const initialState = {
   loading: false,

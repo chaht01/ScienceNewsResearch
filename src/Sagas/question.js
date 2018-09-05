@@ -28,7 +28,10 @@ import {
   questionModalFetchInquiriesFailure,
   questionCRUDSubmitSuccess,
   questionCRUDSubmitFailure,
-  questionModalClose
+  questionModalClose,
+  questionModalUpdateInquiryAsyncRequest,
+  questionModalUpdateInquiryAsyncSuccess,
+  questionModalUpdateInquiryAsyncFailure
 } from "../Actions/questionModal";
 import { QuestionMock } from "./mock";
 import Api from "../config/Api";
@@ -56,7 +59,6 @@ function* createQuestionAsync({
   payload: { text, phase: created_phase, research_id: research, article_id }
 }) {
   try {
-    yield call(delay, 1000);
     const question = yield call(Api.question.create, {
       text,
       created_phase,
@@ -91,10 +93,15 @@ function* updateQuestionAsync({ type, payload }) {
   }
 }
 
-function* deleteQuestionAsync({ type, payload }) {
+function* deleteQuestionAsync({
+  type,
+  payload: { question_id, removed_step }
+}) {
   try {
-    yield call(delay, 1000); // Consume API
-    const question = yield payload;
+    const question = yield call(Api.question.remove, {
+      question_id,
+      payload: { removed_step }
+    });
     yield put(questionQuestionDeleteSuccess(question));
   } catch (error) {
     yield put(questionQuestionDeleteFailure(error));
@@ -115,15 +122,10 @@ export function* watchHandleQuestionAsync() {
   }
 }
 
-function* questionModalInquiriesFetchAsync() {
+function* questionModalInquiriesFetchAsync({ type, payload: { typed } }) {
   try {
-    yield call(delay, 1000);
-    const inquires = yield [
-      { id: 1, text: " hello world" },
-      { id: 2, text: " hello world2" },
-      { id: 3, text: " hello world3" }
-    ];
-    yield put(questionModalFetchInquiriesSuccess(inquires));
+    const inquiries = yield call(Api.judgement.list, typed);
+    yield put(questionModalFetchInquiriesSuccess(inquiries));
   } catch (error) {
     yield put(questionModalFetchInquiriesFailure(error));
   }
@@ -136,6 +138,33 @@ export function* watchQuestionModalInquiriesFetchAsync() {
   );
 }
 
+function* scoreUpdateOnInquiriesAsync({
+  type,
+  payload: { question_id, scores }
+}) {
+  try {
+    const judgements = yield all(
+      Object.keys(scores).map(j_id =>
+        call(Api.judgement.score, {
+          judgement_id: j_id,
+          payload: { question: question_id, score: scores[j_id] }
+        })
+      )
+    );
+
+    yield put(questionModalUpdateInquiryAsyncSuccess(judgements));
+  } catch (error) {
+    yield put(questionModalUpdateInquiryAsyncFailure(error));
+  }
+}
+
+export function* watchScoreUpdateOnInquiriesAsync() {
+  yield takeLatest(
+    modalTypes.QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_REQUEST,
+    scoreUpdateOnInquiriesAsync
+  );
+}
+
 function* questionModalCRUDAsync({
   type,
   payload: {
@@ -145,8 +174,8 @@ function* questionModalCRUDAsync({
     intention,
     code_first_id,
     code_second_id,
-    group_inquries,
     openInstance,
+    scores,
     onSubmit
   }
 }) {
@@ -172,6 +201,7 @@ function* questionModalCRUDAsync({
       yield put(questionQuestionCreateSuccess(newQuestion));
       yield put(quesitonType("")); //clear type
     }
+    yield put(questionModalUpdateInquiryAsyncRequest(newQuestion.id, scores));
     yield put(questionCRUDSubmitSuccess());
     yield call(openInstance.handleClose);
     if (_isFunction(onSubmit)) {

@@ -19,6 +19,12 @@ const AppView = () => {
     <React.Fragment>
       <Route exact path="/" component={Sign} />
       <Route path="/verified" component={PageContainer} />
+      <Route
+        path="/survey"
+        component={() =>
+          (window.location = "https://goo.gl/forms/TPzxKcQ92i9i1oDH2")
+        }
+      />
     </React.Fragment>
   );
 };

@@ -8,7 +8,8 @@ import {
   watchHandleQuestionAsync,
   watchQuestionModalInquiriesFetchAsync,
   watchQuestionModalCRUDAsync,
-  watchQuestionHighlightSaveAsync
+  watchQuestionHighlightSaveAsync,
+  watchScoreUpdateOnInquiriesAsync
 } from "./question";
 import {
   watchFetchHighlightsAsync,
@@ -34,6 +35,7 @@ export default function* rootSaga() {
     watchNextPageAsync(),
     watchFetchArticleAsync(),
     watchCreateQuestionsAsync(),
+    watchScoreUpdateOnInquiriesAsync(),
     watchFetchQuestionsAsync(),
     watchHandleQuestionAsync(),
     watchQuestionModalInquiriesFetchAsync(),

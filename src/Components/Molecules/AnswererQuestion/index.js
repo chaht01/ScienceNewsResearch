@@ -12,11 +12,9 @@ const QuestionAnsweredButton = styled(Button)`
   ${props =>
     props.answered &&
     `
-    background: ${colors.pink} !important;
-    color: #fff !important;
+    background: transparent !important;
     &:hover{
-      background: ${tinycolor(colors.pink).darken()} !important;
-      color: #fff !important;
+      background: #fff !important;
     }
   `};
 `;
@@ -43,6 +41,11 @@ const StyledQuestion = styled.div`
     `box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);`} &:hover {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   }
+  ${props =>
+    props.answered &&
+    `
+    background: transparent;
+    `};
 `;
 StyledQuestion.Inner = styled.div`
   padding: 0.6em 1em 0.4em;
@@ -66,17 +69,16 @@ StyledQuestion.ArticleInfo = styled.div`
   padding: 1em 0.4em;
   margin-top: 1em;
   margin-bottom: -1em;
-  font-family: "Abril Fatface", cursive;
   &:before {
     display: block;
     position: absolute;
     top: 1em;
     transform: translateY(-80%);
-    content: "This article was made from";
+    content: "This question is made from the ${props =>
+      props.publisher}’s story titled as";
     font-family: initial;
     font-size: 0.8em;
     left: 0;
-    text-decoration: underline;
   }
 `;
 
@@ -93,7 +95,6 @@ StyledQuestion.Intention = styled.div`
     content: "It will help";
     font-size: 0.8em;
     left: 0;
-    text-decoration: underline;
   }
 `;
 
@@ -145,11 +146,12 @@ const AnswererQuestion = ({
     intention,
     code_first,
     code_second,
-    article_title
+    article_title,
+    article_publisher
   } = question;
 
   return (
-    <StyledQuestion expanded={expanded}>
+    <StyledQuestion expanded={expanded} answered={answered}>
       <StyledQuestion.Inner>
         <QuestionGrid>
           <StyledQuestion.Text>{text}</StyledQuestion.Text>
@@ -165,10 +167,12 @@ const AnswererQuestion = ({
             style={{ textAlign: "center" }}
             onClick={onExpandChange}
           >
-            {expanded ? "fold" : "see askers’ intention"}
+            {expanded ? "fold" : "see more"}
           </StyledLink>
         </QuestionGrid>
-        <StyledQuestion.ArticleInfo>{article_title}</StyledQuestion.ArticleInfo>
+        <StyledQuestion.ArticleInfo publisher={article_publisher}>
+          {article_title}
+        </StyledQuestion.ArticleInfo>
         {expanded && (
           <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
         )}
@@ -179,7 +183,7 @@ const AnswererQuestion = ({
           <QuestionAnsweredButton
             fluid
             compact
-            content={answered ? `See my answer` : `Answer`}
+            content={answered ? `See my answer` : `Add your answer`}
             basic={!answered}
             answered={answered}
             onClick={() => startHighlight()}

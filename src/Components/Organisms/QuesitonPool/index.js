@@ -1,10 +1,12 @@
 import React from "react";
-import { Button, Form, Input } from "semantic-ui-react";
+import { Button, Form, Input, Popup } from "semantic-ui-react";
 import SuggestionPreview from "../SuggestionPreview";
+import Msg from "../../Atoms/Msg";
 import {
   quesitonType,
   poolFoldingOpen,
-  questionQuestionExpandToggle
+  questionQuestionExpandToggle,
+  questionQuestionDeleteRequest
 } from "../../../Actions/question";
 import { connect } from "react-redux";
 import QuestionForm from "../../Molecules/QuestionForm";
@@ -41,7 +43,9 @@ const mapDispatchToProps = dispatch => {
     toStep2: () => dispatch(pageNextRequest(PAGES.QUESTIONER_STEP2, [])),
     toStep3: () => dispatch(pageNextRequest(PAGES.QUESTIONER_STEP3, [])),
     expandQuestion: question_id =>
-      dispatch(questionQuestionExpandToggle(question_id))
+      dispatch(questionQuestionExpandToggle(question_id)),
+    deleteQuestion: (question_id, removed_step) =>
+      dispatch(questionQuestionDeleteRequest(question_id, removed_step))
   };
 };
 
@@ -56,7 +60,8 @@ const QuestionPoolView = ({
   questions,
   toStep2,
   toStep3,
-  expandQuestion
+  expandQuestion,
+  deleteQuestion
 }) => {
   const handleTyped = value => {
     questionTyping(value);
@@ -70,7 +75,8 @@ const QuestionPoolView = ({
       question.questioner === username &&
       1 <= question.created_step &&
       question.created_step <= PAGES_serializer(page) &&
-      question.copied_to === null
+      question.copied_to === null &&
+      question.removed_step === null
   );
 
   return (
@@ -113,7 +119,8 @@ const QuestionPoolView = ({
             />
           </PoolSegment>
         )}
-        <h3>Your quesitons</h3>
+        <h3>Your quesitons </h3>
+        <span>You need to generate 3 or more questions to proceed.</span>
         <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
           <StyledSticky.ScrollablePane>
             {questionList.length === 0 && `You didn't make any question yet!`}
@@ -122,6 +129,9 @@ const QuestionPoolView = ({
                 key={question.id}
                 question={question}
                 editable
+                onDelete={() =>
+                  deleteQuestion(question.id, PAGES_serializer(page))
+                }
                 expanded={question._expanded}
                 onExpandChange={() => expandQuestion(question.id)}
               />
@@ -132,13 +142,21 @@ const QuestionPoolView = ({
         <StyledSticky.Footer>
           <React.Fragment>
             {page === PAGES.QUESTIONER_STEP1 && (
-              <StyledSticky.Action
-                onClick={toStep2}
-                disabled={page.loading}
-                loading={page.loading}
-                positive
-                content="I can not think of new question"
-              />
+              <Popup
+                trigger={
+                  <StyledSticky.Action
+                    onClick={toStep2}
+                    disabled={page.loading}
+                    loading={page.loading}
+                    positive
+                    content="I can not think of new question"
+                  />
+                }
+                hovered
+                inverted
+              >
+                You can see others' questions and raise more questions.
+              </Popup>
             )}
             {page === PAGES.QUESTIONER_STEP2 && (
               <StyledSticky.Action

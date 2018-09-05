@@ -34,6 +34,15 @@ export const types = {
   QUESTION_MODAL_UPDATE_INQUIRY: typeStringCreator(
     "QUESTION_MODAL_UPDATE_INQUIRY"
   ),
+  QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_REQUEST: typeStringCreator(
+    "QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_REQUEST"
+  ),
+  QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_SUCCESS: typeStringCreator(
+    "QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_SUCCESS"
+  ),
+  QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_FAILURE: typeStringCreator(
+    "QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_FAILURE"
+  ),
   QUESTION_MODAL_CRUD_SUBMIT_REQUEST: typeStringCreator(
     "QUESTION_MODAL_CRUD_SUBMIT_REQUEST"
   ),
@@ -123,13 +132,37 @@ export const questionModalClearInquries = () => {
   };
 };
 
-export const questionModalUpdateInquiry = (inquiry_id, similarity) => {
+export const questionModalUpdateInquiry = (inquiry_id, score) => {
   return {
     type: types.QUESTION_MODAL_UPDATE_INQUIRY,
     payload: {
       inquiry_id,
-      similarity
+      score
     }
+  };
+};
+
+export const questionModalUpdateInquiryAsyncRequest = (question_id, scores) => {
+  return {
+    type: types.QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_REQUEST,
+    payload: {
+      question_id,
+      scores
+    }
+  };
+};
+
+export const questionModalUpdateInquiryAsyncSuccess = inquiries => {
+  return {
+    type: types.QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_SUCCESS,
+    payload: inquiries
+  };
+};
+
+export const questionModalUpdateInquiryAsyncFailure = error => {
+  return {
+    type: types.QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_FAILURE,
+    payload: error
   };
 };
 
@@ -140,8 +173,8 @@ export const questionCRUDSubmitRequest = (
   intention,
   code_first_id,
   code_second_id,
-  group_inquries,
   openInstance,
+  scores,
   onSubmit
 ) => {
   return {
@@ -153,8 +186,8 @@ export const questionCRUDSubmitRequest = (
       intention,
       code_first_id,
       code_second_id,
-      group_inquries,
       openInstance,
+      scores,
       onSubmit
     }
   };

@@ -16,7 +16,10 @@ const initialState = {
   group_inquries: {
     loading: false,
     data: [],
-    error: null
+    scores: {},
+    error: null,
+    updateLoading: false,
+    updateError: null
   },
 
   loading: false, //submission
@@ -81,10 +84,7 @@ const questionModalReducer = (state = initialState, action) => {
         step: 1,
         group_inquries: {
           ...state.group_inquries,
-          data: action.payload.map(inquiry => ({
-            ...inquiry,
-            similarity: null // can be negative number
-          })),
+          data: action.payload,
           loading: false
         }
       };
@@ -101,7 +101,7 @@ const questionModalReducer = (state = initialState, action) => {
       return {
         ...state,
         group_inquries: {
-          data: []
+          ...initialState.group_inquries
         }
       };
 
@@ -109,16 +109,30 @@ const questionModalReducer = (state = initialState, action) => {
       return {
         ...state,
         group_inquries: {
-          data: state.group_inquries.data.map(inquiry => {
-            if (inquiry.id !== action.payload.inquiry_id) {
-              return inquiry;
-            } else {
-              return {
-                ...inquiry,
-                similarity: action.payload.similarity
-              };
-            }
-          })
+          ...state.group_inquries,
+          scores: {
+            ...state.group_inquries.scores,
+            [action.payload.inquiry_id]: action.payload.score
+          }
+        }
+      };
+
+    case actionType.QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_REQUEST:
+      return {
+        ...state,
+        group_inquries: {
+          ...state.group_inquries,
+          updateLoading: true
+        }
+      };
+
+    case actionType.QUESTION_MODAL_UPDATE_INQUIRY_ASYNC_FAILURE:
+      return {
+        ...state,
+        group_inquries: {
+          ...state.group_inquries,
+          updateLoading: false,
+          updateError: action.payload
         }
       };
     case actionType.QUESTION_MODAL_CRUD_SUBMIT_REQUEST:

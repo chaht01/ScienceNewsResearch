@@ -8,6 +8,8 @@ import { colors } from "../../Configs/var";
 import { StyledAside, StyledSticky } from "../../Atoms/StyledAside";
 import AnswererQuestion from "../../Molecules/AnswererQuestion";
 import { shownFetchRequest, shownExpandToggle } from "../../../Actions/shown";
+import { pageNextRequest } from "../../../Actions/page";
+import { PAGES } from "../../../Reducers/page";
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -23,7 +25,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchShowns: call_cnt => dispatch(shownFetchRequest(call_cnt)),
-    expandShown: shown_id => dispatch(shownExpandToggle(shown_id))
+    expandShown: shown_id => dispatch(shownExpandToggle(shown_id)),
+    toPresurvey: () => dispatch(pageNextRequest(PAGES.PRESURVEY, []))
   };
 };
 
@@ -46,7 +49,8 @@ const AnswerPoolView = ({
   },
   _showns: { data: showns, loading: shownsLoading, call_cnt },
   fetchShowns: _fetchShowns,
-  expandShown
+  expandShown,
+  toPresurvey
 }) => {
   const highlightedSentences = content
     .filter(sentence => sentenceIds.indexOf(sentence.id) > -1)
@@ -107,9 +111,12 @@ const AnswerPoolView = ({
       <StyledAside>
         <StyledSticky>
           <h3>
-            Can the article that you read can answer their question? Please
-            answer the questions that this article can answer.
+            Can the article that you read answer questions below?
+            <br />
+            Please answer the questions that this article can directly answer.
+            You should answer with sentence(s) from the article.
           </h3>
+          <span>You need to answer 5 or more questions.</span>
           <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
             <StyledSticky.ScrollablePane>
               {questionList.map(shown => (
@@ -134,7 +141,19 @@ const AnswerPoolView = ({
             </StyledSticky.ScrollablePane>
           </StyledSticky.Scrollable>
 
-          <StyledSticky.Footer />
+          <StyledSticky.Footer>
+            <StyledSticky.Action
+              onClick={toPresurvey}
+              positive
+              disabled={
+                questionList.filter(shown => shown._latest_take.taken).length <
+                5
+              }
+              content={
+                questionList.length < 5 ? "Make at least 5 answers" : "Done"
+              }
+            />
+          </StyledSticky.Footer>
         </StyledSticky>
       </StyledAside>
     );

@@ -1,7 +1,16 @@
 import React from "react";
+import styled from "styled-components";
 import { connect } from "react-redux";
 import { Menu, Segment } from "semantic-ui-react";
 import { filterExampleQuestion } from "../../../Actions/poolExample";
+
+const ExampleQuestion = styled.div`
+  padding: 1em;
+  border-bottom: 1px solid #e1e1e7;
+  &:last-child {
+    border-bottom: none;
+  }
+`;
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -22,20 +31,40 @@ const PoolExampleView = ({
   filterQuestionType,
   questions
 }) => {
+  const static_seed = {
+    Understanding: [
+      "Why vitamin B linked to cancer?",
+      "What exactly would be considered a high dose?"
+    ],
+    Research: [
+      "Which population has been analyzed in this study?",
+      "Who did this study?"
+    ],
+    Extension: [
+      "Which B vitamin causes the greatest likelihood of developing lung cancer?",
+      "What is the ideal level of B vitamins you should take per day to avoid the cancer risk?"
+    ]
+  };
   return (
     <React.Fragment>
       <Menu attached="top" compact>
-        {filter_item.map((name, idx) => (
-          <Menu.Item
-            key={idx}
-            name={name}
-            active={filter_item[filteredBy] === name}
-            content={name}
-            onClick={() => filterQuestionType(idx)}
-          />
-        ))}
+        {filter_item
+          .filter(name => static_seed.hasOwnProperty(name))
+          .map((name, idx) => (
+            <Menu.Item
+              key={idx}
+              name={name}
+              active={filter_item[filteredBy] === name}
+              content={name}
+              onClick={() => filterQuestionType(idx)}
+            />
+          ))}
       </Menu>
-      <Segment attached="bottom">{filter_item[filteredBy]}</Segment>
+      <Segment attached="bottom">
+        {static_seed[filter_item[filteredBy]].map(text => (
+          <ExampleQuestion>{text}</ExampleQuestion>
+        ))}
+      </Segment>
     </React.Fragment>
   );
 };

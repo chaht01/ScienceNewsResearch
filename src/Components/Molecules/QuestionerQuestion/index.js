@@ -58,7 +58,6 @@ StyledQuestion.Intention = styled.div`
     content: "It will help";
     font-size: 0.8em;
     left: 0;
-    text-decoration: underline;
   }
 `;
 
@@ -98,6 +97,7 @@ const QuestionerQuestion = ({
   question,
   editable,
   onEdit,
+  onDelete,
   annotable,
   reAnnotate,
   expanded,
@@ -124,7 +124,7 @@ const QuestionerQuestion = ({
           style={{ textAlign: "center" }}
           onClick={onExpandChange}
         >
-          {expanded ? "fold" : "see askers’ intention"}
+          {expanded ? "fold" : "see more"}
         </StyledLink>
       </QuestionGrid>
       {expanded && (
@@ -151,7 +151,7 @@ const QuestionerQuestion = ({
                     onSubmit={onEdit}
                     trigger={<Button compact icon="edit" />}
                   />
-                  <Button compact icon="trash alternate" />
+                  <Button compact icon="trash alternate" onClick={onDelete} />
                 </React.Fragment>
               )}
             </Button.Group>

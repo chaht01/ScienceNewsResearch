@@ -14,6 +14,13 @@ export const question = {
   update: ({ question_id, payload }) => {
     return fetchApi(`/questions/${question_id}/`, payload, "patch");
   },
+  remove: ({ question_id, payload }) => {
+    return fetchApi(
+      `/questions/${question_id}/update_remove/`,
+      payload,
+      "patch"
+    );
+  },
   update_reftexts: ({ question_id, payload }) => {
     return fetchApi(
       `/questions/${question_id}/update_reftexts/`,

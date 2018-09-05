@@ -31,9 +31,22 @@ import tinycolor from "tinycolor2";
 import { quesitonType } from "../../../Actions/question";
 import { PAGES_serializer } from "../../../Reducers/page";
 
+const labelSerializer = key => {
+  const mapper = {
+    Understanding: "Background Knowledge",
+    Research: "Research Itself",
+    Extension: "Application"
+  };
+  return mapper.hasOwnProperty(key) ? mapper[key] : key;
+};
+
+const StyledStep2Intention = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 40px;
+`;
 const StyledStep3Header = styled.div`
   display: grid;
-  grid-template-columns: 70px 1fr;
+  grid-template-columns: 1fr;
   align-items: stretch;
   margin-bottom: 1em;
 `;
@@ -49,16 +62,13 @@ StyledStep3List.Question = styled(Form.Field)`
 `;
 const StyledLevel2Form = styled.div`
   display: grid;
-  grid-template-columns: 70px 1fr 40px;
+  grid-template-columns: 1fr 40px;
   align-items: stretch;
   margin-bottom: 1em;
 `;
 const StyledRadioForm = styled(Form)`
   display: grid;
-  grid-template-columns: 70px repeat(3, minmax(auto, 90px)) minmax(
-      auto,
-      calc(90px + 1em)
-    );
+  grid-template-columns: repeat(4, 1fr);
   align-items: stretch;
   margin-bottom: 1em;
 `;
@@ -166,8 +176,8 @@ const mapDispatchToProps = dispatch => {
     nextStep: step => dispatch(questionModalNext(step)),
     fetchInquiries: question_typed =>
       dispatch(questionModalFetchInquiriesRequest(question_typed)),
-    updateInquiry: (inquiry_id, similarity) =>
-      dispatch(questionModalUpdateInquiry(inquiry_id, similarity)),
+    updateInquiry: (inquiry_id, score) =>
+      dispatch(questionModalUpdateInquiry(inquiry_id, score)),
     submitModal: (
       phase,
       question_id,
@@ -175,8 +185,8 @@ const mapDispatchToProps = dispatch => {
       intention,
       code_first_id,
       code_second_id,
-      group_inquries,
       openInstance,
+      scores,
       onSubmit
     ) =>
       dispatch(
@@ -187,8 +197,8 @@ const mapDispatchToProps = dispatch => {
           intention,
           code_first_id,
           code_second_id,
-          group_inquries,
           openInstance,
+          scores,
           onSubmit
         )
       )
@@ -218,7 +228,12 @@ const QuestionCRUDModalView = ({
   onCodeSecondChange,
   nextStep: _nextStep,
   fetchInquiries: _fetchInquiries,
-  _group_inquries: { data: group_inquries, loading: group_inquries_loading },
+  _group_inquries: {
+    data: group_inquries,
+    loading: group_inquries_loading,
+    scores,
+    udpateLoading: group_inquries_update_loading
+  },
   updateInquiry,
   submitModal
 }) => {
@@ -254,8 +269,8 @@ const QuestionCRUDModalView = ({
       intention,
       code_first_id,
       code_second_id,
-      group_inquries,
       openInstance,
+      scores,
       onSubmit
     );
   };
@@ -277,7 +292,9 @@ const QuestionCRUDModalView = ({
   const step2Disabled =
     step1Disabled ||
     submitLoading ||
-    group_inquries.filter(inquire => inquire.similarity === null).length > 0;
+    group_inquries
+      .map(inquire => inquire.id)
+      .filter(inquire_id => !scores.hasOwnProperty(inquire_id)).length > 0;
 
   const prevStep = _nextStep.bind(this, step - 1);
   return (
@@ -296,7 +313,7 @@ const QuestionCRUDModalView = ({
     >
       {step === 0 ? (
         <Modal.Content>
-          <h4>1. Complete the following sentence.</h4>
+          <h4>1. Complete the following sentence</h4>
           <Form>
             <Form.Field>
               <label>Answer for my question </label>
@@ -305,57 +322,20 @@ const QuestionCRUDModalView = ({
                 value={typed}
                 placeholder="Type your question"
                 onChange={handleTypeChange}
+                autofocus
               />
             </Form.Field>
             <Form.Field>
               <label>will help other readers to</label>
-              <Input
-                name="intention"
-                value={intention}
-                placeholder="intention of your question"
-                onChange={handleTypeChange}
-              />
-            </Form.Field>
-          </Form>
-          <h4>
-            2. Categorize your question in 2 levels - My question asks about
-            _____.
-          </h4>
-          <StyledRadioForm>
-            <StyledNameTag>Level 1</StyledNameTag>
-            {codes.map(({ id: code_id, text: label }, idx) => (
-              <Form.Field key={idx} style={{ marginBottom: 0 }}>
-                <StyledRadio
-                  label={label}
-                  name="question_code"
-                  value={code_id}
-                  checked={code_id === code_first_id}
-                  onChange={handleCodeFirstChange}
-                  warning={false} //todo
-                />
-              </Form.Field>
-            ))}
-          </StyledRadioForm>
-          {code_first_id !== -1 &&
-            codes.filter(code => code.id === code_first_id)[0].code_second
-              .length > 0 && (
-              <StyledLevel2Form>
-                <StyledNameTag>Level 2</StyledNameTag>
-                <Dropdown
-                  placeholder="Select Type"
-                  fluid
-                  selection
-                  onChange={handleCodeSecondChange}
-                  value={code_second_id}
-                  options={codes
-                    .filter(code => code.id === code_first_id)[0]
-                    .code_second.map(code => ({
-                      ...code,
-                      value: code.id
-                    }))}
+              <StyledStep2Intention>
+                <Input
+                  name="intention"
+                  value={intention}
+                  placeholder="intention of your question"
+                  onChange={handleTypeChange}
                 />
                 <Popup
-                  key={"level2"}
+                  key={"intention"}
                   trigger={
                     <Icon
                       style={{
@@ -366,23 +346,79 @@ const QuestionCRUDModalView = ({
                       color="grey"
                     />
                   }
-                  header={"level2 header"}
-                  content={`This is description about level2`}
+                  header={"Intention header"}
+                  content={`This is description about intention`}
                 />
-              </StyledLevel2Form>
+              </StyledStep2Intention>
+            </Form.Field>
+          </Form>
+          <h4>
+            2. What does your question ask about? <br /> Categorize your
+            question into one of the following group
+          </h4>
+          <StyledRadioForm>
+            {codes.map(({ id: code_id, text: label }, idx) => (
+              <Form.Field key={idx} style={{ marginBottom: 0 }}>
+                <StyledRadio
+                  label={labelSerializer(label)}
+                  name="question_code"
+                  value={code_id}
+                  checked={code_id === code_first_id}
+                  onChange={handleCodeFirstChange}
+                  warning={false} //todo
+                />
+              </Form.Field>
+            ))}
+          </StyledRadioForm>
+
+          {code_first_id !== -1 &&
+            codes.filter(code => code.id === code_first_id)[0].code_second
+              .length > 0 && (
+              <React.Fragment>
+                <span>, especially about</span>
+                <StyledLevel2Form>
+                  <Dropdown
+                    placeholder="Select Type"
+                    fluid
+                    selection
+                    onChange={handleCodeSecondChange}
+                    value={code_second_id}
+                    options={codes
+                      .filter(code => code.id === code_first_id)[0]
+                      .code_second.map(code => ({
+                        ...code,
+                        value: code.id
+                      }))}
+                  />
+                  <Popup
+                    key={"level2"}
+                    trigger={
+                      <Icon
+                        style={{
+                          alignSelf: "center",
+                          justifySelf: "center"
+                        }}
+                        name="question circle"
+                        color="grey"
+                      />
+                    }
+                    header={"level2 header"}
+                    content={`This is description about level2`}
+                  />
+                </StyledLevel2Form>
+              </React.Fragment>
             )}
         </Modal.Content>
       ) : (
         <Modal.Content>
-          <h4>3. How these questions are similar to your question?</h4>
+          <h4>3. How are these questions similar to your question?</h4>
           <StyledStep3Header>
-            <StyledNameTag>Your Question</StyledNameTag>
             <b style={{ textAlign: "center", alignSelf: "center" }}>{typed}</b>
           </StyledStep3Header>
           {group_inquries.map((inquiry, idx) => (
             <StyledStep3List key={inquiry.id}>
               <StyledStep3List.Question>
-                {inquiry.text}
+                {inquiry.question_first.text}
               </StyledStep3List.Question>
 
               {[`same`, `similar`, `different`, `don't know`].map(
@@ -391,10 +427,10 @@ const QuestionCRUDModalView = ({
                     <StyledRadio
                       label={choice}
                       name={`inquiry_${idx}`}
-                      value={idx}
-                      checked={inquiry.similarity === idx}
-                      onChange={(e, { value: similarity }) =>
-                        updateInquiry(inquiry.id, similarity)
+                      value={4 - idx} //4,3,2,1
+                      checked={scores[inquiry.id] === 4 - idx}
+                      onChange={(e, { value: score }) =>
+                        updateInquiry(inquiry.id, score)
                       }
                     />
                   </Form.Field>

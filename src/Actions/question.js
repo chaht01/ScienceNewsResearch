@@ -121,10 +121,13 @@ export const questionQuestionUpdateFailure = error => {
 };
 
 // QUESTION DELETION
-export const questionQuestionDeleteRequest = question => {
+export const questionQuestionDeleteRequest = (question_id, removed_step) => {
   return {
     type: types.QUESTION_DELETE_REQUEST,
-    payload: question
+    payload: {
+      question_id,
+      removed_step
+    }
   };
 };
 

@@ -1,14 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { Button, Tab } from "semantic-ui-react";
+import { Button, Tab, Popup } from "semantic-ui-react";
 import { StyledSegment } from "../../Atoms/StyledSegment";
 import { StyledAside, StyledSticky } from "../../Atoms/StyledAside";
 import Suggestion from "../../Molecules/Suggestion";
 import QuestionForm from "../../Molecules/QuestionForm";
 import {
   quesitonType,
-  questionQuestionExpandToggle
+  questionQuestionExpandToggle,
+  questionQuestionDeleteRequest
 } from "../../../Actions/question";
 import {
   questionHighlightModeUndo,
@@ -46,7 +47,9 @@ const mapDispatchToProps = dispatch => {
     },
     toAnswererIntro: () => dispatch(pageNextRequest(PAGES.ANSWERER_INTRO, [])),
     expandQuestion: question_id =>
-      dispatch(questionQuestionExpandToggle(question_id))
+      dispatch(questionQuestionExpandToggle(question_id)),
+    deleteQuestion: (question_id, removed_step) =>
+      dispatch(questionQuestionDeleteRequest(question_id, removed_step))
   };
 };
 
@@ -72,7 +75,8 @@ const ConditionalQuestionTab = ({
   activeTab,
   startHighlight,
   expandQuestion,
-  saveHighlights: _saveHighlights
+  saveHighlights: _saveHighlights,
+  deleteQuestion
 }) => {
   const conditionalPane = () => {
     let questionMine = questions
@@ -80,7 +84,8 @@ const ConditionalQuestionTab = ({
         q =>
           q.questioner === username &&
           3 <= q.created_step &&
-          q.copied_to === null
+          q.copied_to === null &&
+          q.removed_step === null
       )
       .filter(q => {
         if (hoveredSentenceId === null || highlightMode) {
@@ -101,7 +106,8 @@ const ConditionalQuestionTab = ({
             q =>
               q.questioner === username &&
               3 <= q.created_step &&
-              q.copied_to === null
+              q.copied_to === null &&
+              q.removed_step === null
           );
 
     let questionOthers = questions
@@ -109,7 +115,8 @@ const ConditionalQuestionTab = ({
         q =>
           q.questioner !== username &&
           3 <= q.created_step &&
-          q.copied_to === null
+          q.copied_to === null &&
+          q.removed_step === null
       )
       .filter(q => {
         if (hoveredSentenceId === null || highlightMode) {
@@ -130,7 +137,8 @@ const ConditionalQuestionTab = ({
             q =>
               q.questioner !== username &&
               3 <= q.created_step &&
-              q.copied_to === null
+              q.copied_to === null &&
+              q.removed_step === null
           );
 
     const defaultPanes = [
@@ -147,6 +155,9 @@ const ConditionalQuestionTab = ({
                   expanded={question._expanded}
                   onExpandChange={() => expandQuestion(question.id)}
                   editable
+                  onDelete={() =>
+                    deleteQuestion(question.id, PAGES_serializer(page))
+                  }
                   onEdit={promsingQuestion => {
                     _saveHighlights(
                       promsingQuestion.id,
@@ -228,7 +239,8 @@ const OmissionPoolView = ({
   toStep4,
   toAnswererIntro,
   expandQuestion,
-  saveHighlights: _saveHighlights
+  saveHighlights: _saveHighlights,
+  deleteQuestion
 }) => {
   const {
     inProgress: {
@@ -258,7 +270,10 @@ const OmissionPoolView = ({
 
   const questionList = questions.filter(
     q =>
-      q.questioner === username && 3 <= q.created_step && q.copied_to === null
+      q.questioner === username &&
+      3 <= q.created_step &&
+      q.copied_to === null &&
+      q.removed_step === null
   );
 
   const conditionalFooter = () => {
@@ -269,13 +284,21 @@ const OmissionPoolView = ({
       if (page === PAGES.QUESTIONER_STEP3) {
         return (
           <StyledSticky.Footer>
-            <StyledSticky.Action
-              onClick={toStep4}
-              disabled={page.loading}
-              loading={page.loading}
-              positive
-              content="Finish and see other's question"
-            />
+            <Popup
+              trigger={
+                <StyledSticky.Action
+                  onClick={toStep4}
+                  disabled={page.loading}
+                  loading={page.loading}
+                  positive
+                  content="Show me others’ questions"
+                />
+              }
+              hovered
+              inverted
+            >
+              You can see others' questions and raise more questions.
+            </Popup>
           </StyledSticky.Footer>
         );
       } else if (page === PAGES.QUESTIONER_STEP4) {
@@ -309,7 +332,7 @@ const OmissionPoolView = ({
           >
             <StyledSegment.Header>
               {highlightTargetQuestion === null
-                ? "Raise questions that this article DOES NOT ANSWER."
+                ? "Raise questions that this article DOES NOT COVER."
                 : "Reselect sentences or change question."}
             </StyledSegment.Header>
             <StyledSegment.Pane
@@ -340,15 +363,29 @@ const OmissionPoolView = ({
             </StyledSegment.Pane>
             {highlightTargetQuestion === null &&
             highlightInProgress.length > 0 ? (
-              <StyledSegment.Pane>
-                <div>2. Type in your question.</div>
-                <QuestionForm
-                  onSubmit={handleSubmit}
-                  handleTyped={handleTyped}
-                  typed={typed}
-                  clearType={clearType}
-                />
-              </StyledSegment.Pane>
+              <React.Fragment>
+                <StyledSegment.Pane>
+                  <div>2. Type in your question.</div>
+                  <QuestionForm
+                    onSubmit={handleSubmit}
+                    handleTyped={handleTyped}
+                    typed={typed}
+                    clearType={clearType}
+                  />
+                </StyledSegment.Pane>
+                <StyledSegment.Pane>
+                  <Button
+                    fluid
+                    basic
+                    compact
+                    content="Cancel"
+                    onClick={() => {
+                      clearType();
+                      undoHighlightMode();
+                    }}
+                  />
+                </StyledSegment.Pane>
+              </React.Fragment>
             ) : (
               <StyledSegment.Pane>
                 <Button.Group fluid basic>
@@ -371,8 +408,8 @@ const OmissionPoolView = ({
         ) : (
           <OmissionPoolSegment>
             <StyledSegment.Header>
-              Raise questions that this article DOES NOT ANSWER. You can start
-              by clicking{" "}
+              Is there something that you want to know but this article DOES NOT
+              COVER? <br /> Raise wh-questions. You can start by clicking{" "}
               <FontAwesomeButton
                 circular
                 positive
@@ -383,6 +420,7 @@ const OmissionPoolView = ({
             </StyledSegment.Header>
           </OmissionPoolSegment>
         )}
+        <span>You need to raise 3 or more questions to proceed.</span>
         <ConditionalQuestionTab
           page={page}
           username={username}
@@ -392,6 +430,7 @@ const OmissionPoolView = ({
           startHighlight={startHighlight}
           expandQuestion={expandQuestion}
           saveHighlights={_saveHighlights}
+          deleteQuestion={deleteQuestion}
         />
         {conditionalFooter()}
       </StyledSticky>

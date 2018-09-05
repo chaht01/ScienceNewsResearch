@@ -33,9 +33,7 @@ const StyledArticle = styled.div`
   margin-top: auto; // overflow hack
 `;
 
-StyledArticle.Title = styled.h1`
-  font-family: "Abril Fatface", cursive;
-`;
+StyledArticle.Title = styled.h1``;
 
 StyledArticle.Body = styled.article`
   font-size: 16px;
@@ -260,7 +258,7 @@ const ArticleView = ({
       {page === PAGES.QUESTIONER_STEP2 && (
         <React.Fragment>
           <h4>
-            Below are questions raised by other readers. Check to see if those
+            Below questions are raised by other readers. Check to see if those
             questions can inspire you to ask more questions.
           </h4>
           <PoolExample questions={[]} /> {/*TODO*/}

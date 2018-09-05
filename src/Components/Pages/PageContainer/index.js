@@ -11,6 +11,9 @@ import { articleArticleFetchRequest } from "../../../Actions/article";
 import { questionPoolFetchRequest } from "../../../Actions/question";
 import { codeFetchRequest } from "../../../Actions/code";
 import { shownFetchRequest } from "../../../Actions/shown";
+import StyledLink from "../../Atoms/StyledLink";
+import QuestionerIntro from "../QuestionerIntro";
+import AnswererIntro from "../AnswererIntro";
 const mapStateToProps = (state, ownProps) => {
   return {
     user_detail: state.authReducer.signup.data,
@@ -78,6 +81,9 @@ const PageContainerView = ({
   startAnswererStep,
   answerStepLoading
 }) => {
+  window.onbeforeunload = function() {
+    return "Your work will be lost.";
+  };
   if (
     auth.token.length === 0 ||
     window.localStorage.getItem("token") === null
@@ -88,10 +94,7 @@ const PageContainerView = ({
     <React.Fragment>
       {page.data === PAGES.OVERALL && <Intro nextPage={startQuestionerIntro} />}
       {page.data === PAGES.QUESTIONER_INTRO && (
-        <div>
-          <h1>QUESTION PART INSTURCTION</h1>
-          <Button onClick={startQuestionerStep} content="start" positive />
-        </div>
+        <QuestionerIntro nextPage={startQuestionerStep} />
       )}
       {[
         PAGES.QUESTIONER_STEP1,
@@ -100,17 +103,55 @@ const PageContainerView = ({
         PAGES.QUESTIONER_STEP4
       ].indexOf(page.data) > -1 && <Questioner loading={questionStepLoading} />}
       {page.data === PAGES.ANSWERER_INTRO && (
-        <div>
-          <h1>ANSWER PART INSTURCTION</h1>
-          <Button onClick={startAnswererStep} content="start" positive />
-        </div>
+        <AnswererIntro nextPage={startAnswererStep} />
       )}
-      {[PAGES.ANSWERER_STEP1, PAGES.ANSWERER_STEP2].indexOf(page.data) > -1 && (
+      {PAGES.ANSWERER_STEP1 === page.data && (
         <Answerer loading={answerStepLoading} />
       )}
+      {PAGES.PRESURVEY === page.data && <Presurvey />}
     </React.Fragment>
   );
 };
+
+class Presurvey extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      remains: 5,
+      force: false
+    };
+    this.forceStart = this.forceStart.bind(this);
+  }
+
+  componentDidMount() {
+    setInterval(() => {
+      this.setState(prevState => ({
+        remains: prevState.remains - 1
+      }));
+    }, 1000);
+  }
+  forceStart() {
+    this.setState(prevState => ({
+      ...prevState,
+      force: true
+    }));
+  }
+  render() {
+    const { remains, force } = this.state;
+    if (remains >= 0 && !force) {
+      return (
+        <div>
+          Thank you for your participation. This page will redirect to survey
+          page after {remains} sec or{" "}
+          <StyledLink onClick={this.forceStart}>go now</StyledLink>
+        </div>
+      );
+    } else {
+      window.onbeforeunload = null;
+      return <Redirect to="/survey" />;
+    }
+  }
+}
 
 const PageContainer = withRouter(
   connect(
