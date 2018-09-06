@@ -62,7 +62,7 @@ class IntroView extends React.Component {
         children: [
           { text: "You can see questions made by other readers." },
           {
-            text: "Raise more questions after get inspired by others question."
+            text: "Raise more questions after getting inspired by others question."
           }
         ]
       }
@@ -77,9 +77,9 @@ class IntroView extends React.Component {
         text: "Fill in additional information about your question.",
         children: [
           {
-            text: "Intention: How your question help other readers.",
+            text: "Intention: How your question helps other readers.",
             children: [
-              { text: "E.g., better evaluate the validity of the research" },
+              { text: "E.g., to better evaluate the validity of the research" },
               {
                 text:
                   "E.g., know how to use this finding in their everyday life. "
@@ -116,7 +116,7 @@ class IntroView extends React.Component {
         ]
       },
       {
-        text: "Evaluate similarity between your question and others’ question.",
+        text: "Evaluate the similarity between your question and others’ question.",
         image: null,
         children: [
           { text: "You will see 10 of others’ questions. " },
@@ -126,7 +126,7 @@ class IntroView extends React.Component {
             children: [
               {
                 text:
-                  "Same - if the question asks exactly same information that your question asks. ",
+                  "Same - if the question asks exactly the same information that your question asks. ",
                 children: [
                   {
                     text:
@@ -136,11 +136,11 @@ class IntroView extends React.Component {
               },
               {
                 text:
-                  "Similar - if the question is not exactly same to your question, but is closely related to your question. ",
+                  "Similar - if the question is not exactly same as your question, but is closely related to your question. ",
                 children: [
                   {
                     text:
-                      "E.g, “How many participants did they observe?” and “How old was the participants?”"
+                      "E.g, “How many participants did they observe?” and “How old were the participants?”"
                   }
                 ]
               },
@@ -192,7 +192,7 @@ class IntroView extends React.Component {
         children: [
           { text: "You can see questions made by other readers. " },
           {
-            text: "Raise more questions after get inspired by others question. "
+            text: "Raise more questions after getting inspired by others question. "
           }
         ]
       }
@@ -200,7 +200,7 @@ class IntroView extends React.Component {
     const phase3_instructions = [
       {
         text:
-          "Click [pen] button and select sentence(s) that your questions is related to. ",
+          "Click [pen] button and select sentence(s) that your question is related to. ",
         image: null
       },
       {
@@ -213,12 +213,12 @@ class IntroView extends React.Component {
       },
       {
         text:
-          "Evaluate similarity between your question and others’ question, as before.",
+          "Evaluate the similarity between your question and others’ question, as before.",
         image: null
       },
       {
         text:
-          "You can see your questions and the sentence(s) you raised question with will be highlighted. "
+          "You can see your questions and the sentence(s) that you raised the question will be highlighted. "
       },
       { text: "Generate questions as many as you can. " },
       {
@@ -277,7 +277,7 @@ class IntroView extends React.Component {
         )}
         {this.state.pos === 0 && (
           <React.Fragment>
-            In this step, you are going to read title of a news story about a
+            In this step, you are going to read the title of a news story about a
             scientific research. Based on the title, raise questions on what you
             expect to read from the content. You have to raise 3 or more
             questions. Please raise many questions as you can.

@@ -331,7 +331,7 @@ const QuestionCRUDModalView = ({
                 <Input
                   name="intention"
                   value={intention}
-                  placeholder="intention of your question"
+                  placeholder="e.g., to evaluate the validity of research, to understand the article. "
                   onChange={handleTypeChange}
                 />
                 <Popup
@@ -346,8 +346,8 @@ const QuestionCRUDModalView = ({
                       color="grey"
                     />
                   }
-                  header={"Intention header"}
-                  content={`This is description about intention`}
+                  header={"Describe how answer for this question will help you and others."}
+                  content={`For example, answer for this question can be used to apply the research findings to your everyday decision. Or, it can be helpful to judge how reliable the research finding is. `}
                 />
               </StyledStep2Intention>
             </Form.Field>
@@ -402,8 +402,8 @@ const QuestionCRUDModalView = ({
                         color="grey"
                       />
                     }
-                    header={"level2 header"}
-                    content={`This is description about level2`}
+                    header={"Provide more detail!"}
+                    content={`If you think there is no category fit to your question, choose "Others"`}
                   />
                 </StyledLevel2Form>
               </React.Fragment>
