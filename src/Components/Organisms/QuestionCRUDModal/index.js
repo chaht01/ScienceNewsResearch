@@ -331,7 +331,7 @@ const QuestionCRUDModalView = ({
                 <Input
                   name="intention"
                   value={intention}
-                  placeholder="e.g., to evaluate the validity of research, to understand the article. "
+                  placeholder="e.g., evaluate the validity of research, understand the article. "
                   onChange={handleTypeChange}
                 />
                 <Popup
