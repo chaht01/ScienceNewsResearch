@@ -24,7 +24,7 @@ const StyledIntro = styled.div`
   margin: auto;
   margin-top: 3em;
   > img {
-    max-width: 100%;
+    max-width: 80%;
   }
 `;
 const StyledActionBar = styled.div`
@@ -89,7 +89,7 @@ class IntroView extends React.Component {
             text: "Intention: How your question helps other readers.",
             image: modalintention,
             children: [
-              { text: "E.g., to better evaluate the validity of the research" },
+              { text: "E.g., better evaluate the validity of the research" },
               {
                 text:
                   "E.g., know how to use this finding in their everyday life. "
@@ -263,7 +263,9 @@ class IntroView extends React.Component {
                 <li>
                   <span dangerouslySetInnerHTML={{ __html: item.text }} />
                   <br />
+                  <br />
                   {item.image && <img src={item.image} />}
+                  <br />
                 </li>
                 {item.children &&
                   item.children.length > 0 &&

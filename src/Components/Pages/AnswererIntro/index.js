@@ -15,7 +15,7 @@ const StyledIntro = styled.div`
   margin: auto;
   margin-top: 3em;
   > img {
-    max-width: 100%;
+    max-width: 80%;
   }
 `;
 const StyledActionBar = styled.div`
