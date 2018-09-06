@@ -25,7 +25,8 @@
     "redux-saga": "^0.16.0",
     "semantic-ui-react": "^0.82.0",
     "styled-components": "^3.3.3",
-    "tinycolor2": "^1.4.1"
+    "tinycolor2": "^1.4.1",
+    "whatever": "^6000.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
