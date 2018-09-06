@@ -229,9 +229,6 @@ const AnswererQuestion = ({
           <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
         )}
         {expanded && (
-            <StyledQuestion.ReftextInfo>{article_sentences}</StyledQuestion.ReftextInfo>
-          )}
-        {expanded && (
             <StyledQuestion.TitleInfoAdd>{article_title}</StyledQuestion.TitleInfoAdd>
           )}
       </StyledQuestion.Inner>
