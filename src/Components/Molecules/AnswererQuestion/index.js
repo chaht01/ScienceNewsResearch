@@ -192,7 +192,8 @@ const AnswererQuestion = ({
         </StyledQuestion.ArticleInfo>
         {expanded && (
           <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
-        )&&(
+        )}
+        {expanded && (
           <StyledQuestion.Refsentence>{reftexts}</StyledQuestion.Refsentence>
         )}
       </StyledQuestion.Inner>
