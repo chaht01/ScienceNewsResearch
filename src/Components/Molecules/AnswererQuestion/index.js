@@ -194,14 +194,13 @@ const AnswererQuestion = ({
   const {
     id,
     text,
-    reftexts,
     intention,
     created_step,
-    refstring,
     code_first,
     code_second,
     article_title,
-    article_publisher
+    article_publisher,
+    article_sentences
   } = question;
   if(created_step>3){ //when question is based on the body
   return (
@@ -230,7 +229,7 @@ const AnswererQuestion = ({
           <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
         )}
         {expanded && (
-            <StyledQuestion.ReftextInfo>{refstring}</StyledQuestion.ReftextInfo>
+            <StyledQuestion.ReftextInfo>{article_sentences}</StyledQuestion.ReftextInfo>
           )}
         {expanded && (
             <StyledQuestion.TitleInfoAdd>{article_title}</StyledQuestion.TitleInfoAdd>
