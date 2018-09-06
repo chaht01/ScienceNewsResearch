@@ -64,7 +64,7 @@ StyledQuestion.Text = styled.div`
   }
 `;
 
-StyledQuestion.ArticleInfo = styled.div`
+StyledQuestion.PublisherInfo = styled.div`
   position: relative;
   padding: 1em 0.4em;
   margin-top: 1em;
@@ -74,8 +74,8 @@ StyledQuestion.ArticleInfo = styled.div`
     position: absolute;
     top: 1em;
     transform: translateY(-80%);
-    content: "From ${props =>
-      props.publisher}’s story titled as";
+    content: "Raised on ${props =>
+      props.publisher}’s news story.";
     font-family: initial;
     font-size: 0.8em;
     left: 0;
@@ -93,6 +93,38 @@ StyledQuestion.Intention = styled.div`
     top: 1em;
     transform: translateY(-80%);
     content: "Answer to this question will help readers to";
+    font-size: 0.8em;
+    left: 0;
+  }
+`;
+
+StyledQuestion.TitleInfo = styled.div`
+  position: relative;
+  padding: 1em 0.4em;
+  margin-top: 1em;
+  font-style: italic;
+  &:before {
+    display: block;
+    position: absolute;
+    top: 1em;
+    transform: translateY(-80%);
+    content: "This question was raised after reading the title ";
+    font-size: 0.8em;
+    left: 0;
+  }
+`;
+
+StyledQuestion.TitleInfoAdd = styled.div`
+  position: relative;
+  padding: 1em 0.4em;
+  margin-top: 1em;
+  font-style: italic;
+  &:before {
+    display: block;
+    position: absolute;
+    top: 1em;
+    transform: translateY(-80%);
+    content: "The title of the article is ";
     font-size: 0.8em;
     left: 0;
   }
@@ -161,12 +193,13 @@ const AnswererQuestion = ({
     text,
     reftexts,
     intention,
+    created_step,
     code_first,
     code_second,
     article_title,
     article_publisher
   } = question;
-
+  if(){ //when question is based on the body
   return (
     <StyledQuestion expanded={expanded} answered={answered}>
       <StyledQuestion.Inner>
@@ -187,15 +220,14 @@ const AnswererQuestion = ({
             {expanded ? "fold" : "see more"}
           </StyledLink>
         </QuestionGrid>
-        <StyledQuestion.ArticleInfo publisher={article_publisher}>
-          {article_title}
-        </StyledQuestion.ArticleInfo>
+        <StyledQuestion.PublisherInfo publisher={article_publisher}>
+        </StyledQuestion.PublisherInfo>
         {expanded && (
           <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
         )}
         {expanded && (
-          <StyledQuestion.Refsentence>{reftexts}</StyledQuestion.Refsentence>
-        )}
+            <StyledQuestion.TitleInfoAdd>{article_title}</StyledQuestion.TitleInfoAdd>
+          )}
       </StyledQuestion.Inner>
 
       {startHighlight &&
@@ -210,7 +242,52 @@ const AnswererQuestion = ({
           />
         )}
     </StyledQuestion>
-  );
+  );}
+  else { //when question is based on title. 
+    return (
+      <StyledQuestion expanded={expanded} answered={answered}>
+        <StyledQuestion.Inner>
+          <QuestionGrid>
+            <StyledQuestion.Text>{text}</StyledQuestion.Text>
+          </QuestionGrid>
+  
+          <QuestionGrid>
+            <StyledLabelGroup>
+              <StyledLabel>{code_first.text}</StyledLabel>
+              {code_second && <StyledLabel>{code_second.text}</StyledLabel>}
+            </StyledLabelGroup>
+            <StyledLink
+              color={colors.gray_font}
+              style={{ textAlign: "center" }}
+              onClick={onExpandChange}
+            >
+              {expanded ? "fold" : "see more"}
+            </StyledLink>
+          </QuestionGrid>
+          <StyledQuestion.PublisherInfo publisher={article_publisher}>
+          </StyledQuestion.PublisherInfo>
+          {expanded && (
+            <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
+          )}
+          {expanded && (
+            <StyledQuestion.TitleInfo>{article_title}</StyledQuestion.TitleInfo>
+          )}
+        </StyledQuestion.Inner>
+  
+        {startHighlight &&
+          _isFunction(startHighlight) && (
+            <QuestionAnsweredButton
+              fluid
+              compact
+              content={answered ? `See my answer` : `Add your answer`}
+              basic={!answered}
+              answered={answered}
+              onClick={() => startHighlight()}
+            />
+          )}
+      </StyledQuestion>
+    ); 
+  }
 };
 
 export default AnswererQuestion;
