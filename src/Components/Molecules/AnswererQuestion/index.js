@@ -88,7 +88,7 @@ StyledQuestion.PublisherInfo = styled.div`
 StyledQuestion.Intention = styled.div`
   position: relative;
   padding: 1em 0.4em;
-  margin-top: 1em;
+  margin-top: 3em;
   font-style:normal;
   &:before {
     display: block;
