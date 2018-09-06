@@ -229,7 +229,7 @@ const AnswererQuestion = ({
           <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
         )}
         {expanded && (
-            <StyledQuestion.ReftextInfo>{reftexts.map(reftext => reftext.sentence.text)}</StyledQuestion.ReftextInfo>
+            <StyledQuestion.ReftextInfo>{reftexts[0].sentence.text}</StyledQuestion.ReftextInfo>
           )}
         {expanded && (
             <StyledQuestion.TitleInfoAdd>{article_title}</StyledQuestion.TitleInfoAdd>
