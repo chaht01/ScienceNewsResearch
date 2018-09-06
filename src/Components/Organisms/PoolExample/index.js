@@ -32,7 +32,7 @@ const PoolExampleView = ({
   questions
 }) => {
   const static_seed = {
-    Understanding: [
+    Background: [
       "Why vitamin B linked to cancer?",
       "What exactly would be considered a high dose?"
     ],
@@ -40,7 +40,7 @@ const PoolExampleView = ({
       "Which population has been analyzed in this study?",
       "Who did this study?"
     ],
-    Extension: [
+    Application: [
       "Which B vitamin causes the greatest likelihood of developing lung cancer?",
       "What is the ideal level of B vitamins you should take per day to avoid the cancer risk?"
     ]
