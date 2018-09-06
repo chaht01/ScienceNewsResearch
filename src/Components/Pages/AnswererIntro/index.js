@@ -11,11 +11,11 @@ const StyledContainer = styled.div`
 `;
 
 const StyledIntro = styled.div`
-  max-width: 800px;
+  max-width: 400px;
   margin: auto;
   margin-top: 3em;
   > img {
-    max-width: 100%;
+    max-width: 40%;
   }
 `;
 const StyledActionBar = styled.div`
@@ -58,8 +58,7 @@ class IntroView extends React.Component {
             children: [
               { text: "Categories" },
               { text: "Intention" },
-              { text: "Title" },
-              { text: "Paragraph" }
+              { text: "Title" }
             ]
           }
         ]
