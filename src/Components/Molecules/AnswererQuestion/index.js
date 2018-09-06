@@ -197,6 +197,7 @@ const AnswererQuestion = ({
     reftexts,
     intention,
     created_step,
+    refstring,
     code_first,
     code_second,
     article_title,
@@ -229,7 +230,7 @@ const AnswererQuestion = ({
           <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
         )}
         {expanded && (
-            <StyledQuestion.ReftextInfo>{reftexts}</StyledQuestion.ReftextInfo>
+            <StyledQuestion.ReftextInfo>{refstring}</StyledQuestion.ReftextInfo>
           )}
         {expanded && (
             <StyledQuestion.TitleInfoAdd>{article_title}</StyledQuestion.TitleInfoAdd>
