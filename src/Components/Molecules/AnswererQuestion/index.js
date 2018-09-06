@@ -68,17 +68,19 @@ StyledQuestion.PublisherInfo = styled.div`
   position: relative;
   padding: 1em 0.4em;
   margin-top: 1em;
-  margin-bottom: -1em;
+  margin-bottom: 0em;
+  font-size: 1em;
+  font-style: italic;
   &:before {
     display: block;
     position: absolute;
     top: 1em;
     transform: translateY(-80%);
-    content: "Raised by a reader reading ${props =>
-      props.publisher}’s news story.";
+    content: "This question was asked from ${props =>
+      props.publisher}.";
     font-family: initial;
-    font-style: italic;
-    font-size: 1em;
+    font-style: normal;
+    font-size: 0.8em;
     left: 0;
   }
 `;
@@ -141,7 +143,7 @@ StyledQuestion.ReftextInfo = styled.div`
     position: absolute;
     top: 1em;
     transform: translateY(-80%);
-    content: "Raised on below sentences.";
+    content: "Raised on below sentence(s).";
     font-size: 0.8em;
     left: 0;
   }
