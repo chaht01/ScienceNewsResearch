@@ -88,7 +88,7 @@ StyledQuestion.PublisherInfo = styled.div`
 StyledQuestion.Intention = styled.div`
   position: relative;
   padding: 1em 0.4em;
-  margin-top: 3em;
+  margin-top: 1em;
   font-style:normal;
   &:before {
     display: block;
@@ -229,7 +229,7 @@ const AnswererQuestion = ({
           <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
         )}
         {expanded && (
-            <StyledQuestion.ReftextInfo>{reftexts}</StyledQuestion.ReftextInfo>
+            <StyledQuestion.ReftextInfo>{reftexts.map(reftext => reftext.sentence.text)}</StyledQuestion.ReftextInfo>
           )}
         {expanded && (
             <StyledQuestion.TitleInfoAdd>{article_title}</StyledQuestion.TitleInfoAdd>
