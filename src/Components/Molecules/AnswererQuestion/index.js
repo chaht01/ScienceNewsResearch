@@ -199,7 +199,7 @@ const AnswererQuestion = ({
     article_title,
     article_publisher
   } = question;
-  if(){ //when question is based on the body
+  if(created_step>3){ //when question is based on the body
   return (
     <StyledQuestion expanded={expanded} answered={answered}>
       <StyledQuestion.Inner>
