@@ -20,11 +20,11 @@ const StyledContainer = styled.div`
 `;
 
 const StyledIntro = styled.div`
-  max-width: 400px;
+  max-width: 800px;
   margin: auto;
   margin-top: 3em;
   > img {
-    max-width: 40%;
+    max-width: 100%;
   }
 `;
 const StyledActionBar = styled.div`
