@@ -74,10 +74,10 @@ StyledQuestion.PublisherInfo = styled.div`
     position: absolute;
     top: 1em;
     transform: translateY(-80%);
-    content: "Raised by a reader reading ${props =>
-      props.publisher}’s news story.";
+    content: "Made by a reader of ${props =>
+      props.publisher}.";
     font-family: initial;
-    font-style: italic;
+    font-style: normal;
     font-size: 1em;
     left: 0;
   }
@@ -86,7 +86,7 @@ StyledQuestion.PublisherInfo = styled.div`
 StyledQuestion.Intention = styled.div`
   position: relative;
   padding: 1em 0.4em;
-  margin-top: 1em;
+  margin-top: 3em;
   font-style:normal;
   &:before {
     display: block;
