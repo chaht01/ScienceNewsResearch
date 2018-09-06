@@ -4,6 +4,7 @@ import { Button } from "semantic-ui-react";
 import styled from "styled-components";
 
 import answer_pic from "../../../static/answer.png";
+import answergif from "../../../static/answering.gif";
 
 const StyledContainer = styled.div`
   padding-top: 3em;
@@ -46,7 +47,6 @@ class IntroView extends React.Component {
     const instructions = [
       {
         text: "Read questions.",
-        image: null,
         children: [
           {
             text:
@@ -55,7 +55,6 @@ class IntroView extends React.Component {
           {
             text:
               "Use provided information to understand the questions made by others.",
-            image: null,
             children: [
               { text: "Categories" },
               { text: "Intention" },
@@ -68,7 +67,7 @@ class IntroView extends React.Component {
       {
         text:
           "For questions that the article can directly answer, click ‘Add your answer’",
-        image: null
+        image: answergif
       },
       {
         text:
