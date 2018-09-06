@@ -74,7 +74,7 @@ StyledQuestion.ArticleInfo = styled.div`
     position: absolute;
     top: 1em;
     transform: translateY(-80%);
-    content: "This question is made from the ${props =>
+    content: "From ${props =>
       props.publisher}’s story titled as";
     font-family: initial;
     font-size: 0.8em;
@@ -92,7 +92,23 @@ StyledQuestion.Intention = styled.div`
     position: absolute;
     top: 1em;
     transform: translateY(-80%);
-    content: "It will help";
+    content: "Answer to this question will help readers to";
+    font-size: 0.8em;
+    left: 0;
+  }
+`;
+
+StyledQuestion.Refsentence = styled.div`
+  position: relative;
+  padding: 1em 0.4em;
+  margin-top: 1em;
+  font-style: italic;
+  &:before {
+    display: block;
+    position: absolute;
+    top: 1em;
+    transform: translateY(-80%);
+    content: "Raised on below sentences.";
     font-size: 0.8em;
     left: 0;
   }
@@ -143,6 +159,7 @@ const AnswererQuestion = ({
   const {
     id,
     text,
+    reftexts,
     intention,
     code_first,
     code_second,
@@ -175,6 +192,8 @@ const AnswererQuestion = ({
         </StyledQuestion.ArticleInfo>
         {expanded && (
           <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
+        )&&(
+          <StyledQuestion.Refsentence>{reftexts}</StyledQuestion.Refsentence>
         )}
       </StyledQuestion.Inner>
 

@@ -55,7 +55,7 @@ StyledQuestion.Intention = styled.div`
     position: absolute;
     top: 1em;
     transform: translateY(-80%);
-    content: "It will help";
+    content: "Answer for this question will help readers to";
     font-size: 0.8em;
     left: 0;
   }
