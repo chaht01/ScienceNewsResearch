@@ -14,7 +14,6 @@ import step3selection from "../../../static/step3-selection.gif";
 import step3question from "../../../static/step3-question.gif";
 import step4explore from "../../../static/step4-explore.gif";
 
-
 const StyledContainer = styled.div`
   padding-top: 3em;
 `;
@@ -23,7 +22,8 @@ const StyledIntro = styled.div`
   max-width: 800px;
   margin: auto;
   margin-top: 3em;
-  > img {
+  & img {
+    display: block;
     max-width: 80%;
   }
 `;
@@ -71,7 +71,8 @@ class IntroView extends React.Component {
         children: [
           { text: "You can see questions made by other readers." },
           {
-            text: "Raise more questions after getting inspired by others question."
+            text:
+              "Raise more questions after getting inspired by others question."
           }
         ]
       }
@@ -127,7 +128,8 @@ class IntroView extends React.Component {
         ]
       },
       {
-        text: "Evaluate the similarity between your question and others’ question.",
+        text:
+          "Evaluate the similarity between your question and others’ question.",
         image: modalsimilarity,
         children: [
           { text: "You will see 10 of others’ questions. " },
@@ -203,7 +205,8 @@ class IntroView extends React.Component {
         children: [
           { text: "You can see questions made by other readers. " },
           {
-            text: "Raise more questions after getting inspired by others question. "
+            text:
+              "Raise more questions after getting inspired by others question. "
           }
         ]
       }
@@ -282,14 +285,14 @@ class IntroView extends React.Component {
         {(this.state.pos === 0 || this.state.pos === 1) && (
           <React.Fragment>
             <h1>Instruction - (1) Question Before Reading</h1>
-            <img src={beforeQ} />
+            <img src={beforeQ} style={{ margin: "0 auto" }} />
           </React.Fragment>
         )}
         {this.state.pos === 0 && (
           <React.Fragment>
-            In this step, you are going to read the title of a news story about a
-            scientific research. Based on the title, raise questions on what you
-            expect to read from the content. You have to raise 3 or more
+            In this step, you are going to read the title of a news story about
+            a scientific research. Based on the title, raise questions on what
+            you expect to read from the content. You have to raise 3 or more
             questions. Please raise many questions as you can.
             <br />
             <br />
@@ -314,7 +317,7 @@ class IntroView extends React.Component {
         {(this.state.pos === 2 || this.state.pos === 3) && (
           <React.Fragment>
             <h1>Instruction - (2) Question During Reading</h1>
-            <img src={duringQ} />
+            <img src={duringQ} style={{ margin: "0 auto" }} />
           </React.Fragment>
         )}
 

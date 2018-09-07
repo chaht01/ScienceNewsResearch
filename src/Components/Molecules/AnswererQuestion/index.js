@@ -64,8 +64,8 @@ StyledQuestion.Text = styled.div`
   }
 `;
 
-StyledQuestion.PublisherInfo = styled.div`
-  position: relative;
+StyledQuestion.DescriptionRow = styled.div`
+position: relative;
   padding: 1em 0.4em;
   margin-top: 1em;
   margin-bottom: 0em;
@@ -76,74 +76,9 @@ StyledQuestion.PublisherInfo = styled.div`
     position: absolute;
     top: 1em;
     transform: translateY(-80%);
-    content: "This question was asked from ${props =>
-      props.publisher}.";
+    content: "${props => props.content}";
     font-family: initial;
     font-style: normal;
-    font-size: 0.8em;
-    left: 0;
-  }
-`;
-
-StyledQuestion.Intention = styled.div`
-  position: relative;
-  padding: 1em 0.4em;
-  margin-top: 1em;
-  font-style:normal;
-  &:before {
-    display: block;
-    position: absolute;
-    top: 1em;
-    transform: translateY(-80%);
-    content: "Answer to this question will help readers to";
-    font-size: 0.8em;
-    left: 0;
-  }
-`;
-
-StyledQuestion.TitleInfo = styled.div`
-  position: relative;
-  padding: 1em 0.4em;
-  margin-top: 1em;
-  font-style: normal;
-  &:before {
-    display: block;
-    position: absolute;
-    top: 1em;
-    transform: translateY(-80%);
-    content: "This question was raised after reading the title ";
-    font-size: 0.8em;
-    left: 0;
-  }
-`;
-
-StyledQuestion.TitleInfoAdd = styled.div`
-  position: relative;
-  padding: 1em 0.4em;
-  margin-top: 1em;
-  font-style: normal;
-  &:before {
-    display: block;
-    position: absolute;
-    top: 1em;
-    transform: translateY(-80%);
-    content: "The title of the article is ";
-    font-size: 0.8em;
-    left: 0;
-  }
-`;
-
-StyledQuestion.ReftextInfo = styled.div`
-  position: relative;
-  padding: 1em 0.4em;
-  margin-top: 1em;
-  font-style: normal;
-  &:before {
-    display: block;
-    position: absolute;
-    top: 1em;
-    transform: translateY(-80%);
-    content: "Raised on below sentence(s).";
     font-size: 0.8em;
     left: 0;
   }
@@ -200,60 +135,17 @@ const AnswererQuestion = ({
     code_second,
     article_title,
     article_publisher,
-    article_sentences
+    reftexts
   } = question;
-  if(created_step>3){ //when question is based on the body
-  return (
-    <StyledQuestion expanded={expanded} answered={answered}>
-      <StyledQuestion.Inner>
-        <QuestionGrid>
-          <StyledQuestion.Text>{text}</StyledQuestion.Text>
-        </QuestionGrid>
-
-        <QuestionGrid>
-          <StyledLabelGroup>
-            <StyledLabel>{code_first.text}</StyledLabel>
-            {code_second && <StyledLabel>{code_second.text}</StyledLabel>}
-          </StyledLabelGroup>
-          <StyledLink
-            color={colors.gray_font}
-            style={{ textAlign: "center" }}
-            onClick={onExpandChange}
-          >
-            {expanded ? "fold" : "see more"}
-          </StyledLink>
-        </QuestionGrid>
-        <StyledQuestion.PublisherInfo publisher={article_publisher}>
-        </StyledQuestion.PublisherInfo>
-        {expanded && (
-          <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
-        )}
-        {expanded && (
-            <StyledQuestion.TitleInfoAdd>{article_title}</StyledQuestion.TitleInfoAdd>
-          )}
-      </StyledQuestion.Inner>
-
-      {startHighlight &&
-        _isFunction(startHighlight) && (
-          <QuestionAnsweredButton
-            fluid
-            compact
-            content={answered ? `See my answer` : `Add your answer`}
-            basic={!answered}
-            answered={answered}
-            onClick={() => startHighlight()}
-          />
-        )}
-    </StyledQuestion>
-  );}
-  else { //when question is based on title. 
+  if (created_step > 3) {
+    //when question is based on the body
     return (
       <StyledQuestion expanded={expanded} answered={answered}>
         <StyledQuestion.Inner>
           <QuestionGrid>
             <StyledQuestion.Text>{text}</StyledQuestion.Text>
           </QuestionGrid>
-  
+
           <QuestionGrid>
             <StyledLabelGroup>
               <StyledLabel>{code_first.text}</StyledLabel>
@@ -267,16 +159,32 @@ const AnswererQuestion = ({
               {expanded ? "fold" : "see more"}
             </StyledLink>
           </QuestionGrid>
-          <StyledQuestion.PublisherInfo publisher={article_publisher}>
-          </StyledQuestion.PublisherInfo>
+          <StyledQuestion.DescriptionRow
+            content={`This question was asked from ${article_publisher}.`}
+          />
           {expanded && (
-            <StyledQuestion.Intention>{intention}</StyledQuestion.Intention>
+            <StyledQuestion.DescriptionRow
+              content={`Answer to this question will help readers to`}
+            >
+              {intention}
+            </StyledQuestion.DescriptionRow>
           )}
           {expanded && (
-            <StyledQuestion.TitleInfo>{article_title}</StyledQuestion.TitleInfo>
+            <React.Fragment>
+              <StyledQuestion.DescriptionRow
+                content={`The title of the article is `}
+              >
+                {article_title}
+              </StyledQuestion.DescriptionRow>
+              <StyledQuestion.DescriptionRow
+                content={`Raised on below sentence(s)`}
+              >
+                {reftexts.map(reftext => <div>{reftext.sentence.text}</div>)}
+              </StyledQuestion.DescriptionRow>
+            </React.Fragment>
           )}
         </StyledQuestion.Inner>
-  
+
         {startHighlight &&
           _isFunction(startHighlight) && (
             <QuestionAnsweredButton
@@ -289,7 +197,70 @@ const AnswererQuestion = ({
             />
           )}
       </StyledQuestion>
-    ); 
+    );
+  } else {
+    //when question is based on title.
+    return (
+      <StyledQuestion expanded={expanded} answered={answered}>
+        <StyledQuestion.Inner>
+          <QuestionGrid>
+            <StyledQuestion.Text>{text}</StyledQuestion.Text>
+          </QuestionGrid>
+
+          <QuestionGrid>
+            <StyledLabelGroup>
+              <StyledLabel>{code_first.text}</StyledLabel>
+              {code_second && <StyledLabel>{code_second.text}</StyledLabel>}
+            </StyledLabelGroup>
+            <StyledLink
+              color={colors.gray_font}
+              style={{ textAlign: "center" }}
+              onClick={onExpandChange}
+            >
+              {expanded ? "fold" : "see more"}
+            </StyledLink>
+          </QuestionGrid>
+          <StyledQuestion.DescriptionRow
+            content={`This question was asked from ${article_publisher}.`}
+          />
+          {expanded && (
+            <StyledQuestion.DescriptionRow
+              content={`Answer to this question will help readers to`}
+            >
+              {intention}
+            </StyledQuestion.DescriptionRow>
+          )}
+          {expanded && (
+            <React.Fragment>
+              <StyledQuestion.DescriptionRow
+                content={`The title of the article is `}
+              >
+                {article_title}
+              </StyledQuestion.DescriptionRow>
+              {reftexts.length > 0 && (
+                <StyledQuestion.DescriptionRow
+                  content={`Raised on below sentence(s)`}
+                >
+                  {reftexts.map(reftext => <div>{reftext.sentence.text}</div>)}
+                </StyledQuestion.DescriptionRow>
+              )}
+            </React.Fragment>
+          )}
+        </StyledQuestion.Inner>
+
+        {startHighlight &&
+          _isFunction(startHighlight) && (
+            <QuestionAnsweredButton
+              fluid
+              compact
+              content={answered ? `See my answer` : `Add your answer`}
+              basic={!answered}
+              answered={answered}
+              onClick={() => startHighlight()}
+            />
+          )}
+      </StyledQuestion>
+    );
   }
 };
 

@@ -150,7 +150,10 @@ const AnswerPoolView = ({
                 5
               }
               content={
-                questionList.length < 5 ? "Make at least 5 answers" : "Done"
+                questionList.filter(shown => shown._latest_take.taken).length <
+                5
+                  ? "Make at least 5 answers"
+                  : "Done"
               }
             />
           </StyledSticky.Footer>

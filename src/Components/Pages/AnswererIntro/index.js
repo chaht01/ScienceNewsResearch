@@ -14,7 +14,8 @@ const StyledIntro = styled.div`
   max-width: 800px;
   margin: auto;
   margin-top: 3em;
-  > img {
+  & img {
+    display: block;
     max-width: 80%;
   }
 `;
@@ -100,7 +101,7 @@ class IntroView extends React.Component {
     return (
       <StyledIntro>
         <h1>Instruction - (3) Answer to Others’ Questions</h1>
-        <img src={answer_pic} />
+        <img src={answer_pic} style={{ margin: "0 auto" }} />
         In this step, you are going to see others’ question. Read questions
         raised by others and answer the questions that the article you read can
         directly answer. You should answer those questions using sentences from

@@ -20,8 +20,9 @@ const StyledIntro = styled.div`
   max-width: 800px;
   margin: auto;
   margin-top: 3em;
-  > img {
-    max-width: 100%;
+  & img {
+    display: block;
+    max-width: 80%;
   }
 `;
 const StyledActionBar = styled.div`
@@ -104,8 +105,8 @@ const IntroView = ({ user_detail, page, nextPage }) => {
     <StyledIntro>
       <h1>Instruction - Overview</h1>
       In this HIT, you are going to read 1 news story about a scientific
-      research. The overall procedure is outlined below. 
-      <img src={intro} />
+      research. The overall procedure is outlined below.
+      <img src={intro} style={{ margin: "0 auto" }} />
       The main task is composed of 3 steps.
       {recursive_listing(0, instructions)}
       <StyledActionBar>
