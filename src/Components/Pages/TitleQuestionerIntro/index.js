@@ -38,7 +38,7 @@ class IntroView extends React.Component {
     this.state = {
       pos: 0
     };
-    this.threshold = 3;
+    this.threshold = 1;
     this.nextPos = this.nextPos.bind(this);
     this.prevPos = this.prevPos.bind(this);
   }
@@ -211,7 +211,7 @@ class IntroView extends React.Component {
         ]
       }
     ];
-    const phase3_instructions = [
+/*     const phase3_instructions = [
       {
         text:
           "Click pen button and select sentence(s) that your question is related to. ",
@@ -256,7 +256,7 @@ class IntroView extends React.Component {
       {
         text: "Generate your questions as before. "
       }
-    ];
+    ]; */
     const recursive_listing = (depth, data) => {
       return (
         <ol type={listing[depth % 3]}>
@@ -318,32 +318,6 @@ class IntroView extends React.Component {
           <React.Fragment>
             <h1>Instruction - (2) Question During Reading</h1>
             <img src={duringQ} style={{ margin: "0 auto" }} />
-          </React.Fragment>
-        )}
-
-        {this.state.pos === 2 && (
-          <React.Fragment>
-            In this step, you are going to read the article. Based on the
-            article, raise questions on what you want to know but the article
-            DOES NOT COVER. You have to raise 3 or more questions.{" "}
-            <b>Please raise many questions as you can.</b>
-            <br />
-            <br />
-            As before, you can generate questions in two different phase.
-            {recursive_listing(0, during_instructions)}
-          </React.Fragment>
-        )}
-
-        {this.state.pos === 3 && (
-          <React.Fragment>
-            <p>
-              Phase 1 - Generate questions by yourself.
-              {recursive_listing(0, phase3_instructions)}
-            </p>
-            <p>
-              Phase 2 - Generate questions after seeing others’ question.
-              {recursive_listing(0, phase4_instructions)}
-            </p>
           </React.Fragment>
         )}
         <StyledActionBar>
