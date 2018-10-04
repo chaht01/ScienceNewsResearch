@@ -150,7 +150,7 @@ class IntroView extends React.Component {
         {(this.state.pos === 0 || this.state.pos === 1) && (
           <React.Fragment>
             <h1>Instruction - (2) Question During Reading</h1>
-            <img src={beforeQ} style={{ margin: "0 auto" }} />
+            <img src={duringQ} style={{ margin: "0 auto" }} />
           </React.Fragment>
         )}
         {this.state.pos === 0 && (
