@@ -99,6 +99,29 @@ class IntroView extends React.Component {
         text: "Generate your questions as before. "
       }
     ];
+    const during_instructions = [
+      {
+        text: "In the first phase,",
+        children: [
+          { text: "We expect you to raise questions by yourself." },
+          {
+            text: `
+              <b>If you cannot think of questions anymore</b>
+            , then you can proceed to the next phase. `
+          }
+        ]
+      },
+      {
+        text: "In the second phase, ",
+        children: [
+          { text: "You can see questions made by other readers. " },
+          {
+            text:
+              "Raise more questions after getting inspired by others question. "
+          }
+        ]
+      }
+    ];
     const recursive_listing = (depth, data) => {
       return (
         <ol type={listing[depth % 3]}>
