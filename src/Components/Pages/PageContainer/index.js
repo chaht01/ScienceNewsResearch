@@ -86,7 +86,8 @@ const PageContainerView = ({
   startTitleQuestionerIntro,
   startBodyQuestionerIntro,
   questionStepLoading,
-  startQuestionerStep,
+  startTitleQuestionerStep,
+  startBodyQuestionerStep,
   startAnswererStep,
   answerStepLoading
 }) => {
@@ -105,6 +106,7 @@ const PageContainerView = ({
       {page.data === PAGES.TITLEQUESTIONER_INTRO && (
         <TitleQuestionerIntro nextPage={startTitleQuestionerStep} />
       )}
+      {page.data === PAGES.QUESTIONER_STEP2 && <Intro nextPage={startBodyQuestionerIntro} />}
       {page.data === PAGES.BODYQUESTIONER_INTRO && (
         <BodyQuestionerIntro nextPage={startBodyQuestionerStep} />
       )}
