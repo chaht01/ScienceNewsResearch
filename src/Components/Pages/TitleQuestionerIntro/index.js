@@ -366,9 +366,9 @@ class IntroView extends React.Component {
   }
 }
 
-const QuestionerIntro = connect(
+const TitleQuestionerIntro = connect(
   null,
   null
 )(IntroView);
 
-export default QuestionerIntro;
+export default TitleQuestionerIntro;

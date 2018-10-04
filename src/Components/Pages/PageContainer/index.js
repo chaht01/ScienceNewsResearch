@@ -12,7 +12,8 @@ import { questionPoolFetchRequest } from "../../../Actions/question";
 import { codeFetchRequest } from "../../../Actions/code";
 import { shownFetchRequest } from "../../../Actions/shown";
 import StyledLink from "../../Atoms/StyledLink";
-import QuestionerIntro from "../QuestionerIntro";
+import TitleQuestionerIntro from "../TitleQuestionerIntro";
+import BodyQuestionerIntro from "../BodyQuestionerIntro";
 import AnswererIntro from "../AnswererIntro";
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -50,8 +51,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
     props = {
       ...props,
-      startQuestionerStep: () =>
+      startTitleQuestionerStep: () =>
         nextPage(PAGES.QUESTIONER_STEP1, [
+          articleArticleFetchRequest.bind(null, article_id),
+          questionPoolFetchRequest.bind(null, article_id, create_phase_request),
+          codeFetchRequest
+        ]),
+      startBodyQuestionerStep: () =>
+        nextPage(PAGES.QUESTIONER_STEP3, [
           articleArticleFetchRequest.bind(null, article_id),
           questionPoolFetchRequest.bind(null, article_id, create_phase_request),
           codeFetchRequest
@@ -62,7 +69,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...props,
     ...{
-      startQuestionerIntro: () => nextPage(PAGES.QUESTIONER_INTRO, []),
+      startTitleQuestionerIntro: () => nextPage(PAGES.TITLEQUESTIONER_INTRO, []),
+      startBodyQuestionerIntro: () => nextPage(PAGES.BODYQUESTIONER_INTRO, []),
       startAnswererStep: () =>
         nextPage(PAGES.ANSWERER_STEP1, [
           shownFetchRequest.bind(null, shown.call_cnt)
@@ -75,7 +83,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 const PageContainerView = ({
   auth,
   page,
-  startQuestionerIntro,
+  startTitleQuestionerIntro,
+  startBodyQuestionerIntro,
   questionStepLoading,
   startQuestionerStep,
   startAnswererStep,
@@ -92,9 +101,12 @@ const PageContainerView = ({
   }
   return (
     <React.Fragment>
-      {page.data === PAGES.OVERALL && <Intro nextPage={startQuestionerIntro} />}
-      {page.data === PAGES.QUESTIONER_INTRO && (
-        <QuestionerIntro nextPage={startQuestionerStep} />
+      {page.data === PAGES.OVERALL && <Intro nextPage={startTitleQuestionerIntro} />}
+      {page.data === PAGES.TITLEQUESTIONER_INTRO && (
+        <TitleQuestionerIntro nextPage={startTitleQuestionerStep} />
+      )}
+      {page.data === PAGES.BODYQUESTIONER_INTRO && (
+        <BodyQuestionerIntro nextPage={startBodyQuestionerStep} />
       )}
       {[
         PAGES.QUESTIONER_STEP1,
