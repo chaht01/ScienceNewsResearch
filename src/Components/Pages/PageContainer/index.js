@@ -112,7 +112,6 @@ const PageContainerView = ({
       )}
       {[
         PAGES.QUESTIONER_STEP1,
-        PAGES.QUESTIONER_STEP2,
         PAGES.QUESTIONER_STEP3,
         PAGES.QUESTIONER_STEP4
       ].indexOf(page.data) > -1 && <Questioner loading={questionStepLoading} />}
