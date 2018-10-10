@@ -106,7 +106,7 @@ const PageContainerView = ({
       {page.data === PAGES.TITLEQUESTIONER_INTRO && (
         <TitleQuestionerIntro nextPage={startTitleQuestionerStep} />
       )}
-      {page.data === PAGES.QUESTIONER_STEP2 && <Questioner nextPage={startBodyQuestionerIntro} />}
+      {page.data === PAGES.QUESTIONER_STEP2 && <Questioner loading={questionStepLoading} nextPage={startBodyQuestionerIntro} />}
       {page.data === PAGES.BODYQUESTIONER_INTRO && (
         <BodyQuestionerIntro nextPage={startBodyQuestionerStep} />
       )}
