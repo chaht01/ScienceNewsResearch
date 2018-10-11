@@ -233,7 +233,7 @@ class IntroView extends React.Component {
                   </li>
                 </ul>
                 </p>
-                <p style={{fontSize:16}}>You can see examples of each category <a  href="https://docs.google.com/spreadsheets/d/1eEBwurVjk9AylR3e702x_6ygWctCKrvZzSO1gu1o6GA/edit?usp=sharing">here</a>. Please click this link now and do not close it until you finish the questioning task. </p>
+                <p style={{fontSize:16}}>You can see examples of each category <a  href="https://docs.google.com/spreadsheets/d/1eEBwurVjk9AylR3e702x_6ygWctCKrvZzSO1gu1o6GA/edit?usp=sharing" target="_blank">here</a>. Please click this link now and do not close it until you finish the questioning task. </p>
 
               </p>
             </p>
