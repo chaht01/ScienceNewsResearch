@@ -38,7 +38,7 @@ class IntroView extends React.Component {
     this.state = {
       pos: 0
     };
-    this.threshold = 1;
+    this.threshold = 5;
     this.nextPos = this.nextPos.bind(this);
     this.prevPos = this.prevPos.bind(this);
   }
@@ -74,9 +74,6 @@ class IntroView extends React.Component {
       ,
       {
         text: "Generate questions as many as you can. "
-      },
-      {
-        text: "If you cannot think of new question anymore, proceed to Phase 2."
       }
     ];
 
@@ -250,7 +247,7 @@ class IntroView extends React.Component {
             </p>
           </React.Fragment>
         )}
-        {this.state.pos === 6 && (
+        {this.state.pos === 5 && (
           <React.Fragment>
             <p>
             <p style={{fontSize:16}}> From now on, we will explain how you can generate questions.
