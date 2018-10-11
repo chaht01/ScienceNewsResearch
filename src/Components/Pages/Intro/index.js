@@ -73,7 +73,7 @@ const IntroView = ({ user_detail, page, nextPage }) => {
         {data.map(item => {
           return (
             <React.Fragment>
-              <li>{item.text}</li>
+              <li><p style={{fontSize:16}}>{item.text}</p></li>
               {item.children &&
                 item.children.length > 0 &&
                 recursive_listing(depth + 1, item.children)}
@@ -90,7 +90,7 @@ const IntroView = ({ user_detail, page, nextPage }) => {
       <p style={{fontSize:16}}>In this HIT, you are going to read 1 news story about a scientific
       research. The overall procedure is outlined below.</p>
       <img src={intro} style={{ margin: "0 auto" }} />
-      The main task is composed of 3 steps.
+      <p style={{fontSize:16}}>The main task is composed of 3 steps.</p>
       {recursive_listing(0, instructions)}
       <StyledActionBar>
         <Button
