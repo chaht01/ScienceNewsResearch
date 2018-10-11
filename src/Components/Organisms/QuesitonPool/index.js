@@ -61,6 +61,7 @@ const QuestionPoolView = ({
   questions,
   toStep2,
   toStep3,
+  toBodyIntro,
   expandQuestion,
   deleteQuestion
 }) => {
