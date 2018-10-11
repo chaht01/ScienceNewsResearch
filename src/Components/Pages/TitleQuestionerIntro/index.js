@@ -204,27 +204,27 @@ class IntroView extends React.Component {
                 <ul>
                   <li>Background - Background knowledge related to the topic.
                     <ul>
-                    <li>Topic - General knowledge related to the topic. E.g., What is canola oil? How many people have Alzehimer disease?</li>
-                    <li>Term and Jargon - Knowledge about terms or jargon appeared in the news story. E.g, What is neurofibrillary tangles? </li>
+                    <li>Topic - General knowledge related to the topic.</li>
+                    <li>Term and Jargon - Knowledge about terms or jargon appeared in the news story.</li>
                     <li>Other</li>
                     </ul>
                   </li>
-                  <li>Research - research itself.
+                  <li>Research - Research itself.
                     <ul>
-                      <li>Social Context - Social factors that may influence the research. E.g., Who conducted this research? Who funded this research?</li>
-                      <li>Research Design - How the research was conducted. E.g.,Was the research a observational study? Why  </li>
-                      <li>Treatment - Something regarded as cause/control. E.g., How much canola oil did the controlled gorup take?</li>
-                      <li>Subject - Participants or subjets. E.g., How many participants did they observe? How old were the mices?</li>
-                      <li>Measures - Variables measured in the research. How did they measure the risk of lung cancer? Does this measure really related to the Alzheimer's risk? </li>
-                      <li>Data/Stats - Data collected in the research or statistics used in the research. E.g., How many people got lung cancer in total? How significant the difference is?</li>
-                      <li>External Evidence - External evidence that support or oppose the research findings. E.g., By what pathway do omega-3 fatty acids specifically impact neurological function?</li>
+                      <li>Social Context - Social factors that may influence the research.</li>
+                      <li>Research Design - How the research was conducted. </li>
+                      <li>Treatment - Something regarded as cause/control.</li>
+                      <li>Subject - Participants or subjets.</li>
+                      <li>Measures - Variables measured in the research.</li>
+                      <li>Data/Stats - Data collected in the research or statistics used in the research.</li>
+                      <li>External Evidence - External evidence that support or oppose the research findings.</li>
                       <li>Other</li>
                     </ul>
                   </li>
-                  <li>Application - how the research is applied to people’s decision or behavior.
+                  <li>Application - How the research is applied to people's life or can be extended to other subject/agent.
                     <ul>
-                      <li>Application -  Ways that people can apply the research findings. E.g., What is the best amount of vitamin B6 intake? Which food contains the most canola oil?</li>
-                      <li>Extension - Possible extensions of the research E.g., Will olive oil, as like canola oil, also increase the risk? Will women have the similar effect than men had in this research?? </li>
+                      <li>Application -  Ways that people can apply the research findings.</li>
+                      <li>Extension - Possible extensions of the research findings. </li>
                       <li>Other</li>
                      </ul>
                   </li>
