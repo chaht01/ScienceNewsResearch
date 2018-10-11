@@ -186,10 +186,12 @@ class IntroView extends React.Component {
               <p>
                 <p style={{fontSize:16}}>2. Type in how your question helps you and other readers.</p>
                 <img src={modalintention} style={{ margin: "0 auto" }} />
-                <ul>
+                <p style={{fontSize:14}}>
+                  <ul>
                   <li>E.g., better evaluate the validity of the research</li>
                   <li>E.g., know how to use this finding in their everyday life</li>
                 </ul>
+              </p>
               </p>
             </p>
           </React.Fragment>
@@ -201,6 +203,7 @@ class IntroView extends React.Component {
               <p>
                 <p style={{fontSize:16}}>3. Categorize your question into one of the following group.</p>
                 <img src={modalcategorize} style={{ margin: "0 auto" }} />
+                <p style={{fontSize:14}}>
                 <ul>
                   <li>Background - Background knowledge related to the topic.
                     <ul>
@@ -229,6 +232,8 @@ class IntroView extends React.Component {
                      </ul>
                   </li>
                 </ul>
+                </p>
+                <p style={{fontSize:16}}>You can see examples of each category <a  href="https://docs.google.com/spreadsheets/d/1eEBwurVjk9AylR3e702x_6ygWctCKrvZzSO1gu1o6GA/edit?usp=sharing">here</a>. Please click this link now and do not close it until you finish the questioning task. </p>
 
               </p>
             </p>
