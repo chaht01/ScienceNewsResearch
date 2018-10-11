@@ -52,7 +52,7 @@ class IntroView extends React.Component {
   }
   render() {
     const { nextPage } = this.props;
-    const listing = [" ", "1", "a", "i"];
+    const listing = ["1", "a", "i"];
     const before_instructions = [
       {
         text: "(Phase 1) Raise questions by yourself.",
@@ -68,30 +68,7 @@ class IntroView extends React.Component {
 
   
     
-    const categorize_instructions = [
-      {
-        text:
-          "Categorize your question into one of the following group. ",
-        children: [
-          {
-            text:
-              "Background - if your question asks about background knowledge related to the topic. "
-          },
-          {
-            text:
-              "Research - if your question asks about the research itself. "
-          },
-          {
-            text:
-              "Application - if your question asks about how the research is applied to people’s decision or behavior. "
-          }
-        ]
-      },
-      {
-        text:
-          "After you select one of the group, you can choose lower level categories. "
-      }
-    ];
+    
     
     const group_instructions = [
       {
@@ -201,6 +178,7 @@ class IntroView extends React.Component {
             </p>
           </React.Fragment>
         )}
+
         {this.state.pos === 2 && (
           <React.Fragment>
             <p>
@@ -210,7 +188,7 @@ class IntroView extends React.Component {
                 <img src={modalintention} style={{ margin: "0 auto" }} />
                 <ul>
                   <li>E.g., better evaluate the validity of the research</li>
-                  <li>know how to use this finding in their everyday life.</li>
+                  <li>E.g., know how to use this finding in their everyday life</li>
                 </ul>
               </p>
             </p>
@@ -219,11 +197,44 @@ class IntroView extends React.Component {
         {this.state.pos === 3 && (
           <React.Fragment>
             <p>
-            <p style={{fontSize:16}}> From now on, we will explain how you can generate questions.
-              {recursive_listing(0, categorize_instructions)}</p>
+            <p style={{fontSize:16}}> From now on, we will explain how you can generate questions.</p>
+              <p>
+                <p style={{fontSize:16}}>3. Categorize your question into one of the following group.</p>
+                <img src={modalcategorize} style={{ margin: "0 auto" }} />
+                <ul>
+                  <li>Background - Background knowledge related to the topic.
+                    <ul>
+                    <li>Topic - General knowledge related to the topic. E.g., What is canola oil? How many people have Alzehimer disease?</li>
+                    <li>Term and Jargon - Knowledge about terms or jargon appeared in the news story. E.g, What is neurofibrillary tangles? </li>
+                    <li>Other</li>
+                    </ul>
+                  </li>
+                  <li>Research - research itself.
+                    <ul>
+                      <li>Social Context - Social factors that may influence the research. E.g., Who conducted this research? Who funded this research?</li>
+                      <li>Research Design - How the research was conducted. E.g.,Was the research a observational study? Why  </li>
+                      <li>Treatment - Something regarded as cause/control. E.g., How much canola oil did the controlled gorup take?</li>
+                      <li>Subject - Participants or subjets. E.g., How many participants did they observe? How old were the mices?</li>
+                      <li>Measures - Variables measured in the research. How did they measure the risk of lung cancer? Does this measure really related to the Alzheimer's risk? </li>
+                      <li>Data/Stats - Data collected in the research or statistics used in the research. E.g., How many people got lung cancer in total? How significant the difference is?</li>
+                      <li>External Evidence - External evidence that support or oppose the research findings. E.g., By what pathway do omega-3 fatty acids specifically impact neurological function?</li>
+                      <li>Other</li>
+                    </ul>
+                  </li>
+                  <li>Application - how the research is applied to people’s decision or behavior.
+                    <ul>
+                      <li>Application -  Ways that people can apply the research findings. E.g., What is the best amount of vitamin B6 intake? Which food contains the most canola oil?</li>
+                      <li>Extension - Possible extensions of the research E.g., Will olive oil, as like canola oil, also increase the risk? Will women have the similar effect than men had in this research?? </li>
+                      <li>Other</li>
+                     </ul>
+                  </li>
+                </ul>
+
+              </p>
             </p>
           </React.Fragment>
         )}
+
         {this.state.pos === 4 && (
           <React.Fragment>
             <p>
