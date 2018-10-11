@@ -52,7 +52,7 @@ class IntroView extends React.Component {
   }
   render() {
     const { nextPage } = this.props;
-    const listing = ["-", "1", "a", "i"];
+    const listing = [" ", "1", "a", "i"];
     const before_instructions = [
       {
         text: "(Phase 1) Raise questions by yourself.",
@@ -66,26 +66,7 @@ class IntroView extends React.Component {
       }
     ];
 
-    const addquestion_instructions = [
-      {
-        text: "Type in your question and click ‘add’ button.",
-        image: step1question
-      }
-    ];
-
-    const intention_instructions = [
-      {
-        text: "Intention: How your question helps other readers.",
-        image: modalintention,
-        children: [
-          { text: "E.g., better evaluate the validity of the research" },
-          {
-            text:
-              "E.g., know how to use this finding in their everyday life. "
-          }
-        ]
-      }
-    ];
+  
     
     const categorize_instructions = [
       {
@@ -170,7 +151,7 @@ class IntroView extends React.Component {
     
     const recursive_listing = (depth, data) => {
       return (
-        <ol type={listing[depth % 3]}>
+        <ol type={listing[depth % 4]}>
           {data.map(item => {
             return (
               <React.Fragment>
@@ -212,16 +193,26 @@ class IntroView extends React.Component {
         {this.state.pos === 1 && (
           <React.Fragment>
             <p>
-            <p style={{fontSize:16}}> From now on, we will explain how you can generate questions.
-              {recursive_listing(0, addquestion_instructions)}</p>
+            <p style={{fontSize:16}}> From now on, we will explain how you can generate questions.</p>
+              <p>
+                <p style={{fontSize:16}}>1. Type in your question and click ‘add’ button.</p>
+                <img src={step1question} style={{ margin: "0 auto" }} />
+              </p>
             </p>
           </React.Fragment>
         )}
         {this.state.pos === 2 && (
           <React.Fragment>
             <p>
-            <p style={{fontSize:16}}> From now on, we will explain how you can generate questions.
-              {recursive_listing(0, intention_instructions)}</p>
+            <p style={{fontSize:16}}> From now on, we will explain how you can generate questions.</p>
+              <p>
+                <p style={{fontSize:16}}>2. Type in how your question helps you and other readers.</p>
+                <img src={modalintention} style={{ margin: "0 auto" }} />
+                <ul>
+                  <li>E.g., better evaluate the validity of the research</li>
+                  <li>know how to use this finding in their everyday life.</li>
+                </ul>
+              </p>
             </p>
           </React.Fragment>
         )}
