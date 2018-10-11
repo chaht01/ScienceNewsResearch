@@ -52,7 +52,7 @@ class IntroView extends React.Component {
   }
   render() {
     const { nextPage } = this.props;
-    const listing = ["", "1", "a", "i"];
+    const listing = ["-", "1", "a", "i"];
     const before_instructions = [
       {
         text: "(Phase 1) Raise questions by yourself.",
@@ -70,10 +70,6 @@ class IntroView extends React.Component {
       {
         text: "Type in your question and click ‘add’ button.",
         image: step1question
-      },
-      ,
-      {
-        text: "Generate questions as many as you can. "
       }
     ];
 
