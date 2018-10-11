@@ -109,6 +109,7 @@ class IntroView extends React.Component {
             <br />
             You can generate questions in two different phases.
             {recursive_listing(0, before_instructions)}
+            You should generate 3 or more questions in total. However, please raise questions as many as you can.
             </p>
           </React.Fragment>
         )}
