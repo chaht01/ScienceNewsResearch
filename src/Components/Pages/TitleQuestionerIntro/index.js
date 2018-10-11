@@ -273,12 +273,13 @@ class IntroView extends React.Component {
         {(this.state.pos === 0 || this.state.pos === 1) && (
           <React.Fragment>
             <h1>Instruction - (1) Question Before Reading</h1>
-            <img src={beforeQ} style={{ margin: "0 auto" }} />
           </React.Fragment>
         )}
         {this.state.pos === 0 && (
           <React.Fragment>
-           <p style={{fontSize:16}}>In this (1) Question before reading step, you are going to read the title of a news story. Based on the title, raise questions on what you expect to read from the content. 
+            <img src={beforeQ} style={{ margin: "0 auto" }} />
+            <br />
+            <p style={{fontSize:16}}>In this (1) Question before reading step, you are going to read the title of a news story. Based on the title, raise questions on what you expect to read from the content. 
             <br />
             <br />
             You can generate questions in two different phases.
@@ -290,12 +291,8 @@ class IntroView extends React.Component {
         {this.state.pos === 1 && (
           <React.Fragment>
             <p>
-              Phase 1 - Generate questions by yourself.
-              {recursive_listing(0, phase1_instructions)}
-            </p>
-            <p>
-              Phase 2 - Generate questions after seeing others’ question.
-              {recursive_listing(0, phase2_instructions)}
+            <p style={{fontSize:16}}> In this page, we will explain how you can generate questions. 
+              {recursive_listing(0, phase1_instructions)}</p>
             </p>
           </React.Fragment>
         )}
