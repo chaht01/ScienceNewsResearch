@@ -185,7 +185,7 @@ class IntroView extends React.Component {
             </Button>
             <Button
               onClick={
-                this.state.pos === this.threshold ? nextPage : this.nextPos
+                this.state.pos === this.threfshold ? nextPage : this.nextPos
               }
               positive={this.state.pos === this.threshold}
             >

@@ -41,6 +41,7 @@ const mapDispatchToProps = dispatch => {
     questionTyping: typed => dispatch(quesitonType(typed)),
     spreadPool: () => dispatch(poolFoldingOpen()),
     toStep2: () => dispatch(pageNextRequest(PAGES.QUESTIONER_STEP2, [])),
+    toBodyIntro: () => dispatch(pageNextRequest(PAGES.BODYQUESTIONER_INTRO)),
     toStep3: () => dispatch(pageNextRequest(PAGES.QUESTIONER_STEP3, [])),
     expandQuestion: question_id =>
       dispatch(questionQuestionExpandToggle(question_id)),
@@ -149,7 +150,7 @@ const QuestionPoolView = ({
                     disabled={page.loading}
                     loading={page.loading}
                     positive
-                    content="I can not think of new question"
+                    content="I cannot think of new question"
                   />
                 }
                 hovered
@@ -160,7 +161,7 @@ const QuestionPoolView = ({
             )}
             {page === PAGES.QUESTIONER_STEP2 && (
               <StyledSticky.Action
-                onClick={toStep3}
+                onClick={toBodyIntro}
                 loading={page.loading}
                 positive
                 disabled={questionList.length < 3 || page.loading}
