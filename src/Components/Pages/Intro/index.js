@@ -73,7 +73,7 @@ const IntroView = ({ user_detail, page, nextPage }) => {
         {data.map(item => {
           return (
             <React.Fragment>
-              <li><p style={{fontSize:16}}>{item.text}</p></li>
+              <li><p style={{fontSize:16}}>{item.text}</p><br /><br /></li>
               {item.children &&
                 item.children.length > 0 &&
                 recursive_listing(depth + 1, item.children)}
