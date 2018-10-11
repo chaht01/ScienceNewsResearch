@@ -42,7 +42,6 @@ const mapDispatchToProps = dispatch => {
     spreadPool: () => dispatch(poolFoldingOpen()),
     toStep2: () => dispatch(pageNextRequest(PAGES.QUESTIONER_STEP2, [])),
     toBodyIntro: () => dispatch(pageNextRequest(PAGES.BODYQUESTIONER_INTRO, [])),
-    toStep3: () => dispatch(pageNextRequest(PAGES.QUESTIONER_STEP3, [])),
     expandQuestion: question_id =>
       dispatch(questionQuestionExpandToggle(question_id)),
     deleteQuestion: (question_id, removed_step) =>

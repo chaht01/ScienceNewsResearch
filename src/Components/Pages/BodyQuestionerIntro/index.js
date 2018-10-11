@@ -91,6 +91,9 @@ class IntroView extends React.Component {
 
     return (
       <StyledIntro>
+        <React.Fragment>
+            <h1>Instruction - (2) Question During Reading</h1>
+          </React.Fragment>
         {this.state.pos === 0 && (
           <React.Fragment>
             <img src={duringQ} style={{ margin: "0 auto" }} />
