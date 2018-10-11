@@ -41,7 +41,7 @@ const mapDispatchToProps = dispatch => {
     questionTyping: typed => dispatch(quesitonType(typed)),
     spreadPool: () => dispatch(poolFoldingOpen()),
     toStep2: () => dispatch(pageNextRequest(PAGES.QUESTIONER_STEP2, [])),
-    toBodyIntro: () => dispatch(pageNextRequest(PAGES.BODYQUESTIONER_INTRO)),
+    toBodyIntro: () => dispatch(pageNextRequest(PAGES.BODYQUESTIONER_INTRO, [])),
     toStep3: () => dispatch(pageNextRequest(PAGES.QUESTIONER_STEP3, [])),
     expandQuestion: question_id =>
       dispatch(questionQuestionExpandToggle(question_id)),
