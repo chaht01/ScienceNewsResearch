@@ -88,10 +88,10 @@ const IntroView = ({ user_detail, page, nextPage }) => {
   return (
     <StyledIntro>
       <h1>Instruction - Overview</h1>
-      In this HIT, you are going to read 1 news story about a scientific
-      research. The overall procedure is outlined below.
+      <p>In this HIT, you are going to read 1 news story about a scientific
+      research. The overall procedure is outlined below.</p>
       <img src={intro} style={{ margin: "0 auto" }} />
-      The main task is composed of 3 steps.
+      <p>The main task is composed of 3 steps.</p>
       {recursive_listing(0, instructions)}
       <StyledActionBar>
         <Button
