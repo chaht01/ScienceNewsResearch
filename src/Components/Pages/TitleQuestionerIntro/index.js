@@ -70,52 +70,7 @@ class IntroView extends React.Component {
     
     
     
-    const group_instructions = [
-      {
-        text:
-          "Evaluate the similarity between your question and others’ question.",
-        image: modalsimilarity,
-        children: [
-          { text: "You will see 10 of others’ questions. " },
-          {
-            text:
-              "For each question, judge whether the question is same/similar/different to your question. ",
-            children: [
-              {
-                text:
-                  "Same - if the question asks exactly the same information that your question asks. ",
-                children: [
-                  {
-                    text:
-                      "“How many participants did they study?” and “How many people participated in the research?”"
-                  }
-                ]
-              },
-              {
-                text:
-                  "Similar - if the question is not exactly same as your question, but is closely related to your question. ",
-                children: [
-                  {
-                    text:
-                      "E.g, “How many participants did they observe?” and “How old were the participants?”"
-                  }
-                ]
-              },
-              {
-                text:
-                  "Different - if the question asks about the totally different information. ",
-                children: [
-                  {
-                    text:
-                      "E.g., “How many participants did the observe?” and “What kind of fish is helpful?” "
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }    
-    ];
+   
     
     const seeothers_instructions = [
       {
@@ -239,12 +194,29 @@ class IntroView extends React.Component {
             </p>
           </React.Fragment>
         )}
-
         {this.state.pos === 4 && (
           <React.Fragment>
             <p>
-            <p style={{fontSize:16}}> From now on, we will explain how you can generate questions.
-              {recursive_listing(0, group_instructions)}</p>
+            <p style={{fontSize:16}}> From now on, we will explain how you can generate questions.</p>
+              <p>
+                <p style={{fontSize:16}}>4. Evaluate the similarity between your question and others’ question.</p>
+                <img src={modalsimilarity} style={{ margin: "0 auto" }} />
+                <p style={{fontSize:16}}>You will see 10 of other's questions. For each question, evaluate how the question is similar to your question.</p>
+                <p style={{fontSize:16}}>
+                  <ul>
+                  <li>Same - If the question asks exactly the same information that your question asks.
+                    <ul><li>E.g., "How many participants did they study?" and "What is the population size?"</li></ul>
+                  </li>
+                  <li>Similar - If the question is not exactly same as your question, but is closely related to your question.
+                    <ul><li>E.g., "How many participants did they observe?" and "How old were the participants?</li></ul>
+                  </li>
+                  <li>Different - If the question asks for an totally different information. 
+                    <ul><li>E.g., "How many participants did they observe?" and "What kind of fish is helpful for your brain?"</li></ul>
+                  </li>
+                  <li>Don't know - If you cannot understand the question and therefore cannot judge the similarity. </li>
+                </ul>
+              </p>
+              </p>
             </p>
           </React.Fragment>
         )}
