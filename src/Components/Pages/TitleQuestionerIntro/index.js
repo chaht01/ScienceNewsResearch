@@ -55,25 +55,13 @@ class IntroView extends React.Component {
     const listing = ["1", "a", "i"];
     const before_instructions = [
       {
-        text: "In the first phase,",
+        text: "(Phase 1) Raise questions by yourself.",
         children: [
-          {
-            text: "We expect you to raise questions by yourself."
-          },
-          {
-            text:
-              "If you cannot think of questions anymore, then you can proceed to the next phase."
-          }
         ]
       },
       {
-        text: "In the second phase,",
+        text: "(Phase 2) If you cannot think of questions anymore by yourself, you can see questions made by other readers and raise more questions after getting inspired by them.",
         children: [
-          { text: "You can see questions made by other readers." },
-          {
-            text:
-              "Raise more questions after getting inspired by others question."
-          }
         ]
       }
     ];
@@ -290,13 +278,10 @@ class IntroView extends React.Component {
         )}
         {this.state.pos === 0 && (
           <React.Fragment>
-            In this step, you are going to read the title of a news story about
-            a scientific research. Based on the title, raise questions on what
-            you expect to read from the content. You have to raise 3 or more
-            questions. Please raise many questions as you can.
+            In this (1) Question before reading step, you are going to read the title of a news story. Based on the title, raise questions on what you expect to read from the content. 
             <br />
             <br />
-            You can generate questions in two different phase.
+            You can generate questions in two different phases.
             {recursive_listing(0, before_instructions)}
           </React.Fragment>
         )}
