@@ -91,6 +91,7 @@ const IntroView = ({ user_detail, page, nextPage }) => {
       <p style={{fontSize:16}}>In this HIT, you are going to read 1 news story about a scientific
       research. The overall procedure is outlined below.</p>
       <img src={intro} style={{ margin: "0 auto" }} />
+      <br />
       <p style={{fontSize:16}}>The main task is composed of 3 steps.</p>
       {recursive_listing(0, instructions)}
       <StyledActionBar>

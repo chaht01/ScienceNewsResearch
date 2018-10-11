@@ -278,11 +278,12 @@ class IntroView extends React.Component {
         )}
         {this.state.pos === 0 && (
           <React.Fragment>
-            In this (1) Question before reading step, you are going to read the title of a news story. Based on the title, raise questions on what you expect to read from the content. 
+           <p style={{fontSize:16}}>In this (1) Question before reading step, you are going to read the title of a news story. Based on the title, raise questions on what you expect to read from the content. 
             <br />
             <br />
             You can generate questions in two different phases.
             {recursive_listing(0, before_instructions)}
+            </p>
           </React.Fragment>
         )}
 
