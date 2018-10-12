@@ -59,9 +59,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         ]),
       startBodyQuestionerStep: () =>
         nextPage(PAGES.QUESTIONER_STEP3, [
-          articleArticleFetchRequest.bind(null, article_id),
-          questionPoolFetchRequest.bind(null, article_id, create_phase_request),
-          codeFetchRequest
+          // articleArticleFetchRequest.bind(null, article_id),
+          // questionPoolFetchRequest.bind(null, article_id, create_phase_request),
+          // codeFetchRequest
         ]),
       questionStepLoading: article.loading || questions.loading || code.loading
     };
