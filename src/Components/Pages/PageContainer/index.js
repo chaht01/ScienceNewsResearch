@@ -29,11 +29,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    nextPage: (page, asyncActions) =>{
-      console.log("world")
-      return dispatch(pageNextRequest(page, asyncActions))
-    }
-      
+    nextPage: (page, asyncActions) => dispatch(pageNextRequest(page, asyncActions))
   };
 };
 
