@@ -52,6 +52,7 @@ class IntroView extends React.Component {
   }
   render() {
     const { nextPage } = this.props;
+    console.log(nextPage);
     const listing = ["1", "a", "i"];
     const during_instructions = [
       {
