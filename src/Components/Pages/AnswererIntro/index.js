@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Button } from "semantic-ui-react";
 import styled from "styled-components";
 
-import answer_pic from "../../../static/answer.png";
+import answer_pic from "../../../static/answer_pic.png";
 import answer_read from "../../../static/answer_read.gif";
 import answer_answer from "../../../static/answer_answer.gif";
 import answer_select from "../../../static/answer_select.gif";

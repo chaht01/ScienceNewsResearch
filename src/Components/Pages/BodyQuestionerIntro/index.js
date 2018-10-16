@@ -4,7 +4,7 @@ import { Button } from "semantic-ui-react";
 import styled from "styled-components";
 
 import beforeQ from "../../../static/beforeQ.png";
-import duringQ from "../../../static/duringQ.png";
+import body_pic from "../../../static/body_pic.png";
 import step1question from "../../../static/step1-question.gif";
 import modalintention from "../../../static/modal-intention.gif";
 import modalcategorize from "../../../static/modal-categorize.gif";
@@ -93,13 +93,13 @@ class IntroView extends React.Component {
     return (
       <StyledIntro>
         <React.Fragment>
-            <h1>Instruction - (2) Question during the reading</h1>
+            <h1>Instruction - (2) Question During Reading</h1>
           </React.Fragment>
         {this.state.pos === 0 && (
           <React.Fragment>
-            <img src={duringQ} style={{ margin: "0 auto" }} />
+            <img src={body_pic} style={{ margin: "0 auto" }} />
             <br />
-            <p style={{fontSize:16}}>In this (2) Question during the reading step, you are going to read the article. Based on the article, raise questions on what you want to know, but the article DOES NOT COVER. 
+            <p style={{fontSize:16}}>In this (2) Question during reading step, you are going to read the article. Based on the article, raise questions on what you want to know, but the article DOES NOT COVER. 
             <br />
             <br />
             As before, you can generate questions in two different phases.

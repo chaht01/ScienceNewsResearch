@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import { Button } from "semantic-ui-react";
 import styled from "styled-components";
 
-import beforeQ from "../../../static/beforeQ.png";
-import duringQ from "../../../static/duringQ.png";
+import title_pic from "../../../static/title_pic.png";
 import step1question from "../../../static/step1-question.gif";
 import modalintention from "../../../static/modal-intention.gif";
 import modalcategorize from "../../../static/modal-categorize.gif";
@@ -102,7 +101,7 @@ class IntroView extends React.Component {
           </React.Fragment>
         {this.state.pos === 0 && (
           <React.Fragment>
-            <img src={beforeQ} style={{ margin: "0 auto" }} />
+            <img src={title_pic} style={{ margin: "0 auto" }} />
             <br />
             <p style={{fontSize:16}}>In this (1) Question before reading step, you are going to read the title of a news story. Based on the title, raise questions on what you expect to read from the content. 
             <br />

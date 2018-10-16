@@ -10,7 +10,7 @@ import styled from "styled-components";
 import { pageNextRequest } from "../../../Actions/page";
 import { PAGES } from "../../../Reducers/page";
 
-import intro from "../../../static/intro.png";
+import overall_pic from "../../../static/overall_pic.png";
 
 const StyledContainer = styled.div`
   padding-top: 3em;
@@ -55,7 +55,7 @@ const IntroView = ({ user_detail, page, nextPage }) => {
       ]
     },
     {
-      text: "Question during the reading (10 min): Read the article and raise 3 or more questions on what you want to know but the article does not cover.",
+      text: "Question during reading (10 min): Read the article and raise 3 or more questions on what you want to know but the article does not cover.",
       children: [
       ]
     },
@@ -90,7 +90,7 @@ const IntroView = ({ user_detail, page, nextPage }) => {
       <h1>Instruction - Overview</h1>
       <p style={{fontSize:16}}>In this HIT, you are going to read one news story about scientific
       research. The overall procedure is outlined below.</p>
-      <img src={intro} style={{ margin: "0 auto" }} />
+      <img src={overall_pic} style={{ margin: "0 auto" }} />
       <br />
       <p style={{fontSize:16}}>The main task is composed of 3 steps.</p>
       {recursive_listing(0, instructions)}
