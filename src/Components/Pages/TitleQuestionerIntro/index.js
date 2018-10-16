@@ -103,12 +103,12 @@ class IntroView extends React.Component {
           <React.Fragment>
             <img src={title_pic} style={{ margin: "0 auto" }} />
             <br />
-            <p style={{fontSize:16}}>In this (1) Question before reading step, you are going to read the title of a news story. Based on the title, raise questions on what you expect to read from the content. 
+            <p style={{fontSize:16}}>In this (1) Question before reading step, you are going to read the title of a news story. Based on the title, raise questions on <b>what you expect to read from the content.</b> 
             <br />
             <br />
             You can generate questions in two different phases.
             {recursive_listing(0, before_instructions)}
-            You should generate 3 or more questions in total. However, please raise questions as many as you can.
+            You should generate 3 or more questions in total. However, please raise questions <b>as many as you can.</b>
             </p>
           </React.Fragment>
         )}
@@ -158,6 +158,7 @@ class IntroView extends React.Component {
                     <li>Other</li>
                     </ul>
                   </li>
+                  <br />
                   <li>Research - Research itself.
                     <ul>
                       <li>Social Context - Social factors that may influence the research.</li>
@@ -170,6 +171,7 @@ class IntroView extends React.Component {
                       <li>Other</li>
                     </ul>
                   </li>
+                  <br />
                   <li>Application - How the research is applied to people's life or can be extended to other subjects/agents.
                     <ul>
                       <li>Application -  Ways that people can apply the research findings.</li>
@@ -179,7 +181,7 @@ class IntroView extends React.Component {
                   </li>
                 </ul>
                 </p>
-                <p style={{fontSize:16}}>You can see examples of each category <a  href="https://docs.google.com/spreadsheets/d/1eEBwurVjk9AylR3e702x_6ygWctCKrvZzSO1gu1o6GA/edit?usp=sharing" target="_blank">here</a>. <b>Please click this link now and do not close it until you finish the questioning task.</b> </p>
+                <p style={{fontSize:16}}><b>You can see examples of each category <a  href="https://docs.google.com/spreadsheets/d/1eEBwurVjk9AylR3e702x_6ygWctCKrvZzSO1gu1o6GA/edit?usp=sharing" target="_blank">here</a>. Please click this link now and do not close it until you finish the questioning task.</b> </p>
 
               </p>
             </p>

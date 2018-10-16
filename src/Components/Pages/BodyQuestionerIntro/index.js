@@ -99,7 +99,7 @@ class IntroView extends React.Component {
           <React.Fragment>
             <img src={body_pic} style={{ margin: "0 auto" }} />
             <br />
-            <p style={{fontSize:16}}>In this (2) Question during reading step, you are going to read the article. Based on the article, raise questions on what you want to know, but the article DOES NOT COVER. 
+            <p style={{fontSize:16}}>In this (2) Question during reading step, you are going to read the article. Based on the article, raise questions on <b>what you want to know, but the article does not cover.</b>
             <br />
             <br />
             As before, you can generate questions in two different phases.
@@ -152,7 +152,7 @@ class IntroView extends React.Component {
                 <p style={{fontSize:16}}>4. Evaluate the similarity between others' questions and your question, as before.</p>
                 <img src={modalcategorize} style={{ margin: "0 auto" }} />
               </p>
-              <p style={{fontSize:16}}>You can see examples of each category <a  href="https://docs.google.com/spreadsheets/d/1eEBwurVjk9AylR3e702x_6ygWctCKrvZzSO1gu1o6GA/edit?usp=sharing" target="_blank">here</a>. <b>Please click this link now and do not close it until you finish the questioning task.</b> </p> 
+              <p style={{fontSize:16}}><b>You can see examples of each category <a  href="https://docs.google.com/spreadsheets/d/1eEBwurVjk9AylR3e702x_6ygWctCKrvZzSO1gu1o6GA/edit?usp=sharing" target="_blank">here</a>. Please click this link now and do not close it until you finish the questioning task.</b> </p> 
             </p>
           </React.Fragment>
         )}
