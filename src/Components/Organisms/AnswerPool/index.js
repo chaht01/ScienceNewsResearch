@@ -111,10 +111,11 @@ const AnswerPoolView = ({
       <StyledAside>
         <StyledSticky>
           <h3>
-            Can the article that you read answer questions below?
+            Can the article (that you read) answer questions below?
+            <br />
             <br />
             Please answer the questions that this article can directly answer.
-            You should answer with sentence(s) from the article.
+            You should answer with the sentence(s) from the article.
           </h3>
           <span>You need to answer 5 or more questions.</span>
           <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>

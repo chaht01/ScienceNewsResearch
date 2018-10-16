@@ -85,7 +85,7 @@ const QuestionPoolView = ({
         {page === PAGES.QUESTIONER_STEP1 && (
           <PoolSegment>
             <PoolSegment.Header>
-              Based on the title of news article, what do you expect to read
+              Based on the title of a news article, what do you expect to read
               from the content?
             </PoolSegment.Header>
             <span>
@@ -119,7 +119,7 @@ const QuestionPoolView = ({
             />
           </PoolSegment>
         )}
-        <h3>Your quesitons </h3>
+        <h3>Your questions </h3>
         <span>You need to generate 3 or more questions to proceed.</span>
         <StyledSticky.Scrollable style={{ background: "#eeeeee" }}>
           <StyledSticky.ScrollablePane>

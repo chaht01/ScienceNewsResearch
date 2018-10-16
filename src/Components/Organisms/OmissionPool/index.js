@@ -409,7 +409,9 @@ const OmissionPoolView = ({
           <OmissionPoolSegment>
             <StyledSegment.Header>
               Is there something that you want to know but this article DOES NOT
-              COVER? <br /> Raise wh-questions. You can start by clicking{" "}
+              COVER? <br />
+              <br />
+              Raise wh-questions. You can start by clicking{" "}
               <FontAwesomeButton
                 circular
                 positive
