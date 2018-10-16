@@ -72,17 +72,17 @@ class IntroView extends React.Component {
     return (
       <StyledIntro>
         <React.Fragment>
-        <h1>Instruction - (3) Answer to Others’ Questions</h1>
+        <h1>Instruction - (3) Answer Others’ Questions</h1>
         </React.Fragment>
         {this.state.pos === 0 && (
           <React.Fragment>
             <img src={answer_pic} style={{ margin: "0 auto" }} />
             <br />
-            <p style={{fontSize:16}}>In this (3) Answer to others' questions step, you are going to see others’ question.
+            <p style={{fontSize:16}}>In this (3) Answer others' questions step, you are going to see others’ question.
             <br />
             <br />
             Read questions raised by others and answer the questions that the article you read can
-            directly answer.You should answer those questions using sentences from the article. 
+            directly answer. You should answer those questions using sentences from the article. 
             <br />
             <br /> 
             You have to answer 3 or more questions. Please answer many questions as you can.
@@ -98,8 +98,8 @@ class IntroView extends React.Component {
               <img src={answer_read} style={{ margin: "0 auto" }} />
               <p style={{fontSize:14}}>
                   <ul>
-                  <li>Note that the list can includes questions made from other news article. </li>
-                  <li>Use provided information to understand the questions and evaluate whether it can be answered by the information frmo the news article that you read. 
+                  <li>Note that the list can include questions made from other news articles. </li>
+                  <li>Use provided information to understand the questions and evaluate whether it can be answered by the information from the news article that you read. 
                     <ul>
                       <li> Categories</li>
                       <li> Intention</li>
@@ -129,7 +129,7 @@ class IntroView extends React.Component {
           <p>
           <p style={{fontSize:16}}> From now on, we will explain how you can answer the questions.</p>
             <p>
-              <p style={{fontSize:16}}>3. Select sentence(s) from the artticle that can answer the question and then click 'Confirm' button. </p>
+              <p style={{fontSize:16}}>3. Select sentence(s) from the article that can answer the question and then click 'Confirm' button. </p>
               <img src={answer_select} style={{ margin: "0 auto" }} />
             </p>
           </p>

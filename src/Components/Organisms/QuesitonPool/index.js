@@ -149,7 +149,7 @@ const QuestionPoolView = ({
                     disabled={page.loading}
                     loading={page.loading}
                     positive
-                    content="I cannot think of new question"
+                    content="I can not think of new question"
                   />
                 }
                 hovered
