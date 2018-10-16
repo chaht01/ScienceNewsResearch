@@ -79,12 +79,12 @@ class IntroView extends React.Component {
             <img src={answer_pic} style={{ margin: "0 auto" }} />
             <br />
             <p style={{fontSize:16}}>In this (3) Answer to others' questions step, you are going to see others’ question.
-            <br /> Read questions raised by others and answer the questions that the article you read can
-            directly answer.
-            <br /> 
-            You should answer those questions using sentences from
-            the article. 
             <br />
+            <br />
+            Read questions raised by others and answer the questions that the article you read can
+            directly answer.You should answer those questions using sentences from the article. 
+            <br />
+            <br /> 
             You have to answer 3 or more questions. Please answer many questions as you can.
             </p>
           </React.Fragment>
@@ -159,9 +159,7 @@ class IntroView extends React.Component {
             >
               {this.state.pos === this.threshold ? "Start" : "Next"}
             </Button>
-          </Button.Group><Button onClick={nextPage} positive>
-            Start
-          </Button>
+          </Button.Group>
         </StyledActionBar>
       </StyledIntro>
     );
